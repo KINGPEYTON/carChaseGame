@@ -28,6 +28,8 @@ public class main : MonoBehaviour
     public GameObject cars; //car gameobject to spawn
     public float carTimer;
 
+    public List<float> bannedLanes;
+
 
     // Start is called before the first frame update
     void Start()
@@ -55,33 +57,33 @@ public class main : MonoBehaviour
             if (dividerTimer > 15)
             {
                 //spawns a new yellow lane divider for each lane
-                Instantiate(divider, new Vector3(12, 1.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider, new Vector3(12, -0.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider, new Vector3(12, -2.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider, new Vector3(12, -3.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider, new Vector3(12, 0.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider, new Vector3(12, -1.25f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider, new Vector3(12, -3.75f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
                 dividerTimer = 0;
             }
 
             buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
-            if (buildingTimer > 20)
+            if (buildingTimer > 23.5)
             {
-                Instantiate(building, new Vector3(12, 2.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                Instantiate(building, new Vector3(12, 1.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                 buildingTimer = 0;
             }
 
             carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
             if (carTimer > 80)
             {
-                Instantiate(cars, new Vector3(12, (Random.Range(0, -5) * 1.5f) + 1.75f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                Instantiate(cars, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
                 carTimer = 0;
             }
         }
         else //if game isnt playing
         {
             carTimer += Time.deltaTime; //timer to spawn a new car after game is over
-            if (carTimer > 1.5f) 
+            if (carTimer > 1.0f) 
             {
-                Instantiate(cars, new Vector3(-12, (Random.Range(0, -5) * 1.5f) + 1.75f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                Instantiate(cars, new Vector3(-12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                 carTimer = 0;
             }
         }

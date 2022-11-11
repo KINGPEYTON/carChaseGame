@@ -28,13 +28,13 @@ public class cars : MonoBehaviour
         {
             transform.position = transform.position + new Vector3(Time.deltaTime * (speed/2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
 
-            if(controller.playerCar.transform.position.y == transform.position.y && transform.position.x < -10)
+            if(controller.bannedLanes.Contains(transform.position.y) && transform.position.x < -10)
             {
-                Destroy(gameObject); // destoys car so it wont go through the afk player car
+                newCarLane();
             }
         }
         //Debug.Log("Hello: ");
-        if (transform.position.x <= -12 || transform.position.x >= 22) // checks if the car is on screen
+        if (transform.position.x <= -12|| transform.position.x >= 22) // checks if the car is on screen
         {
             Destroy(gameObject); // destroys it otherwise
         }
@@ -45,6 +45,18 @@ public class cars : MonoBehaviour
         if (collision.tag == "car") //if a car hits another car
         {
             speed = collision.GetComponent<cars>().speed; //changes the speed so cars won't go through eachother
+        }
+    }
+
+    public void newCarLane()
+    {
+        if (controller.playing)
+        {
+            transform.position = new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
+        }
+        else
+        {
+            transform.position = new Vector3(-12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
         }
     }
 }

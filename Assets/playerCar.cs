@@ -14,52 +14,67 @@ public class playerCar : MonoBehaviour
     public Sprite reg;
     public Sprite crashed;
 
+    public float startPos;
+
     // Start is called before the first frame update
     void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
         GetComponent<SpriteRenderer>().sprite = reg; //sets it to the non crashed skin
 
-        targetPos = transform.position;
         moveTime = 1.0f;
+
+        startPos = -7f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.touchCount > 0) // if the user touches the phone screen
+        if (controller.playing)
         {
-            Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
-            Debug.Log(tapPoint.y - transform.position.y);
+            if (startPos == transform.position.x) {
+                if (Input.touchCount > 0) // if the user touches the phone screen
+                {
+                    Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
+                    Debug.Log(tapPoint.y - transform.position.y);
 
-            if (tapPoint.y > transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.2) //if the tap if above the player car
-            {
-                laneUp();
-            }
-            else if (tapPoint.y < transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.2) //if the tap is below the player car
-            {
-                laneDown();
-            }
-        }
+                    if (tapPoint.y > transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.2) //if the tap if above the player car
+                    {
+                        laneUp();
+                    }
+                    else if (tapPoint.y < transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.2) //if the tap is below the player car
+                    {
+                        laneDown();
+                    }
+                }
 
-        if (transform.position != targetPos) //if player car isnt where its supose to be
-        {
-            transform.position += new Vector3(0, 4 * (Time.deltaTime/disMove), 0); //moves the player towards where they need to be
-            overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
-            if (overshoot < 0) //checks if its past if target
-            {
-                transform.position = targetPos; //places player car where it should be
-                overshoot = 0; //resets overshoot
+                if (transform.position != targetPos) //if player car isnt where its supose to be
+                {
+                    transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the player towards where they need to be
+                    overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
+                    if (overshoot < 0) //checks if its past if target
+                    {
+                        transform.position = targetPos; //places player car where it should be
+                        overshoot = 0; //resets overshoot
 
+                    }
+                }
+            } else {
+                transform.position += new Vector3(2*(moveTime) * Time.deltaTime, 0, 0);
+                if(startPos - transform.position.x < 0)
+                {
+                    transform.position = new Vector3(startPos, transform.position.y, 0);
+                    targetPos = transform.position;
+                }
             }
-        }
+        } 
     }
 
     public void laneUp() //if tap is above player car
     {
-        if (targetPos.y < 1.25f && Mathf.Abs(transform.position.y - targetPos.y) < 0.5f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        if (targetPos.y < 0.65f && Mathf.Abs(transform.position.y - targetPos.y) < 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
         {
-            targetPos += new Vector3(0, 1.5f, 0); //changes targetPos to the new lane it needs to go to
+            targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
         }
@@ -67,9 +82,9 @@ public class playerCar : MonoBehaviour
 
     public void laneDown()
     {
-        if (targetPos.y > -4.0f && Mathf.Abs(transform.position.y - targetPos.y) < 0.5f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        if (targetPos.y > -4.35f && Mathf.Abs(transform.position.y - targetPos.y) < 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
         {
-            targetPos += new Vector3(0, -1.5f, 0); //changes targetPos to the new lane it needs to go to
+            targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
         }
@@ -78,6 +93,7 @@ public class playerCar : MonoBehaviour
     public void crash()
     {
         GetComponent<SpriteRenderer>().sprite = crashed; //car crashed
+        controller.bannedLanes.Add(transform.position.y);
         controller.gameOver(); //sets the game to its game over state
     }
 
@@ -86,6 +102,7 @@ public class playerCar : MonoBehaviour
         if(collision.tag == "car")
         {
             collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the pkayer)
+            controller.bannedLanes.Add(collision.transform.position.y);
             crash(); //what happens when the player crashes
         }
     }

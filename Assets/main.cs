@@ -12,6 +12,8 @@ public class main : MonoBehaviour
     public float score;
     public float highScore;
 
+    public float defaultmph;
+
     public TextMeshProUGUI scoreDisplay;
     public TextMeshProUGUI highScoreDisplay;
     public GameObject over; // game over ui
@@ -29,13 +31,15 @@ public class main : MonoBehaviour
     public float carTimer;
 
     public List<float> bannedLanes;
-
+    public List<int> carsPast;
 
     // Start is called before the first frame update
     void Start()
     {
-        playing = true; 
-        mph = 30; //sets inital mph
+        playing = false; 
+        mph = 0; //sets inital mph
+
+        defaultmph = 30.0f;
 
         over.SetActive(false); //hides game over ui (such as high score and play again button)
         highScoreUI.SetActive(false);
@@ -43,6 +47,8 @@ public class main : MonoBehaviour
         highScore = PlayerPrefs.GetInt("highscore", (int)highScore); //sets high score to the one saved
 
         playerCar = GameObject.Find("playerCar");
+
+        StartGame();
     }
 
     // Update is called once per frame
@@ -83,8 +89,15 @@ public class main : MonoBehaviour
             carTimer += Time.deltaTime; //timer to spawn a new car after game is over
             if (carTimer > 1.0f) 
             {
-                Instantiate(cars, new Vector3(-12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                GameObject newCar = Instantiate(cars, new Vector3(-12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                 carTimer = 0;
+                newCar.GetComponent<cars>().setLane();
+
+                if (newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
+                {
+                    carsPast.Add(newCar.GetComponent<cars>().lane);
+                    carsPast.Remove(carsPast.ToArray()[0]);
+                }
             }
         }
 
@@ -113,5 +126,24 @@ public class main : MonoBehaviour
         }
         highScoreDisplay.text = "High Score: " + (int)highScore + "m"; //displays the high score
 
+    }
+
+    public void StartGame()
+    {
+        playing = true;
+        mph = defaultmph;
+        playing = true;
+
+        if (!carsPast.Contains(2))
+        {
+            playerCar.GetComponent<playerCar>().setLane(2);
+        }
+        else if (!carsPast.Contains(1))
+        {
+            playerCar.GetComponent<playerCar>().setLane(3);
+        }
+        else {
+            playerCar.GetComponent<playerCar>().setLane(1);
+        }
     }
 }

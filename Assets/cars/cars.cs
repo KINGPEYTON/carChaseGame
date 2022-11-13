@@ -9,6 +9,7 @@ public class cars : MonoBehaviour
     public Sprite[] skins; //array of car skins
 
     public float speed; //speed of thr car
+    public int lane; //lane of car
 
     // Start is called before the first frame update
     void Start()
@@ -16,6 +17,7 @@ public class cars : MonoBehaviour
         speed = Random.Range(12, 18);
         controller = GameObject.Find("contoller").GetComponent<main>();
         GetComponent<SpriteRenderer>().sprite = skins[Random.Range(0, skins.Length)]; //set the skin to a random one at spawn
+        setLane();
     }
 
     // Update is called once per frame
@@ -26,15 +28,15 @@ public class cars : MonoBehaviour
             transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0);//move towards in game
         } else
         {
-            transform.position = transform.position + new Vector3(Time.deltaTime * (speed/2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
+            transform.position = transform.position + new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
 
-            if(controller.bannedLanes.Contains(transform.position.y) && transform.position.x < -10)
+            if (controller.bannedLanes.Contains(transform.position.y) && transform.position.x < -10)
             {
                 newCarLane();
             }
         }
         //Debug.Log("Hello: ");
-        if (transform.position.x <= -12|| transform.position.x >= 22) // checks if the car is on screen
+        if (transform.position.x <= -12 || transform.position.x >= 22) // checks if the car is on screen
         {
             Destroy(gameObject); // destroys it otherwise
         }
@@ -58,5 +60,11 @@ public class cars : MonoBehaviour
         {
             transform.position = new Vector3(-12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
         }
+    }
+
+    public void setLane()
+    {
+        lane = Mathf.Abs((int)((transform.position.y / 1.25f) - 0.65f));
+        GetComponent<SpriteRenderer>().sortingOrder = 3 +lane;
     }
 }

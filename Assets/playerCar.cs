@@ -56,7 +56,6 @@ public class playerCar : MonoBehaviour
                     {
                         transform.position = targetPos; //places player car where it should be
                         overshoot = 0; //resets overshoot
-
                     }
                 }
             } else {
@@ -77,6 +76,7 @@ public class playerCar : MonoBehaviour
             targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
+            GetComponent<SpriteRenderer>().sortingOrder--;
         }
     }
 
@@ -87,23 +87,43 @@ public class playerCar : MonoBehaviour
             targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
+            GetComponent<SpriteRenderer>().sortingOrder++;
         }
     }
 
     public void crash()
     {
         GetComponent<SpriteRenderer>().sprite = crashed; //car crashed
-        controller.bannedLanes.Add(transform.position.y);
+        controller.bannedLanes.Add(targetPos.y);
         controller.gameOver(); //sets the game to its game over state
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "car")
+        if (controller.playing)
         {
-            collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the pkayer)
-            controller.bannedLanes.Add(collision.transform.position.y);
-            crash(); //what happens when the player crashes
+            if (collision.tag == "car")
+            {
+                collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the pkayer)
+                controller.bannedLanes.Add(collision.transform.position.y);
+                if (collision.transform.position.y < transform.position.y)
+                {
+                    GetComponent<SpriteRenderer>().sortingOrder--;
+                    controller.bannedLanes.Add(targetPos.y + 1.25f);
+                }
+                else if (collision.transform.position.y > transform.position.y)
+                {
+                    GetComponent<SpriteRenderer>().sortingOrder++;
+                    controller.bannedLanes.Add(targetPos.y - 1.25f);
+                }
+                crash(); //what happens when the player crashes
+            }
         }
+    }
+
+    public void setLane(int lane)
+    {
+        transform.position = new Vector3(-12, (-lane * 1.25f) + 0.65f, 0);
+        GetComponent<SpriteRenderer>().sortingOrder = 3 + lane;
     }
 }

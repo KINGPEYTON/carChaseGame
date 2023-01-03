@@ -20,7 +20,6 @@ public class main : MonoBehaviour
     public Vector3 newBlimpLocation;
     public TextMeshProUGUI scoreText;
 
-    public GameObject over; // game over ui
     public GameObject overBoard;
     public GameObject overBigBoard;
 
@@ -58,8 +57,6 @@ public class main : MonoBehaviour
         mph = 0; //sets inital mph
 
         defaultmph = 30.0f;
-
-        over.SetActive(false); //hides game over ui (such as high score and play again button)
 
         highScore = PlayerPrefs.GetInt("highscore", (int)highScore); //sets high score to the one saved
 
@@ -142,7 +139,7 @@ public class main : MonoBehaviour
                 carTimer = 0;
             }
 
-            if (billboards.ToArray()[0].transform.position.x < -7.5f)
+            if (billboards.ToArray()[0].transform.position.x < -8.5f)
             {
                 billboards.Remove(billboards.ToArray()[0]);
             }
@@ -183,7 +180,15 @@ public class main : MonoBehaviour
             }
         }
 
-        scoreText.text = "Score: " + (int)score + "m";
+        if (isOver || playing)
+        {
+            scoreText.text = "Score: " + (int)score + "m";
+        }
+        else
+        {
+            scoreText.text = "Don't Crash Bro";
+        }
+
 
         if ((scoreBlimp.transform.position.x < -7.79f || scoreBlimp.transform.position.x > -4.82f) && Mathf.Abs(scoreBlimp.transform.position.x - newBlimpLocation.x) > 1.0) //if blimp went out of bounce on the X
         {
@@ -207,10 +212,6 @@ public class main : MonoBehaviour
     {
         playing = false; //sets the game to no longer be playing
         mph = 0; //stops the backround from moving (as the player is supose to be still)
-
-        //over.SetActive(true); //shows the game over ui (such as high score and play again button)
-
-        //Debug.Log("ll");
 
         if (score > highScore) { //check if theres a new high score
             highScore = score; // sets the new high score

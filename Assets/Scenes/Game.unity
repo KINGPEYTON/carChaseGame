@@ -10810,7 +10810,7 @@ RectTransform:
   m_GameObject: {fileID: 1793344323}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.022500003, y: 0.022500003, z: 1}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 590628917}
@@ -10818,8 +10818,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.5349121, y: -0.08496094}
-  m_SizeDelta: {x: 261.4583, y: 35.8952}
+  m_AnchoredPosition: {x: 0.52, y: -0.08}
+  m_SizeDelta: {x: 308.7813, y: 37.7444}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1793344325
 MonoBehaviour:
@@ -10841,7 +10841,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Score: 10001'
+  m_text: Don't Crash Bro
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -10876,7 +10876,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -12231,9 +12231,8 @@ MonoBehaviour:
   blimpSpeed: {x: 0, y: 0, z: 0}
   newBlimpLocation: {x: 0, y: 0, z: 0}
   scoreText: {fileID: 1793344325}
-  over: {fileID: 1829056550}
   overBoard: {fileID: 7875751129353875949, guid: bf70732c25af341539c37d895648940c, type: 3}
-  overBigBoard: {fileID: 0}
+  overBigBoard: {fileID: 3339312169626069015, guid: 50261c283164c4d3ba4745ed699fd504, type: 3}
   playerCar: {fileID: 0}
   divider: {fileID: 161309805598393529, guid: 92a8273f308964e0ca2c61031c2330da, type: 3}
   dividerTimer: 0
@@ -14225,6 +14224,10 @@ PrefabInstance:
     - target: {fileID: 7802049948518217753, guid: bc5fa8121a4c8428e951cab602d4242d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802049948518217754, guid: bc5fa8121a4c8428e951cab602d4242d, type: 3}
+      propertyPath: m_SortingOrder
+      value: 19
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc5fa8121a4c8428e951cab602d4242d, type: 3}

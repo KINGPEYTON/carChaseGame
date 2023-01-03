@@ -15,9 +15,4 @@ public class overBus : bus
         highscore.text = "High Score: " + (int)controller.highScore + "m";
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        base.Update();
-    }
 }

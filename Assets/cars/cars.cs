@@ -21,7 +21,7 @@ public class cars : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         if (controller.playing) //checks if game is in season
         {
@@ -30,13 +30,13 @@ public class cars : MonoBehaviour
         {
             transform.position = transform.position + new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
 
-            if (controller.bannedLanes.Contains(transform.position.y) && transform.position.x < -10)
+            if (controller.bannedLanes.Contains(lane) && transform.position.x < -10)
             {
                 newCarLane();
             }
         }
         //Debug.Log("Hello: ");
-        if (transform.position.x <= -12 || transform.position.x >= 22) // checks if the car is on screen
+        if (transform.position.x <= -15 || transform.position.x >= 18) // checks if the car is on screen
         {
             Destroy(gameObject); // destroys it otherwise
         }
@@ -50,7 +50,7 @@ public class cars : MonoBehaviour
         }
     }
 
-    public void newCarLane()
+    public virtual void newCarLane()
     {
         if (controller.playing)
         {
@@ -58,7 +58,7 @@ public class cars : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(-12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
+            transform.position = new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
         }
     }
 

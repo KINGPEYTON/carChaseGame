@@ -8,16 +8,21 @@ public class main : MonoBehaviour
 {
 
     public bool playing;
+    public bool isOver;
     public float mph; //controls the speed of the game
     public float score;
     public float highScore;
 
     public float defaultmph;
 
-    public TextMeshProUGUI scoreDisplay;
-    public TextMeshProUGUI highScoreDisplay;
+    public GameObject scoreBlimp;
+    public Vector3 blimpSpeed;
+    public Vector3 newBlimpLocation;
+    public TextMeshProUGUI scoreText;
+
     public GameObject over; // game over ui
-    public GameObject highScoreUI; // high score ui
+    public GameObject overBoard;
+    public GameObject overBigBoard;
 
     public GameObject playerCar;
 
@@ -25,10 +30,22 @@ public class main : MonoBehaviour
     public float dividerTimer;
 
     public GameObject building; //building gameobject to spawn
+    public float buildingList;
+    public float billboardList;
     public float buildingTimer;
 
+    public List<GameObject> billboards;
+
+    public GameObject guard; //rail guard gameobject to spawn
+    public GameObject guard2; //rail guard gameobject to spawn
+    public float guardTimer;
+
     public GameObject cars; //car gameobject to spawn
+    public float carList; //how many cars have spawned since the last bus
     public float carTimer;
+
+    public GameObject bus; //bus gmaeobject to spawn
+    public GameObject overBus; //bus gmaeobject to spawn
 
     public List<float> bannedLanes;
     public List<int> carsPast;
@@ -36,19 +53,19 @@ public class main : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playing = false; 
+        playing = false;
+        isOver = false;
         mph = 0; //sets inital mph
 
         defaultmph = 30.0f;
 
         over.SetActive(false); //hides game over ui (such as high score and play again button)
-        highScoreUI.SetActive(false);
 
         highScore = PlayerPrefs.GetInt("highscore", (int)highScore); //sets high score to the one saved
 
         playerCar = GameObject.Find("playerCar");
 
-        StartGame();
+        blimpSpeed = new Vector3(0.1f, 0.05f, 0);
     }
 
     // Update is called once per frame
@@ -70,18 +87,64 @@ public class main : MonoBehaviour
                 dividerTimer = 0;
             }
 
-            buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
-            if (buildingTimer > 23.5)
+            guardTimer += Time.deltaTime * mph; //timer to spawn new lane divider
+            if (guardTimer > 2)
             {
-                Instantiate(building, new Vector3(12, 1.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                buildingTimer = 0;
+                //spawns a new rail guard for the edge of the road
+                Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                Instantiate(guard, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                guardTimer = 0;
+            }
+
+            buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
+            if (buildingTimer > 25.5)
+            {
+                if (buildingList < 6)
+                {
+                    Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    buildingList++;
+                    buildingTimer = 0;
+                }
+                else
+                {
+                    if (billboardList < 3)
+                    {
+                        GameObject billboard = Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        billboard.GetComponent<buildings>().isBillboard = true;
+                        billboards.Add(billboard);
+                        buildingList = 0;
+                        buildingTimer = 0;
+                        billboardList++;
+                    }
+                    else
+                    {
+                        GameObject billboard = Instantiate(building, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        billboard.GetComponent<buildings>().isBigBillboard = true;
+                        billboards.Add(billboard);
+                        buildingList = 0; buildingTimer = -25;
+                        billboardList = 0;
+                    }
+                }
             }
 
             carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
             if (carTimer > 80)
             {
-                Instantiate(cars, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                if (carList < 7) {
+                    Instantiate(cars, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                    carList++;
+                }
+                else
+                {
+                    Instantiate(bus, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                    carList = 0;
+                }
                 carTimer = 0;
+            }
+
+            if (billboards.ToArray()[0].transform.position.x < -7.5f)
+            {
+                billboards.Remove(billboards.ToArray()[0]);
             }
         }
         else //if game isnt playing
@@ -89,8 +152,25 @@ public class main : MonoBehaviour
             carTimer += Time.deltaTime; //timer to spawn a new car after game is over
             if (carTimer > 1.0f) 
             {
-                GameObject newCar = Instantiate(cars, new Vector3(-12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
-                carTimer = 0;
+                GameObject newCar = this.gameObject;
+                if (!isOver)
+                {
+                    newCar = Instantiate(cars, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                    carTimer = 0;
+                } else
+                {
+                    if (carList < 3)
+                    {
+                        newCar = Instantiate(cars, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                        carList++;
+                    }
+                    else
+                    {
+                        newCar = Instantiate(overBus, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("UI").transform); //spawn new car in a random lane behind the player
+                        carList = 0;
+                    }
+                }
+
                 newCar.GetComponent<cars>().setLane();
 
                 if (newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
@@ -98,10 +178,23 @@ public class main : MonoBehaviour
                     carsPast.Add(newCar.GetComponent<cars>().lane);
                     carsPast.Remove(carsPast.ToArray()[0]);
                 }
+
+                carTimer = 0;
             }
         }
 
-        scoreDisplay.text = "Score: " + (int)score + "m"; //shows the score of the game
+        scoreText.text = "Score: " + (int)score + "m";
+
+        if ((scoreBlimp.transform.position.x < -7.79f || scoreBlimp.transform.position.x > -4.82f) && Mathf.Abs(scoreBlimp.transform.position.x - newBlimpLocation.x) > 1.0) //if blimp went out of bounce on the X
+        {
+            updateBlimpX(); // find new target location for blimp
+        }
+        if ((scoreBlimp.transform.position.y > 4.58f || scoreBlimp.transform.position.y < 3.78f) && Mathf.Abs(scoreBlimp.transform.position.y - newBlimpLocation.y) > 0.5) //if blimp went out of bounce on the X
+        {
+            updateBlimpY(); // find new target location for blimp
+        }
+
+        scoreBlimp.transform.position += blimpSpeed * Time.deltaTime;
 
     }
 
@@ -115,8 +208,7 @@ public class main : MonoBehaviour
         playing = false; //sets the game to no longer be playing
         mph = 0; //stops the backround from moving (as the player is supose to be still)
 
-        over.SetActive(true); //shows the game over ui (such as high score and play again button)
-        highScoreUI.SetActive(true);
+        //over.SetActive(true); //shows the game over ui (such as high score and play again button)
 
         //Debug.Log("ll");
 
@@ -124,8 +216,10 @@ public class main : MonoBehaviour
             highScore = score; // sets the new high score
             PlayerPrefs.SetInt("highscore", (int)highScore); //saves the new high score
         }
-        highScoreDisplay.text = "High Score: " + (int)highScore + "m"; //displays the high score
 
+        isOver = true;
+
+        gameGameOverButton();
     }
 
     public void StartGame()
@@ -140,10 +234,39 @@ public class main : MonoBehaviour
         }
         else if (!carsPast.Contains(1))
         {
-            playerCar.GetComponent<playerCar>().setLane(3);
-        }
-        else {
             playerCar.GetComponent<playerCar>().setLane(1);
         }
+        else {
+            playerCar.GetComponent<playerCar>().setLane(3);
+        }
     }
+
+    public void updateBlimpX()
+    {
+        blimpSpeed = new Vector3(blimpSpeed.x * -1, blimpSpeed.y, 0);
+        newBlimpLocation = new Vector3(scoreBlimp.transform.position.x, newBlimpLocation.y, 0);
+    }
+
+    public void updateBlimpY()
+    {
+        blimpSpeed = new Vector3(blimpSpeed.x, blimpSpeed.y * -1, 0);
+        newBlimpLocation = new Vector3(newBlimpLocation.x, scoreBlimp.transform.position.y, 0);
+    }
+
+    public void gameGameOverButton()
+    {
+        GameObject bboard = billboards.ToArray()[0];
+
+        if (bboard.GetComponent<buildings>().isBigBillboard)
+        {
+            Instantiate(overBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("score Blimp").transform);
+        }
+        else
+        {
+            Instantiate(overBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("score Blimp").transform);
+        }
+
+        Destroy(bboard);
+    }
+
 }

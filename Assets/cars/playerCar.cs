@@ -94,7 +94,6 @@ public class playerCar : MonoBehaviour
     public void crash()
     {
         GetComponent<SpriteRenderer>().sprite = crashed; //car crashed
-        controller.bannedLanes.Add(targetPos.y);
         controller.gameOver(); //sets the game to its game over state
     }
 
@@ -105,16 +104,16 @@ public class playerCar : MonoBehaviour
             if (collision.tag == "car")
             {
                 collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the pkayer)
-                controller.bannedLanes.Add(collision.transform.position.y);
+                controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
                 if (collision.transform.position.y < transform.position.y)
                 {
                     GetComponent<SpriteRenderer>().sortingOrder--;
-                    controller.bannedLanes.Add(targetPos.y + 1.25f);
+                    controller.bannedLanes.Add(collision.GetComponent<cars>().lane+1);
                 }
                 else if (collision.transform.position.y > transform.position.y)
                 {
                     GetComponent<SpriteRenderer>().sortingOrder++;
-                    controller.bannedLanes.Add(targetPos.y - 1.25f);
+                    controller.bannedLanes.Add(collision.GetComponent<cars>().lane-1);
                 }
                 crash(); //what happens when the player crashes
             }

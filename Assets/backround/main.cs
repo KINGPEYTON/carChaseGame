@@ -29,6 +29,8 @@ public class main : MonoBehaviour
     public float dividerTimer;
 
     public GameObject building; //building gameobject to spawn
+    public GameObject billboard; //building gameobject to spawn
+    public GameObject bigBillboard; //building gameobject to spawn
     public float buildingList;
     public float billboardList;
     public float buildingTimer;
@@ -106,18 +108,18 @@ public class main : MonoBehaviour
                 {
                     if (billboardList < 3)
                     {
-                        GameObject billboard = Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                        billboard.GetComponent<buildings>().isBillboard = true;
-                        billboards.Add(billboard);
+                        GameObject bboard = Instantiate(billboard, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        bboard.GetComponent<buildings>().isBillboard = true;
+                        billboards.Add(bboard);
                         buildingList = 0;
                         buildingTimer = 0;
                         billboardList++;
                     }
                     else
                     {
-                        GameObject billboard = Instantiate(building, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                        billboard.GetComponent<buildings>().isBigBillboard = true;
-                        billboards.Add(billboard);
+                        GameObject bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        bboard.GetComponent<buildings>().isBigBillboard = true;
+                        billboards.Add(bboard);
                         buildingList = 0; buildingTimer = -25;
                         billboardList = 0;
                     }

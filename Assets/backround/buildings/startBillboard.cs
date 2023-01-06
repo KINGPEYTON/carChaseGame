@@ -9,6 +9,9 @@ public class startBillboard : MonoBehaviour
     public GameObject controller;
     public Button myButton;
 
+    public GameObject statics;
+    public float staticTimer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,12 +27,21 @@ public class startBillboard : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        staticTimer -= Time.deltaTime;
+
+        if (staticTimer <= 0)
+        {
+            statics.SetActive(false);
+        }
     }
 
     public void click()
     {
         controller.GetComponent<main>().StartGame();
         myButton.interactable = false;
+        statics.SetActive(true);
+        staticTimer = 1f;
     }
 
 }

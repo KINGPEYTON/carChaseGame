@@ -13,7 +13,8 @@ public class main : MonoBehaviour
     public float score;
     public float highScore;
 
-    public float defaultmph;
+    public bool starting;
+    public bool startTime;
 
     public GameObject scoreBlimp;
     public Vector3 blimpSpeed;
@@ -23,7 +24,7 @@ public class main : MonoBehaviour
     public GameObject overBoard;
     public GameObject overBigBoard;
 
-    public GameObject playerCar;
+    public playerCar playerCar;
 
     public GameObject divider; //divider gameobject to spawn
     public float dividerTimer;
@@ -54,15 +55,14 @@ public class main : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
+
         playing = false;
         isOver = false;
         mph = 0; //sets inital mph
 
-        defaultmph = 30.0f;
-
         highScore = PlayerPrefs.GetInt("highscore", (int)highScore); //sets high score to the one saved
 
-        playerCar = GameObject.Find("playerCar");
 
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
     }
@@ -72,7 +72,15 @@ public class main : MonoBehaviour
     {
         if (playing) //if in a game 
         {
-            mph += Time.deltaTime / 2; //graudully increeses the mph (+1 every 2 sec)
+            if (mph < playerCar.startMph)
+            {
+                mph += (mph/2 + 15.0f) * Time.deltaTime;
+            }
+            else
+            {
+                mph += playerCar.upMph * Time.deltaTime; //graudully increeses the mph (+1 every 2 sec)
+            }
+
             score += (mph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
 
             dividerTimer += Time.deltaTime * mph; //timer to spawn new lane divider
@@ -135,7 +143,7 @@ public class main : MonoBehaviour
                 }
                 else
                 {
-                    Instantiate(bus, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                    Instantiate(bus, new Vector3(13, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
                     carList = 0;
                 }
                 carTimer = 0;
@@ -225,22 +233,20 @@ public class main : MonoBehaviour
         gameGameOverButton();
     }
 
-    public void StartGame()
+    public void StartGame() //offically start game
     {
-        playing = true;
-        mph = defaultmph;
         playing = true;
 
         if (!carsPast.Contains(2))
         {
-            playerCar.GetComponent<playerCar>().setLane(2);
+            playerCar.setLane(2);
         }
         else if (!carsPast.Contains(1))
         {
-            playerCar.GetComponent<playerCar>().setLane(1);
+            playerCar.setLane(1);
         }
         else {
-            playerCar.GetComponent<playerCar>().setLane(3);
+            playerCar.setLane(3);
         }
     }
 

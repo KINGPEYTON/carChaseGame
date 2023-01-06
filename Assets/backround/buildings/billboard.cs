@@ -22,7 +22,7 @@ public class billboard : buildings
         base.Start();
 
         setAd();
-        adTimer = Random.Range(2, 18);
+        adTimer = Random.Range(2, 28);
 
         staticTimer = 0f;
     }

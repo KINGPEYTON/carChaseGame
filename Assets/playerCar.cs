@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class playerCar : MonoBehaviour
 {
+    public float startMph; // the mph the car will start at
+    public float upMph; //how fast the car will speed up
+    public float moveTime; // the time it shoul take the player car to switch lanes
+
     public main controller;
 
     public Vector3 targetPos; //where the player car has to go
-    public float moveTime; // the time it shoul take the player car to switch lanes
     public float disMove; //speed the car has to move to get to targetPos on time
     public float overshoot; // keeps track of the distance moved so you know it wont go too far
 
@@ -22,6 +25,8 @@ public class playerCar : MonoBehaviour
         controller = GameObject.Find("contoller").GetComponent<main>();
         GetComponent<SpriteRenderer>().sprite = reg; //sets it to the non crashed skin
 
+        startMph = 30f;
+        upMph = 0.5f;
         moveTime = 1.0f;
 
         startPos = -7f;
@@ -59,7 +64,7 @@ public class playerCar : MonoBehaviour
                     }
                 }
             } else {
-                transform.position += new Vector3(2*(moveTime) * Time.deltaTime, 0, 0);
+                transform.position += new Vector3(3*(moveTime) * Time.deltaTime, 0, 0);
                 if(startPos - transform.position.x < 0)
                 {
                     transform.position = new Vector3(startPos, transform.position.y, 0);

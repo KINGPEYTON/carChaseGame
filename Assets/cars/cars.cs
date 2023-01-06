@@ -36,7 +36,7 @@ public class cars : MonoBehaviour
             }
         }
         //Debug.Log("Hello: ");
-        if (transform.position.x <= -15 || transform.position.x >= 18) // checks if the car is on screen
+        if (transform.position.x <= -15 || transform.position.x >= 15) // checks if the car is on screen
         {
             Destroy(gameObject); // destroys it otherwise
         }

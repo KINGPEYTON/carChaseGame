@@ -5574,8 +5574,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3819261689786134166, guid: f2a0e1eed730d4c498a2ad552db2b8d3, type: 3}
       propertyPath: skins.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3819261689786134166, guid: f2a0e1eed730d4c498a2ad552db2b8d3, type: 3}
+      propertyPath: skins.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300000, guid: 294f79c2fa07b49afb8f9fa329612457, type: 3}
+    - target: {fileID: 3819261689786134166, guid: f2a0e1eed730d4c498a2ad552db2b8d3, type: 3}
+      propertyPath: skins.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300000, guid: b26aab4f7eced4a1eac79e5317317dcf, type: 3}
+    - target: {fileID: 3819261689786134166, guid: f2a0e1eed730d4c498a2ad552db2b8d3, type: 3}
+      propertyPath: skins.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300000, guid: b26aab4f7eced4a1eac79e5317317dcf, type: 3}
+    - target: {fileID: 3819261689786134166, guid: f2a0e1eed730d4c498a2ad552db2b8d3, type: 3}
+      propertyPath: skins.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300000, guid: b26aab4f7eced4a1eac79e5317317dcf, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2a0e1eed730d4c498a2ad552db2b8d3, type: 3}
 --- !u!1 &1082825765
@@ -8919,9 +8935,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5da389be9803940519cca197db70e1ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startMph: 0
+  upMph: 0
+  moveTime: 0
   controller: {fileID: 0}
   targetPos: {x: 0, y: 0, z: 0}
-  moveTime: 0
   disMove: 0
   overshoot: 0
   reg: {fileID: 21300000, guid: 3ce6c9650497c404c9f7c67cf9c1823c, type: 3}
@@ -12229,11 +12247,15 @@ MonoBehaviour:
   mph: 0
   score: 0
   highScore: 0
-  defaultmph: 0
+  starting: 0
+  startTime: 0
   scoreBlimp: {fileID: 590628916}
   blimpSpeed: {x: 0, y: 0, z: 0}
   newBlimpLocation: {x: 0, y: 0, z: 0}
   scoreText: {fileID: 1793344325}
+  textTimer: 0
+  textNum: 0
+  scoreShowing: 0
   overBoard: {fileID: 7875751129353875949, guid: bf70732c25af341539c37d895648940c, type: 3}
   overBigBoard: {fileID: 3339312169626069015, guid: 50261c283164c4d3ba4745ed699fd504, type: 3}
   playerCar: {fileID: 0}

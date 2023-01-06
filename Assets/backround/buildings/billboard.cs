@@ -10,7 +10,7 @@ public class billboard : buildings
     public float adTimer;
 
     public GameObject adOBJ;
-    public Sprite[] ads; //array of building skins
+    public Sprite[] ads; //array of ads to appear
 
     public Sprite statics;
     public float staticTimer;

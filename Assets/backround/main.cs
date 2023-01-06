@@ -21,6 +21,10 @@ public class main : MonoBehaviour
     public Vector3 newBlimpLocation;
     public TextMeshProUGUI scoreText;
 
+    public float textTimer;
+    public int textNum;
+    public bool scoreShowing;
+
     public GameObject overBoard;
     public GameObject overBigBoard;
 
@@ -59,6 +63,7 @@ public class main : MonoBehaviour
 
         playing = false;
         isOver = false;
+        scoreShowing = false;
         mph = 0; //sets inital mph
 
         highScore = PlayerPrefs.GetInt("highscore", (int)highScore); //sets high score to the one saved
@@ -153,6 +158,37 @@ public class main : MonoBehaviour
             {
                 billboards.Remove(billboards.ToArray()[0]);
             }
+
+            if (!scoreShowing)
+            {
+                string scoretxt = scoreText.text = "Don't Crash Bro";
+                scoreText.text = scoretxt.Substring(textNum);
+
+                if (textNum >= scoretxt.Length-1)
+                {
+                    textNum = 0;
+                    scoreShowing = true;
+                }
+
+            } else
+            {
+                string scoretxt = "Score: " + (int)score + "m";
+                if (textNum <= scoretxt.Length-1)
+                {
+                    scoreText.text = scoretxt.Substring(0, textNum);
+                } else
+                {
+                    scoreText.text = scoretxt;
+                }
+            }
+
+            textTimer += Time.deltaTime;
+
+            if (textTimer >= 0.10f)
+            {
+                textTimer = 0;
+                textNum++;
+            }
         }
         else //if game isnt playing
         {
@@ -188,15 +224,6 @@ public class main : MonoBehaviour
 
                 carTimer = 0;
             }
-        }
-
-        if (isOver || playing)
-        {
-            scoreText.text = "Score: " + (int)score + "m";
-        }
-        else
-        {
-            scoreText.text = "Don't Crash Bro";
         }
 
 

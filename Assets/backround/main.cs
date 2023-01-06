@@ -13,8 +13,7 @@ public class main : MonoBehaviour
     public float score;
     public float highScore;
 
-    public bool starting;
-    public bool startTime;
+    public GameObject pauseMenu;
 
     public GameObject scoreBlimp;
     public Vector3 blimpSpeed;
@@ -46,6 +45,10 @@ public class main : MonoBehaviour
     public GameObject guard2; //rail guard gameobject to spawn
     public float guardTimer;
 
+    public GameObject milestoneSign;
+    public GameObject milestoneBigSign;
+    public int milestone;
+
     public GameObject cars; //car gameobject to spawn
     public float carList; //how many cars have spawned since the last bus
     public float carTimer;
@@ -68,7 +71,7 @@ public class main : MonoBehaviour
 
         highScore = PlayerPrefs.GetInt("highscore", (int)highScore); //sets high score to the one saved
 
-
+        milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
     }
 
@@ -238,6 +241,15 @@ public class main : MonoBehaviour
 
         scoreBlimp.transform.position += blimpSpeed * Time.deltaTime;
 
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            pauseButton();
+        }
+
+        if (score > (milestone + 460))
+        {
+            setMilestone();
+        }
     }
 
     public void newGame()
@@ -303,6 +315,35 @@ public class main : MonoBehaviour
         }
 
         Destroy(bboard);
+    }
+
+    public void pauseButton()
+    {
+        if(Time.deltaTime > 0 && playing)
+        {
+            Time.timeScale = 0;
+            Instantiate(pauseMenu);
+        }
+    }
+
+    public void shopButton()
+    {
+
+    }
+
+    public void setMilestone()
+    {
+        milestone += 500;
+
+        GameObject sign = this.gameObject;
+        if (milestone % 2500 == 0) {
+            sign = Instantiate(milestoneBigSign, GameObject.Find("UI").transform);
+        }
+        else
+        {
+            sign = Instantiate(milestoneSign, GameObject.Find("UI").transform);
+        }
+        sign.GetComponentInChildren<TextMeshProUGUI>().text = milestone + "m";
     }
 
 }

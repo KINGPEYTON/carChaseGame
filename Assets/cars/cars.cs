@@ -25,8 +25,15 @@ public class cars : MonoBehaviour
     {
         if (controller.playing) //checks if game is in season
         {
-            transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0);//move towards in game
-        } else
+            if (controller.mph > controller.playerCar.startMph)
+            {
+                transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0);//move towards in game
+            } else
+            {
+                transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / speed), 0, 0);
+            }
+        }
+        else
         {
             transform.position = transform.position + new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
 

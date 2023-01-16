@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -2.5}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 10.6}
+  m_AnchoredPosition: {x: 0.7, y: 20.2}
   m_SizeDelta: {x: 152.72, y: 52.87}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5997905207552750780
@@ -75,8 +75,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 5068642722689577953}
   - component: {fileID: 9190222273063753611}
   m_Layer: 0
-  m_Name: Milestone Small
+  m_Name: Milestone Small 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 98e64da579c0f402996612205ecac7d7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b11b54e671b0c4ca592a915c29e4d786, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

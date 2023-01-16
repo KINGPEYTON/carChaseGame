@@ -6,26 +6,29 @@ using UnityEngine.SceneManagement;
 
 public class pauseMenu : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
     {
-        
+        //fixedDeltaTime
     }
 
     public void resume()
     {
         Time.timeScale = 1;
         Destroy(gameObject);
+
+        GameObject.Find("playerCar").GetComponent<playerCar>().tapped = true;
     }
 
     public void menu()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("Game", LoadSceneMode.Single); //resets the game
+    }
+
+    public void settings()
+    {
+        
     }
 }

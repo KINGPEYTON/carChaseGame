@@ -9,6 +9,7 @@ public class playerCar : MonoBehaviour
     public float moveTime; // the time it shoul take the player car to switch lanes
 
     public main controller;
+    public bool tapped;
 
     public Vector3 targetPos; //where the player car has to go
     public float disMove; //speed the car has to move to get to targetPos on time
@@ -37,20 +38,26 @@ public class playerCar : MonoBehaviour
     {
         if (controller.playing)
         {
-            if (startPos == transform.position.x) {
-                if (Input.touchCount > 0) // if the user touches the phone screen
+            if (startPos == transform.position.x && controller.billboards[0].gameObject.name != "Start Billboard") {
+                if (Input.touchCount > 0 && Time.timeScale > 0 && !tapped) // if the user touches the phone screen
                 {
                     Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
-                    Debug.Log(tapPoint.y - transform.position.y);
+                    tapped = true;
 
-                    if (tapPoint.y > transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.2) //if the tap if above the player car
+                    if (tapPoint.y < 4.0f)
                     {
-                        laneUp();
+                        if (tapPoint.y > transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.3) //if the tap if above the player car
+                        {
+                            laneUp();
+                        }
+                        else if (tapPoint.y < transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.3) //if the tap is below the player car
+                        {
+                            laneDown();
+                        }
                     }
-                    else if (tapPoint.y < transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.2) //if the tap is below the player car
-                    {
-                        laneDown();
-                    }
+                } else
+                {
+                    tapped = false;
                 }
 
                 if (transform.position != targetPos) //if player car isnt where its supose to be
@@ -81,7 +88,7 @@ public class playerCar : MonoBehaviour
             targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
-            GetComponent<SpriteRenderer>().sortingOrder--;
+            GetComponent<SpriteRenderer>().sortingOrder-=2;
         }
     }
 
@@ -92,7 +99,7 @@ public class playerCar : MonoBehaviour
             targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
-            GetComponent<SpriteRenderer>().sortingOrder++;
+            GetComponent<SpriteRenderer>().sortingOrder+=2;
         }
     }
 
@@ -112,12 +119,12 @@ public class playerCar : MonoBehaviour
                 controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
                 if (collision.transform.position.y < transform.position.y)
                 {
-                    GetComponent<SpriteRenderer>().sortingOrder--;
+                    GetComponent<SpriteRenderer>().sortingOrder-=2;
                     controller.bannedLanes.Add(collision.GetComponent<cars>().lane+1);
                 }
                 else if (collision.transform.position.y > transform.position.y)
                 {
-                    GetComponent<SpriteRenderer>().sortingOrder++;
+                    GetComponent<SpriteRenderer>().sortingOrder+=2;
                     controller.bannedLanes.Add(collision.GetComponent<cars>().lane-1);
                 }
                 crash(); //what happens when the player crashes
@@ -128,6 +135,6 @@ public class playerCar : MonoBehaviour
     public void setLane(int lane)
     {
         transform.position = new Vector3(-12, (-lane * 1.25f) + 0.65f, 0);
-        GetComponent<SpriteRenderer>().sortingOrder = 3 + lane;
+        GetComponent<SpriteRenderer>().sortingOrder = 2 + (lane * 2);
     }
 }

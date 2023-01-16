@@ -67,11 +67,12 @@ public class cars : MonoBehaviour
         {
             transform.position = new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
         }
+        setLane();
     }
 
     public void setLane()
     {
         lane = Mathf.Abs((int)((transform.position.y / 1.25f) - 0.65f));
-        GetComponent<SpriteRenderer>().sortingOrder = 3 +lane;
+        GetComponent<SpriteRenderer>().sortingOrder = 3 + (lane * 2);
     }
 }

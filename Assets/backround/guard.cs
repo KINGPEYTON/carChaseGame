@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class guard : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class guard : MonoBehaviour
     {
         transform.position = transform.position - new Vector3(Time.deltaTime / 5 * controller.GetComponent<main>().mph, 0, 0); //moves guard across the screen
         //Debug.Log("Hello: ");
-        if (transform.position.x <= -12) //checks if its offscreen
+        if (transform.position.x <= -13) //checks if its offscreen
         {
             Destroy(gameObject);
         }

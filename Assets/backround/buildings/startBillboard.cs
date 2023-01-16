@@ -9,6 +9,7 @@ public class startBillboard : MonoBehaviour
     public GameObject controller;
     public Button myButton;
     public Button shopButton;
+    public Button settingsButton;
 
     public GameObject statics;
     public float staticTimer;
@@ -42,6 +43,7 @@ public class startBillboard : MonoBehaviour
         controller.GetComponent<main>().StartGame();
         myButton.interactable = false;
         shopButton.interactable = false;
+        settingsButton.interactable = false;
         statics.SetActive(true);
         staticTimer = 1f;
     }

@@ -11,6 +11,7 @@ public class overBus : bus
     void Start()
     {
         base.Start();
+        speed = 9;
 
         highscore.text = "High Score: " + (int)controller.highScore + "m";
     }

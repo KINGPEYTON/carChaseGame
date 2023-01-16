@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class main : MonoBehaviour
 {
+    public profile prof;
 
     public bool playing;
     public bool isOver;
@@ -45,7 +46,7 @@ public class main : MonoBehaviour
     public GameObject guard2; //rail guard gameobject to spawn
     public float guardTimer;
 
-    public GameObject milestoneSign;
+    public GameObject[] milestoneSigns;
     public GameObject milestoneBigSign;
     public int milestone;
 
@@ -62,6 +63,8 @@ public class main : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //prof = GameObject.Find("profile").GetComponent<profile>();
+
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
 
         playing = false;
@@ -212,7 +215,7 @@ public class main : MonoBehaviour
                     }
                     else
                     {
-                        newCar = Instantiate(overBus, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("UI").transform); //spawn new car in a random lane behind the player
+                        newCar = Instantiate(overBus, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("Extra").transform); //spawn new car in a random lane behind the player
                         carList = 0;
                     }
                 }
@@ -241,12 +244,7 @@ public class main : MonoBehaviour
 
         scoreBlimp.transform.position += blimpSpeed * Time.deltaTime;
 
-        if (Input.GetKey(KeyCode.Escape))
-        {
-            pauseButton();
-        }
-
-        if (score > (milestone + 460))
+        if (score > (milestone + 210))
         {
             setMilestone();
         }
@@ -331,17 +329,22 @@ public class main : MonoBehaviour
 
     }
 
+    public void settingsButton()
+    {
+
+    }
+
     public void setMilestone()
     {
-        milestone += 500;
+        milestone += 250;
 
         GameObject sign = this.gameObject;
-        if (milestone % 2500 == 0) {
-            sign = Instantiate(milestoneBigSign, GameObject.Find("UI").transform);
+        if (milestone % 1000 == 0) {
+            sign = Instantiate(milestoneBigSign, GameObject.Find("Signs").transform);
         }
         else
         {
-            sign = Instantiate(milestoneSign, GameObject.Find("UI").transform);
+            sign = Instantiate(milestoneSigns[Random.Range(0, milestoneSigns.Length)], GameObject.Find("Signs").transform);
         }
         sign.GetComponentInChildren<TextMeshProUGUI>().text = milestone + "m";
     }

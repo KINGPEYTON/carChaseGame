@@ -73,6 +73,6 @@ public class cars : MonoBehaviour
     public void setLane()
     {
         lane = Mathf.Abs((int)((transform.position.y / 1.25f) - 0.65f));
-        GetComponent<SpriteRenderer>().sortingOrder = 3 + (lane * 2);
+        GetComponent<SpriteRenderer>().sortingOrder = 3 + lane;
     }
 }

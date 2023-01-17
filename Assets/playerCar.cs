@@ -88,7 +88,7 @@ public class playerCar : MonoBehaviour
             targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
-            GetComponent<SpriteRenderer>().sortingOrder-=2;
+            GetComponent<SpriteRenderer>().sortingOrder--;
         }
     }
 
@@ -99,7 +99,7 @@ public class playerCar : MonoBehaviour
             targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
-            GetComponent<SpriteRenderer>().sortingOrder+=2;
+            GetComponent<SpriteRenderer>().sortingOrder++;
         }
     }
 
@@ -119,12 +119,12 @@ public class playerCar : MonoBehaviour
                 controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
                 if (collision.transform.position.y < transform.position.y)
                 {
-                    GetComponent<SpriteRenderer>().sortingOrder-=2;
+                    GetComponent<SpriteRenderer>().sortingOrder--;
                     controller.bannedLanes.Add(collision.GetComponent<cars>().lane+1);
                 }
                 else if (collision.transform.position.y > transform.position.y)
                 {
-                    GetComponent<SpriteRenderer>().sortingOrder+=2;
+                    GetComponent<SpriteRenderer>().sortingOrder++;
                     controller.bannedLanes.Add(collision.GetComponent<cars>().lane-1);
                 }
                 crash(); //what happens when the player crashes
@@ -135,6 +135,6 @@ public class playerCar : MonoBehaviour
     public void setLane(int lane)
     {
         transform.position = new Vector3(-12, (-lane * 1.25f) + 0.65f, 0);
-        GetComponent<SpriteRenderer>().sortingOrder = 2 + (lane * 2);
+        GetComponent<SpriteRenderer>().sortingOrder = 2 + lane;
     }
 }

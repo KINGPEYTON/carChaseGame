@@ -27,6 +27,8 @@ public class pauseMenu : MonoBehaviour
     public float settingsTargetPos;
     public float settingsCurPos;
 
+    public float speedTime;
+
     // Use this for initialization
     void Start()
     {
@@ -40,6 +42,8 @@ public class pauseMenu : MonoBehaviour
         menuCurPos = 4500.0f;
         settingsTargetPos = 92f;
         settingsCurPos = -2400.0f;
+
+        speedTime = 1500f;
     }
 
     // Update is called once per frame
@@ -51,28 +55,28 @@ public class pauseMenu : MonoBehaviour
             {
                 //print(coverColor);
                 cover.color = new Color32(36, 36, 36, (byte)coverColor);
-                coverColor += Time.fixedDeltaTime * 100;
+                coverColor += Time.fixedDeltaTime * (speedTime/10);
             }
             if (mainSign.transform.position.y < mainTargetPos)
             {
                 mainSign.transform.position = new Vector3(1389, mainCurPos, 0);
-                mainCurPos += Time.fixedDeltaTime * 600f;
+                mainCurPos += Time.fixedDeltaTime * speedTime;
 
             }
             if (resumeSign.transform.position.x < resumeTargetPos)
             {
                 resumeSign.transform.position = new Vector3(resumeCurPos, 357.2f, 0);
-                resumeCurPos += Time.fixedDeltaTime * 600f;
+                resumeCurPos += Time.fixedDeltaTime * speedTime;
             }
             if (menuSign.transform.position.x > menuTargetPos)
             {
                 menuSign.transform.position = new Vector3(menuCurPos, 437.2f, 0);
-                menuCurPos -= Time.fixedDeltaTime * 600f;
+                menuCurPos -= Time.fixedDeltaTime * speedTime;
             }
             if (settingsSign.transform.position.y < settingsTargetPos)
             {
                 settingsSign.transform.position = new Vector3(1150, settingsCurPos, 0);
-                settingsCurPos += Time.fixedDeltaTime * 600f;
+                settingsCurPos += Time.fixedDeltaTime * speedTime;
 
             }
         }
@@ -81,19 +85,19 @@ public class pauseMenu : MonoBehaviour
             if (coverColor > 0)
             {
                 cover.color = new Color32(36, 36, 36, (byte)coverColor);
-                coverColor -= Time.fixedDeltaTime * 100;
+                coverColor -= Time.fixedDeltaTime * (speedTime/6);
             }
 
             if (mainSign.transform.position.y > mainTargetPos)
             {
                 mainSign.transform.position = new Vector3(1389, mainCurPos, 0);
-                mainCurPos -= Time.fixedDeltaTime * 600f;
+                mainCurPos -= Time.fixedDeltaTime * speedTime;
                 resumeSign.transform.position = new Vector3(resumeCurPos, 357.2f, 0);
-                resumeCurPos -= Time.fixedDeltaTime * 600f;
+                resumeCurPos -= Time.fixedDeltaTime * speedTime;
                 menuSign.transform.position = new Vector3(menuCurPos, 437.2f, 0);
-                menuCurPos += Time.fixedDeltaTime * 600f;
+                menuCurPos += Time.fixedDeltaTime * speedTime;
                 settingsSign.transform.position = new Vector3(1150, settingsCurPos, 0);
-                settingsCurPos -= Time.fixedDeltaTime * 600f;
+                settingsCurPos -= Time.fixedDeltaTime * speedTime;
             }
             else
             {

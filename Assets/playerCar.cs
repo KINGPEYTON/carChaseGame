@@ -47,7 +47,7 @@ public class playerCar : MonoBehaviour
                     Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
                     tapped = true;
 
-                    if (tapPoint.y < 4.0f)
+                    if (tapPoint.y < 3.0f)
                     {
                         if (tapPoint.y > transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.3) //if the tap if above the player car
                         {

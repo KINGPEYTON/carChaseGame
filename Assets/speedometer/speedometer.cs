@@ -70,13 +70,13 @@ public class speedometer : MonoBehaviour
         {
             speedText.text = "---";
         }
-        speed1.text = ((int)maxSpeed / 7).ToString();
-        speed2.text = ((int)(maxSpeed / 7) * 2).ToString();
-        speed3.text = (((int)maxSpeed / 7) * 3).ToString();
-        speed4.text = (((int)maxSpeed / 7) * 4).ToString();
-        speed5.text = (((int)maxSpeed / 7) * 5).ToString();
-        speed6.text = (((int)maxSpeed / 7) * 6).ToString();
-        speed7.text = maxSpeed.ToString();
+        speed1.text = (Mathf.Round(((int)((maxSpeed / 7) * 0.5f)) / 5) * 5).ToString();
+        speed2.text = (Mathf.Round(((int)((maxSpeed / 7) * 1.5f)) / 5) * 5).ToString();
+        speed3.text = (Mathf.Round(((int)((maxSpeed / 7) * 2.5f)) / 5) * 5).ToString();
+        speed4.text = (Mathf.Round(((int)((maxSpeed / 7) * 3.5f)) / 5) * 5).ToString();
+        speed5.text = (Mathf.Round(((int)((maxSpeed / 7) * 4.5f)) / 5) * 5).ToString();
+        speed6.text = (Mathf.Round(((int)((maxSpeed / 7) * 5.5f)) / 5) * 5).ToString();
+        speed7.text = (Mathf.Round(((int)((maxSpeed / 7) * 6.5f)) / 5) * 5).ToString();
     }
 
     string randomChar()

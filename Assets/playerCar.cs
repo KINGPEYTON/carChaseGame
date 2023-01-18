@@ -20,15 +20,18 @@ public class playerCar : MonoBehaviour
 
     public float startPos;
 
+    private void OnEnable()
+    {
+        startMph = 30f;
+        upMph = 0.5f;
+        moveTime = 1.0f;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
         GetComponent<SpriteRenderer>().sprite = reg; //sets it to the non crashed skin
-
-        startMph = 30f;
-        upMph = 0.5f;
-        moveTime = 1.0f;
 
         startPos = -7f;
     }
@@ -120,12 +123,12 @@ public class playerCar : MonoBehaviour
                 if (collision.transform.position.y < transform.position.y)
                 {
                     GetComponent<SpriteRenderer>().sortingOrder--;
-                    controller.bannedLanes.Add(collision.GetComponent<cars>().lane+1);
+                    controller.bannedLanes.Add(collision.GetComponent<cars>().lane-1);
                 }
                 else if (collision.transform.position.y > transform.position.y)
                 {
                     GetComponent<SpriteRenderer>().sortingOrder++;
-                    controller.bannedLanes.Add(collision.GetComponent<cars>().lane-1);
+                    controller.bannedLanes.Add(collision.GetComponent<cars>().lane+1);
                 }
                 crash(); //what happens when the player crashes
             }

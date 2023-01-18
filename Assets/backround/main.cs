@@ -61,7 +61,7 @@ public class main : MonoBehaviour
     public List<int> carsPast;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         //prof = GameObject.Find("profile").GetComponent<profile>();
 

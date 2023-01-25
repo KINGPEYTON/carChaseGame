@@ -43,7 +43,7 @@ public class speedometer : MonoBehaviour
         {
             if (controller.mph < maxSpeed)
             {
-                speedMeter.fillAmount = 0.1f + ((controller.mph/maxSpeed) * 0.8f);
+                speedMeter.fillAmount = 0.11f + ((controller.mph/maxSpeed) * 0.78f);
                 speedText.text = ((int)controller.mph).ToString();
             }
             else if (controller.mph < maxSpeed + 127)

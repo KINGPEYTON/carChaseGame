@@ -10,6 +10,8 @@ public class buildings : MonoBehaviour
     public bool isBigBillboard;
     public Sprite[] skins; //array of building skins
 
+    public float speed;
+
     // Start is called before the first frame update
     public virtual void Start()
     {
@@ -20,9 +22,9 @@ public class buildings : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        transform.position = transform.position - new Vector3(Time.deltaTime / 12 * controller.mph, 0, 0); //moves building across the screen
+        transform.position = transform.position - new Vector3(Time.deltaTime / speed * controller.mph, 0, 0); //moves building across the screen
         //Debug.Log("Hello: ");
-        if (transform.position.x <= -13) //checks if its offscreen
+        if (transform.position.x <= -14) //checks if its offscreen
         {
             Destroy(gameObject);
         }

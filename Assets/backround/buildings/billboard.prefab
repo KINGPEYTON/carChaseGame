@@ -271,6 +271,7 @@ MonoBehaviour:
   isBigBillboard: 0
   skins:
   - {fileID: 21300000, guid: 000299120dc2b4c6696e96c63a7825fe, type: 3}
+  speed: 12
   ad: {fileID: 0}
   adTimer: 0
   adOBJ: {fileID: 4697351462951313066}

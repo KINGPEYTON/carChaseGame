@@ -24,8 +24,8 @@ public class startBillboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = transform.position - new Vector3(Time.deltaTime / 12 * controller.GetComponent<main>().mph, 0, 0); //moves building across the screen
-        if (transform.position.x <= -13) //checks if its offscreen
+        transform.position = transform.position - new Vector3(Time.deltaTime / 8 * controller.GetComponent<main>().mph, 0, 0); //moves building across the screen
+        if (transform.position.x <= -14) //checks if its offscreen
         {
             Destroy(gameObject);
         }

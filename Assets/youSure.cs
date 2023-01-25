@@ -30,7 +30,7 @@ public class youSure : MonoBehaviour {
 		targetPos = 642f;
 		curPos = -400.0f;
 
-		speedTime = 1800f;
+		speedTime = 6000f;
 	}
 
 	// Update is called once per frame
@@ -42,12 +42,12 @@ public class youSure : MonoBehaviour {
 			if(transform.position.y < targetPos)
             {
 				transform.position = new Vector3(1389, curPos, 0);
-				curPos += Time.fixedDeltaTime * speedTime;
+				curPos += (Time.fixedDeltaTime * speedTime);
 			}
 			if (coverColor < 175)
             {
 				cover.color = new Color32(36, 36, 36, (byte)coverColor);
-				coverColor += Time.fixedDeltaTime * (speedTime/6);
+				coverColor += (Time.fixedDeltaTime * (speedTime/6));
 			}
         }
         else
@@ -55,7 +55,7 @@ public class youSure : MonoBehaviour {
 			if (transform.position.y > targetPos)
 			{
 				transform.position = new Vector3(1389, curPos, 0);
-				curPos -= Time.fixedDeltaTime * speedTime;
+				curPos -= (Time.fixedDeltaTime * speedTime);
 			}
             else
             {
@@ -64,7 +64,7 @@ public class youSure : MonoBehaviour {
 			if (coverColor > 0)
 			{
 				cover.color = new Color32(36, 36, 36, (byte)coverColor);
-				coverColor -= Time.fixedDeltaTime * (speedTime/6);
+				coverColor -= (Time.fixedDeltaTime * (speedTime/6));
 			}
 		}
 	}

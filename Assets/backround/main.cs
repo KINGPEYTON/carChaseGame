@@ -40,6 +40,13 @@ public class main : MonoBehaviour
     public float billboardList;
     public float buildingTimer;
 
+    public GameObject building1; //building gameobject to spawn
+    public GameObject billboard1; //building gameobject to spawn
+    public GameObject bigBillboard1; //building gameobject to spawn
+    public float buildingList1;
+    public float billboardList1;
+    public float buildingTimer1;
+
     public List<GameObject> billboards;
 
     public GameObject guard; //rail guard gameobject to spawn
@@ -76,6 +83,8 @@ public class main : MonoBehaviour
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
+
+        buildingTimer1 = -6.5f;
     }
 
     // Update is called once per frame
@@ -114,6 +123,40 @@ public class main : MonoBehaviour
                 guardTimer = 0;
             }
 
+            //front buildings
+            buildingTimer1 += Time.deltaTime * mph; //timer that spawns a new builing
+            if (buildingTimer1 > 30.5)
+            {
+                if (buildingList1 < 4)
+                {
+                    Instantiate(building1, new Vector3(12, 0.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    buildingList1++;
+                    buildingTimer1 = 0;
+                }
+                else
+                {
+                    if (billboardList1 < 3)
+                    {
+                        GameObject bboard = Instantiate(billboard1, new Vector3(12, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        bboard.GetComponent<buildings>().isBillboard = true;
+                        billboards.Add(bboard);
+                        buildingList1 = 0;
+                        buildingTimer1 = 0;
+                        billboardList1++;
+                    }
+                    else
+                    {
+                        GameObject bboard = Instantiate(bigBillboard1, new Vector3(13, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        bboard.GetComponent<buildings>().isBigBillboard = true;
+                        billboards.Add(bboard);
+                        buildingList1 = 0;
+                        buildingTimer1 = -18.5f;
+                        billboardList1 = 0;
+                    }
+                }
+            }
+
+            //backround buildings
             buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
             if (buildingTimer > 25.5)
             {
@@ -129,16 +172,14 @@ public class main : MonoBehaviour
                     {
                         GameObject bboard = Instantiate(billboard, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<buildings>().isBillboard = true;
-                        billboards.Add(bboard);
                         buildingList = 0;
-                        buildingTimer = 0;
+                        buildingTimer = -25;
                         billboardList++;
                     }
                     else
                     {
                         GameObject bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<buildings>().isBigBillboard = true;
-                        billboards.Add(bboard);
                         buildingList = 0; buildingTimer = -25;
                         billboardList = 0;
                     }
@@ -160,7 +201,7 @@ public class main : MonoBehaviour
                 carTimer = 0;
             }
 
-            if (billboards.ToArray()[0].transform.position.x < -8.5f)
+            if (billboards.ToArray()[0].transform.position.x < -9.25f)
             {
                 billboards.Remove(billboards.ToArray()[0]);
             }
@@ -305,11 +346,11 @@ public class main : MonoBehaviour
 
         if (bboard.GetComponent<buildings>().isBigBillboard)
         {
-            Instantiate(overBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("score Blimp").transform);
+            Instantiate(overBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
         }
         else
         {
-            Instantiate(overBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("score Blimp").transform);
+            Instantiate(overBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
         }
 
         Destroy(bboard);

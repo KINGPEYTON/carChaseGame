@@ -137,7 +137,7 @@ public class main : MonoBehaviour
                 {
                     if (billboardList1 < 3)
                     {
-                        GameObject bboard = Instantiate(billboard1, new Vector3(12, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        GameObject bboard = Instantiate(billboard1, new Vector3(12, -2.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<buildings>().isBillboard = true;
                         billboards.Add(bboard);
                         buildingList1 = 0;
@@ -146,7 +146,7 @@ public class main : MonoBehaviour
                     }
                     else
                     {
-                        GameObject bboard = Instantiate(bigBillboard1, new Vector3(13, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        GameObject bboard = Instantiate(bigBillboard1, new Vector3(13.125f, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<buildings>().isBigBillboard = true;
                         billboards.Add(bboard);
                         buildingList1 = 0;
@@ -278,7 +278,7 @@ public class main : MonoBehaviour
         {
             updateBlimpX(); // find new target location for blimp
         }
-        if ((scoreBlimp.transform.position.y > 4.58f || scoreBlimp.transform.position.y < 3.78f) && Mathf.Abs(scoreBlimp.transform.position.y - newBlimpLocation.y) > 0.5) //if blimp went out of bounce on the X
+        if ((scoreBlimp.transform.position.y > 4.58f || scoreBlimp.transform.position.y < 3.86f) && Mathf.Abs(scoreBlimp.transform.position.y - newBlimpLocation.y) > 0.5) //if blimp went out of bounce on the X
         {
             updateBlimpY(); // find new target location for blimp
         }

@@ -47,6 +47,13 @@ public class main : MonoBehaviour
     public float billboardList1;
     public float buildingTimer1;
 
+    public GameObject skyline;
+    public int skylineList;
+    public float skylineTimer;
+
+    public GameObject cloud;
+    public float cloudTimer;
+
     public List<GameObject> billboards;
 
     public GameObject guard; //rail guard gameobject to spawn
@@ -83,8 +90,6 @@ public class main : MonoBehaviour
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
-
-        buildingTimer1 = -6.5f;
     }
 
     // Update is called once per frame
@@ -185,6 +190,23 @@ public class main : MonoBehaviour
                     }
                 }
             }
+
+            //skyline buildings
+            skylineTimer += Time.deltaTime * mph; //timer that spawns a new builing
+            if (skylineTimer > 150)
+            {
+                Instantiate(skyline, new Vector3(13.5f, 2.8f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                skylineTimer = 0;
+            }
+
+            //clouds
+            cloudTimer += Time.deltaTime * mph; //timer that spawns a new builing
+            if (cloudTimer > 925)
+            {
+                Instantiate(cloud, new Vector3(13.5f, Random.Range(2.5f, 5.8f), 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                cloudTimer = 0;
+            }
+
 
             carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
             if (carTimer > 80)
@@ -326,6 +348,8 @@ public class main : MonoBehaviour
         else {
             playerCar.setLane(3);
         }
+
+        carTimer = 0;
     }
 
     public void updateBlimpX()

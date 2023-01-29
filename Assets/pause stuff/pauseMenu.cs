@@ -55,29 +55,46 @@ public class pauseMenu : MonoBehaviour
             {
                 //print(coverColor);
                 cover.color = new Color32(36, 36, 36, (byte)coverColor);
-                coverColor += (Time.fixedDeltaTime * (speedTime/10));
+                coverColor += (Time.unscaledDeltaTime * (speedTime/10));
+            } else
+            {
+                cover.color = new Color32(36, 36, 36, 175);
             }
             if (mainSign.transform.position.y < mainTargetPos)
             {
                 mainSign.transform.position = new Vector3(1389, mainCurPos, 0);
-                mainCurPos += (Time.fixedDeltaTime * speedTime);
-
+                mainCurPos += (Time.unscaledDeltaTime * speedTime);
+            }
+            else
+            {
+                mainSign.transform.position = new Vector3(1389, 642, 0);
             }
             if (resumeSign.transform.position.x < resumeTargetPos)
             {
                 resumeSign.transform.position = new Vector3(resumeCurPos, 357.2f, 0);
-                resumeCurPos += (Time.fixedDeltaTime * speedTime);
+                resumeCurPos += (Time.unscaledDeltaTime * speedTime);
+            }
+            else
+            {
+                resumeSign.transform.position = new Vector3(364, 357.2f, 0);
             }
             if (menuSign.transform.position.x > menuTargetPos)
             {
                 menuSign.transform.position = new Vector3(menuCurPos, 437.2f, 0);
-                menuCurPos -= (Time.fixedDeltaTime * speedTime);
+                menuCurPos -= (Time.unscaledDeltaTime * speedTime);
+            }
+            else
+            {
+                menuSign.transform.position = new Vector3(2404, 437.2f, 0);
             }
             if (settingsSign.transform.position.y < settingsTargetPos)
             {
                 settingsSign.transform.position = new Vector3(1150, settingsCurPos, 0);
-                settingsCurPos += (Time.fixedDeltaTime * speedTime);
-
+                settingsCurPos += (Time.unscaledDeltaTime * speedTime);
+            }
+            else
+            {
+                settingsSign.transform.position = new Vector3(1150, 92, 0);
             }
         }
         else
@@ -85,19 +102,19 @@ public class pauseMenu : MonoBehaviour
             if (coverColor > 0)
             {
                 cover.color = new Color32(36, 36, 36, (byte)coverColor);
-                coverColor -= (Time.fixedDeltaTime * (speedTime/6));
+                coverColor -= (Time.unscaledDeltaTime * (speedTime/6));
             }
 
             if (mainSign.transform.position.y > mainTargetPos)
             {
                 mainSign.transform.position = new Vector3(1389, mainCurPos, 0);
-                mainCurPos -= (Time.fixedDeltaTime * speedTime);
+                mainCurPos -= (Time.unscaledDeltaTime * speedTime);
                 resumeSign.transform.position = new Vector3(resumeCurPos, 357.2f, 0);
-                resumeCurPos -= (Time.fixedDeltaTime * speedTime);
+                resumeCurPos -= (Time.unscaledDeltaTime * speedTime);
                 menuSign.transform.position = new Vector3(menuCurPos, 437.2f, 0);
-                menuCurPos += (Time.fixedDeltaTime * speedTime);
+                menuCurPos += (Time.unscaledDeltaTime * speedTime);
                 settingsSign.transform.position = new Vector3(1150, settingsCurPos, 0);
-                settingsCurPos -= (Time.fixedDeltaTime * speedTime);
+                settingsCurPos -= (Time.unscaledDeltaTime * speedTime);
             }
             else
             {

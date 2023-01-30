@@ -67,67 +67,10 @@ public class radio_manager : MonoBehaviour
         radioID = PlayerPrefs.GetInt("radio", radioID); //sets high score to the one saved
         musicVol = PlayerPrefs.GetFloat("musicVol", musicVol); //sets high score to the one saved
 
-        float turnUPTime = 0;
-        float fumTime = 0;
-        float oldiesTime = 0;
-
-        var turnUP = Resources.LoadAll("radio/89.3 2am Turn-up");
-        var fum = Resources.LoadAll("radio/91.5 FUM Fun Unaltered Music");
-        var oldies = Resources.LoadAll("radio/92.7 The Moldie Oldies");
-
-        for (int i = 0; i < turnUP.Length; i++)
-        {
-            AudioClip song = turnUP[i] as AudioClip;
-            string name = turnUP[i].name;
-            twoAMTurnUp.Add(song);
-            twoAMTurnUpNames.Add(name);
-            turnUPTime += song.length;
-        }
-
-        for (int i = 0; i < fum.Length; i++)
-        {
-            AudioClip song = fum[i] as AudioClip;
-            string name = fum[i].name;
-            FUM.Add(song);
-            FUMNames.Add(name);
-            fumTime += song.length;
-        }
-
-        for (int i = 0; i < oldies.Length; i++)
-        {
-            AudioClip song = oldies[i] as AudioClip;
-            string name = oldies[i].name;
-            moldieOldies.Add(song);
-            moldieOldiesNames.Add(name);
-            oldiesTime += song.length;
-        }
-
-
-        radios.Add(new List<AudioClip>());
-        radioNames.Add(new List<string>());
-
-        radios.Add(twoAMTurnUp);
-        radios.Add(FUM);
-        radios.Add(moldieOldies);
-
-        radioNames.Add(twoAMTurnUpNames);
-        radioNames.Add(FUMNames);
-        radioNames.Add(moldieOldiesNames);
-
-        radioTotalTimes.Add(0);
-        radioTotalTimes.Add(turnUPTime);
-        radioTotalTimes.Add(fumTime);
-        radioTotalTimes.Add(oldiesTime);
-
-        for (int i = 0; i < radios.Count; i++)
-        {
-            radioTimes.Add(0);
-            radioList.Add(0);
-        }
-
-        ShuffleStations(twoAMTurnUp, twoAMTurnUpNames);
-        ShuffleStations(FUM, FUMNames);
-        ShuffleStations(moldieOldies, moldieOldiesNames);
+        makeRadio(new List<AudioClip>(), new List<string>(), "???");
+        makeRadio(twoAMTurnUp, twoAMTurnUpNames, "radio/89.3 2am Turn-up");
+        makeRadio(FUM, FUMNames, "radio/91.5 FUM Fun Unaltered Music");
+        makeRadio(moldieOldies, moldieOldiesNames, "radio/92.7 The Moldie Oldies");
     }
 
     // Update is called once per frame
@@ -211,5 +154,29 @@ public class radio_manager : MonoBehaviour
     {
         musicVol = newVol;
         music.volume = musicVol;
+    }
+
+    private void makeRadio(List<AudioClip> station, List<string> stationNames, string path)
+    {
+        float stationTime = 0;
+        var stationList = Resources.LoadAll(path);
+
+        for (int i = 0; i < stationList.Length; i++)
+        {
+            AudioClip song = stationList[i] as AudioClip;
+            string name = stationList[i].name;
+            station.Add(song);
+            stationNames.Add(name);
+            stationTime += song.length;
+        }
+
+        radios.Add(station);
+        radioNames.Add(stationNames);
+        radioTotalTimes.Add(stationTime);
+
+        radioTimes.Add(0);
+        radioList.Add(0);
+
+        ShuffleStations(station, stationNames);
     }
 }

@@ -29,7 +29,6 @@ public class radio_menu : MonoBehaviour
         manager = GameObject.Find("radioManager").GetComponent<radio_manager>();
 
         vol.value = manager.musicVol;
-        setStation(manager.radioID);
         volChange();
     }
 

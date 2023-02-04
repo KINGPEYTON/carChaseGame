@@ -292,6 +292,7 @@ MonoBehaviour:
   backround: {fileID: 6865023803969450571}
   colorDir: 0
   colorVar: 0
+  staticSound: {fileID: 8300000, guid: 6b6eb777f75704a1d91169dd43bd119f, type: 3}
 --- !u!1 &3374725240679756655
 GameObject:
   m_ObjectHideFlags: 0

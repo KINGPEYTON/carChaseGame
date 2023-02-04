@@ -1021,7 +1021,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &75836451336808003
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1039,8 +1039,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -1.0884018, y: -2.0998998}
+  m_SizeDelta: {x: -2.177, y: 33.4651}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2829827757675022710
 CanvasRenderer:
@@ -1063,7 +1063,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1906,7 +1906,7 @@ RectTransform:
   m_GameObject: {fileID: 4584940815029259482}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1.25, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2542158891665094806}
@@ -1915,8 +1915,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: -4.9573, y: -0.24444}
+  m_SizeDelta: {x: -20.0855, y: 6.88868}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4615979098579889778
 GameObject:
@@ -2490,6 +2490,7 @@ MonoBehaviour:
   settingsTargetPos: 0
   settingsCurPos: 0
   speedTime: 0
+  clickSound: {fileID: 8300000, guid: 3a2333cedba404894a725fc6bfd28e13, type: 3}
 --- !u!1 &5105386079391213676
 GameObject:
   m_ObjectHideFlags: 0
@@ -2832,6 +2833,9 @@ MonoBehaviour:
   manager: {fileID: 0}
   stationText: {fileID: 1142233159929195926}
   songText: {fileID: 7203193172355709667}
+  radioChangeTimer: 0
+  prevRadio: 0
+  targetRadio: 0
   volIcons:
   - {fileID: 21300000, guid: 05000ba9e5f9c422a9fb4bc001292d0c, type: 3}
   - {fileID: 21300000, guid: a096025731f8c4d569313368ebd0d884, type: 3}

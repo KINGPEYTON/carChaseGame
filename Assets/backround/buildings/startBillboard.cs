@@ -18,6 +18,8 @@ public class startBillboard : MonoBehaviour
     public bool colorDir;
     public float colorVar;
 
+    public AudioClip staticSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -74,6 +76,7 @@ public class startBillboard : MonoBehaviour
         settingsButton.interactable = false;
         statics.SetActive(true);
         staticTimer = 1f;
+        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0,0,-10), controller.masterVol);
     }
 
 }

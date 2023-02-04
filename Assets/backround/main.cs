@@ -14,6 +14,8 @@ public class main : MonoBehaviour
     public float score;
     public float highScore;
 
+    public float masterVol;
+
     public GameObject pauseMenu;
 
     public GameObject scoreBlimp;
@@ -29,6 +31,7 @@ public class main : MonoBehaviour
     public GameObject overBigBoard;
 
     public playerCar playerCar;
+    public AudioClip startEngine;
 
     public GameObject divider; //divider gameobject to spawn
     public float dividerTimer;
@@ -74,12 +77,19 @@ public class main : MonoBehaviour
     public List<float> bannedLanes;
     public List<int> carsPast;
 
+    public AudioClip menuAmbience;
+    public AudioClip gameAmbience;
+    public AudioSource menuSound;
+
+    public AudioClip clickSound;
+
     // Start is called before the first frame update
     void OnEnable()
     {
         //prof = GameObject.Find("profile").GetComponent<profile>();
 
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
+        menuSound = GameObject.Find("ambience").GetComponent<AudioSource>();
 
         playing = false;
         isOver = false;
@@ -90,6 +100,11 @@ public class main : MonoBehaviour
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
+
+        masterVol = 1.0f;
+
+        menuSound.clip = menuAmbience;
+        menuSound.Play();
     }
 
     // Update is called once per frame
@@ -330,6 +345,8 @@ public class main : MonoBehaviour
 
         isOver = true;
 
+        GameObject.Find("Main Camera").GetComponent<AudioLowPassFilter>().cutoffFrequency = 2500;
+
         gameGameOverButton();
     }
 
@@ -350,6 +367,10 @@ public class main : MonoBehaviour
         }
 
         carTimer = 0;
+
+        AudioSource.PlayClipAtPoint(startEngine, new Vector3(-0.5f, 0, -10), masterVol);
+        menuSound.clip = gameAmbience;
+        menuSound.Play();
     }
 
     public void updateBlimpX()
@@ -378,25 +399,31 @@ public class main : MonoBehaviour
         }
 
         Destroy(bboard);
+
+        menuSound.clip = menuAmbience;
+        menuSound.Play();
     }
 
     public void pauseButton()
     {
         if(Time.deltaTime > 0 && playing)
         {
+            AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol);
             Time.timeScale = 0;
             Instantiate(pauseMenu);
+            menuSound.Pause();
         }
     }
 
     public void shopButton()
     {
 
+        AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol);
     }
 
     public void settingsButton()
     {
-
+        AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol);
     }
 
     public void setMilestone()

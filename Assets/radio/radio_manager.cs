@@ -44,6 +44,9 @@ public class radio_manager : MonoBehaviour
     public float totalTime;
     public float musicVol;
     public AudioSource music;
+    public AudioLowPassFilter musicStatic;
+    public AudioDistortionFilter musicStatic2;
+    public float staticTimer;
 
     void Awake()
     {
@@ -63,6 +66,8 @@ public class radio_manager : MonoBehaviour
     void Start()
     {
         music = GameObject.Find("Main Camera").GetComponent<AudioSource>();
+        musicStatic = music.GetComponent<AudioLowPassFilter>();
+        musicStatic2 = music.GetComponent<AudioDistortionFilter>();
 
         radioID = PlayerPrefs.GetInt("radio", radioID); //sets high score to the one saved
         musicVol = PlayerPrefs.GetFloat("musicVol", musicVol); //sets high score to the one saved
@@ -81,18 +86,38 @@ public class radio_manager : MonoBehaviour
         if (music == null)
         {
             music = GameObject.Find("Main Camera").GetComponent<AudioSource>();
-            updateStation(radioID);
+            musicStatic = music.GetComponent<AudioLowPassFilter>();
+            musicStatic2 = music.GetComponent<AudioDistortionFilter>();
+            updateStation(radioID, 0);
         }
 
         if (!music.isPlaying)
         {
-            updateStation(radioID);
+            updateStation(radioID, 0);
         }
-    }
 
-    void FixedUpdate()
-    {
+        if(staticTimer > 0)
+        {
+            staticTimer -= Time.unscaledDeltaTime;
 
+            if(staticTimer < 2.1f)
+            {
+                musicStatic.cutoffFrequency = 22000 - (staticTimer*10000 + 10);
+                musicStatic2.distortionLevel = staticTimer * 0.25f;
+            }
+            else
+            {
+                musicStatic.cutoffFrequency = 100f;
+                musicStatic2.distortionLevel = 0.5f;
+            }
+
+            if (staticTimer < 0)
+            {
+                staticTimer = 0;
+                musicStatic.cutoffFrequency = 22000;
+                musicStatic2.distortionLevel = 0;
+            }
+        }
     }
 
     void ShuffleStations<T>(IList<T> list, IList<string> list2)
@@ -109,17 +134,17 @@ public class radio_manager : MonoBehaviour
         }
     }
 
-    public void updateStation(int station)
+    public void updateStation(int station, float staticTime)
     {
+        if (station < 0)
+        {
+            station = radios.Count - 1;
+        }
+        else if (station > radios.Count - 1)
+        {
+            station = 0;
+        }
         radioID = station;
-        if (radioID < 0)
-        {
-            radioID = radios.Count - 1;
-        }
-        else if (radioID > radios.Count - 1)
-        {
-            radioID = 0;
-        }
 
         if (radioID > 0)
         {
@@ -145,6 +170,7 @@ public class radio_manager : MonoBehaviour
         }
 
         music.volume = musicVol;
+        staticTimer = staticTime;
 
         PlayerPrefs.SetInt("radio", radioID); //saves the new high score
         PlayerPrefs.SetFloat("musicVol", musicVol); //saves the new high score

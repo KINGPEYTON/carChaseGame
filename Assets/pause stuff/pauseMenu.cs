@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class pauseMenu : MonoBehaviour
 {
     public GameObject areYouSureToCreate;
+    public main contoller;
 
     public Image cover;
     public GameObject mainSign;
@@ -29,9 +30,13 @@ public class pauseMenu : MonoBehaviour
 
     public float speedTime;
 
+    public AudioClip clickSound;
+
     // Use this for initialization
     void Start()
     {
+        contoller = GameObject.Find("contoller").GetComponent<main>();
+
         inPos = false;
         coverColor = 0;
         mainTargetPos = 642f;
@@ -122,6 +127,7 @@ public class pauseMenu : MonoBehaviour
                 Destroy(gameObject);
 
                 GameObject.Find("playerCar").GetComponent<playerCar>().tapped = true;
+                contoller.menuSound.Play();
             }
         }
     }
@@ -129,7 +135,8 @@ public class pauseMenu : MonoBehaviour
     public void resume()
     {
         inPos = true;
-        mainTargetPos = -500; 
+        mainTargetPos = -500;
+        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
     }
 
     public void menu()
@@ -137,11 +144,12 @@ public class pauseMenu : MonoBehaviour
         youSure areYouSure = Instantiate(areYouSureToCreate, gameObject.transform).GetComponent<youSure>();
         areYouSure.methodToCall = manuMethod;
         areYouSure.message = "you want to exit to the main menu?";
+        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
     }
 
     public void settings()
     {
-        
+        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
     }
 
     void manuMethod()

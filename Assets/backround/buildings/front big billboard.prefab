@@ -280,3 +280,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2c9d2e75341074033a7b34b67e2778e7, type: 3}
   statics: {fileID: 21300000, guid: d96e8febf28a0418381d27c68accdf73, type: 3}
   staticTimer: 0
+  staticSound: {fileID: 8300000, guid: ab16747795dc64665a781b84575acf01, type: 3}

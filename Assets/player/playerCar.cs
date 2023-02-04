@@ -20,6 +20,10 @@ public class playerCar : MonoBehaviour
 
     public float startPos;
 
+    public AudioClip[] turns;
+    public AudioClip crash1;
+    public AudioClip crash2;
+
     private void OnEnable()
     {
         startMph = 30f;
@@ -92,6 +96,8 @@ public class playerCar : MonoBehaviour
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
             GetComponent<SpriteRenderer>().sortingOrder--;
+
+            AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol); 
         }
     }
 
@@ -103,6 +109,8 @@ public class playerCar : MonoBehaviour
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
             GetComponent<SpriteRenderer>().sortingOrder++;
+
+            AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol);
         }
     }
 
@@ -110,6 +118,7 @@ public class playerCar : MonoBehaviour
     {
         GetComponent<SpriteRenderer>().sprite = crashed; //car crashed
         controller.gameOver(); //sets the game to its game over state
+        AudioSource.PlayClipAtPoint(crash1, new Vector3 (0,0,-10), controller.masterVol);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -124,11 +133,13 @@ public class playerCar : MonoBehaviour
                 {
                     GetComponent<SpriteRenderer>().sortingOrder--;
                     controller.bannedLanes.Add(collision.GetComponent<cars>().lane-1);
+                    AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol);
                 }
                 else if (collision.transform.position.y > transform.position.y)
                 {
                     GetComponent<SpriteRenderer>().sortingOrder++;
                     controller.bannedLanes.Add(collision.GetComponent<cars>().lane+1);
+                    AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol);
                 }
                 crash(); //what happens when the player crashes
             }

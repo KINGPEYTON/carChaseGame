@@ -59,7 +59,7 @@ public class speedometer : MonoBehaviour
         }
         else if (controller.isOver)
         {
-            if (endTextTimer > 0.5f)
+            if (endTextTimer > 0.25f)
             {
                 speedText.text = randomChar();
                 endTextTimer = 0;

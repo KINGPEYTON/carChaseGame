@@ -14,6 +14,7 @@ public class billboard : buildings
 
     public Sprite statics;
     public float staticTimer;
+    public AudioClip staticSound;
 
     // Start is called before the first frame update
 
@@ -39,9 +40,10 @@ public class billboard : buildings
             setAd();
             adTimer = 100;
             staticTimer = 1f;
+            AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol);
         }
 
-        if(staticTimer > 0)
+        if (staticTimer > 0)
         {
             adOBJ.GetComponent<SpriteRenderer>().sprite = statics;
         }

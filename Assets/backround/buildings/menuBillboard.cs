@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class menuBillboard : MonoBehaviour
 {
-    public GameObject controller;
+    public main controller;
     public Button myButton;
 
     public GameObject statics;
@@ -14,13 +14,16 @@ public class menuBillboard : MonoBehaviour
     public bool colorDir;
     public float colorVar;
 
+    public AudioClip staticSound;
+
     // Start is called before the first frame update
     void Start()
     {
-        controller = GameObject.Find("contoller");
+        controller = GameObject.Find("contoller").GetComponent<main>();
         myButton = GetComponent<Button>();
 
         staticTimer = 1f;
+        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0,0,-10), controller.masterVol);
         colorVar = 100;
     }
 
@@ -56,6 +59,7 @@ public class menuBillboard : MonoBehaviour
 
     public void click()
     {
-        controller.GetComponent<main>().newGame();
+        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol);
+        controller.newGame();
     }
 }

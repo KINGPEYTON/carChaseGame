@@ -12,6 +12,10 @@ public class radio_menu : MonoBehaviour
     public TextMeshProUGUI stationText;
     public TextMeshProUGUI songText;
 
+    public float radioChangeTimer;
+    public float prevRadio;
+    public float targetRadio;
+
     public List<Sprite> volIcons;
     public Image volIcon;
     public Slider vol;
@@ -35,15 +39,31 @@ public class radio_menu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        stationText.text = radioNames[manager.radioID];
-
         if (manager.radioID > 0)
         {
-            songText.text = radioText(manager.radioNames[manager.radioID][manager.radioList[manager.radioID]]);
+
+            if (radioChangeTimer > 0)
+            {
+                radioChangeTimer -= Time.unscaledDeltaTime;
+
+                stationText.text = ((int)((targetRadio + (((prevRadio - targetRadio) * radioChangeTimer))) * 10)) / 10.0f + "";
+            }
+            else if (radioChangeTimer > -1)
+            {
+                radioChangeTimer -= Time.unscaledDeltaTime;
+
+                songText.text = radioText(manager.radioNames[manager.radioID][manager.radioList[manager.radioID]]);
+
+                stationText.text = radioNames[manager.radioID].Substring(0, targetRadio.ToString().Length + (int)((radioNames[manager.radioID].Length - targetRadio.ToString().Length) * (0 - radioChangeTimer))) + (char)Random.Range(33, 64);
+            }else
+            {
+                stationText.text = radioNames[manager.radioID];
+            }
         }
         else
         {
             songText.text = "";
+            stationText.text = "Off";
         }
 
         barTimer += Time.unscaledDeltaTime;
@@ -55,17 +75,30 @@ public class radio_menu : MonoBehaviour
 
     public void setStation(int station)
     {
-        manager.updateStation(station);
+        prevRadio = getRadio();
+        manager.updateStation(station, 2.0f);
+        radioChangeTimer = 0.75f;
+        targetRadio = getRadio();
+        songText.text = "";
     }
 
     public void nextStation()
     {
-        manager.updateStation(manager.radioID + 1);
+        prevRadio = getRadio();
+        manager.updateStation(manager.radioID + 1, 2.0f);
+        radioChangeTimer = 0.75f;
+        targetRadio = getRadio();
+        songText.text = "";
     }
 
     public void prevStation()
     {
-        manager.updateStation(manager.radioID - 1);
+
+        prevRadio = getRadio();
+        manager.updateStation(manager.radioID - 1, 2.0f);
+        radioChangeTimer = 0.75f;
+        targetRadio = getRadio();
+        songText.text = "";
     }
 
     public void volChange()
@@ -82,6 +115,24 @@ public class radio_menu : MonoBehaviour
         int split = text.IndexOf(" - ");
         string artist = text.Substring(0, split);
         string name = text.Substring(split+3);
+
+        if(name.Length >= 20)
+        {
+            name = name.Substring(0, 18) + "...";
+        }
+
+        if (radioChangeTimer > -1)
+        {
+            if (20 * (0 - radioChangeTimer) < artist.Length)
+            {
+                artist = artist.Substring(0, (int)(20 * (0 - radioChangeTimer))) + (char)Random.Range(33, 64);
+            }
+            if (20 * (0 - radioChangeTimer) < name.Length)
+            {
+                name = name.Substring(0, (int)(20 * (0 - radioChangeTimer))) + (char)Random.Range(33, 64);
+            }
+        }
+
         return name + "\n" + artist;
     }
 
@@ -89,68 +140,137 @@ public class radio_menu : MonoBehaviour
     {
         if (manager.radioID > 0)
         {
-            int barLevel = (int)Random.Range(vol.value * 2, vol.value * 8);
-            for (int i = 0; i < bars1.Count; i++)
-            {
-                if (i <= barLevel)
+            if (radioChangeTimer < -1) {
+                int barLevel = (int)Random.Range(vol.value * 2, vol.value * 8);
+                for (int i = 0; i < bars1.Count; i++)
                 {
-                    bars1[i].SetActive(true);
+                    if (i <= barLevel)
+                    {
+                        bars1[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars1[i].SetActive(false);
+                    }
                 }
-                else
+
+                int barLevel2 = (int)Random.Range(vol.value * 2, vol.value * 8);
+                for (int i = 0; i < bars2.Count; i++)
                 {
-                    bars1[i].SetActive(false);
+                    if (i <= barLevel2)
+                    {
+                        bars2[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars2[i].SetActive(false);
+                    }
+                }
+
+                int barLevel3 = (int)Random.Range(vol.value * 2, vol.value * 8);
+                for (int i = 0; i < bars3.Count; i++)
+                {
+                    if (i <= barLevel3)
+                    {
+                        bars3[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars3[i].SetActive(false);
+                    }
+                }
+
+                int barLevel4 = (int)Random.Range(vol.value * 2, vol.value * 8);
+                for (int i = 0; i < bars4.Count; i++)
+                {
+                    if (i <= barLevel4)
+                    {
+                        bars4[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars4[i].SetActive(false);
+                    }
+                }
+
+                int barLevel5 = (int)Random.Range(vol.value * 2, vol.value * 8);
+                for (int i = 0; i < bars5.Count; i++)
+                {
+                    if (i <= barLevel5)
+                    {
+                        bars5[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars5[i].SetActive(false);
+                    }
                 }
             }
-
-            int barLevel2 = (int)Random.Range(vol.value * 2, vol.value * 8);
-            for (int i = 0; i < bars2.Count; i++)
+            else
             {
-                if (i <= barLevel2)
+                int barLevel = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
+                for (int i = 0; i < bars1.Count; i++)
                 {
-                    bars2[i].SetActive(true);
+                    if (i <= barLevel)
+                    {
+                        bars1[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars1[i].SetActive(false);
+                    }
                 }
-                else
-                {
-                    bars2[i].SetActive(false);
-                }
-            }
 
-            int barLevel3 = (int)Random.Range(vol.value * 2, vol.value * 8);
-            for (int i = 0; i < bars3.Count; i++)
-            {
-                if (i <= barLevel3)
+                int barLevel2 = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
+                for (int i = 0; i < bars2.Count; i++)
                 {
-                    bars3[i].SetActive(true);
+                    if (i <= barLevel2)
+                    {
+                        bars2[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars2[i].SetActive(false);
+                    }
                 }
-                else
-                {
-                    bars3[i].SetActive(false);
-                }
-            }
 
-            int barLevel4 = (int)Random.Range(vol.value * 2, vol.value * 8);
-            for (int i = 0; i < bars4.Count; i++)
-            {
-                if (i <= barLevel4)
+                int barLevel3 = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
+                for (int i = 0; i < bars3.Count; i++)
                 {
-                    bars4[i].SetActive(true);
+                    if (i <= barLevel3)
+                    {
+                        bars3[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars3[i].SetActive(false);
+                    }
                 }
-                else
-                {
-                    bars4[i].SetActive(false);
-                }
-            }
 
-            int barLevel5 = (int)Random.Range(vol.value * 2, vol.value * 8);
-            for (int i = 0; i < bars5.Count; i++)
-            {
-                if (i <= barLevel5)
+                int barLevel4 = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
+                for (int i = 0; i < bars4.Count; i++)
                 {
-                    bars5[i].SetActive(true);
+                    if (i <= barLevel4)
+                    {
+                        bars4[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars4[i].SetActive(false);
+                    }
                 }
-                else
+
+                int barLevel5 = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
+                for (int i = 0; i < bars5.Count; i++)
                 {
-                    bars5[i].SetActive(false);
+                    if (i <= barLevel5)
+                    {
+                        bars5[i].SetActive(true);
+                    }
+                    else
+                    {
+                        bars5[i].SetActive(false);
+                    }
                 }
             }
         }
@@ -179,5 +299,17 @@ public class radio_menu : MonoBehaviour
         }
 
         barTimer = 0;
+    }
+
+    public float getRadio()
+    {
+        if (manager.radioID > 0)
+        {
+            return float.Parse(radioNames[manager.radioID].Substring(0, radioNames[manager.radioID].IndexOf(".") + 2));
+        }
+        else
+        {
+            return 98.5f;
+        }
     }
 }

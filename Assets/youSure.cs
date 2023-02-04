@@ -23,6 +23,8 @@ public class youSure : MonoBehaviour {
 
 	public float speedTime;
 
+	public AudioClip clickSound;
+
 	// Use this for initialization
 	void Start () {
 		inPos = false;
@@ -84,12 +86,14 @@ public class youSure : MonoBehaviour {
 
 	public void yes(){
 		SimpleMethod(methodToCall);
+		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), GameObject.Find("contoller").GetComponent<main>().masterVol);
 
-		Destroy (gameObject);
+		Destroy(gameObject);
 	}
 
 	public void no(){
 		inPos = true;
 		targetPos = -600;
+		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), GameObject.Find("contoller").GetComponent<main>().masterVol);
 	}
 }

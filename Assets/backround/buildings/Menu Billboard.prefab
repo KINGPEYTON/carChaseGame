@@ -444,3 +444,4 @@ MonoBehaviour:
   backround: {fileID: 802884159944063069}
   colorDir: 0
   colorVar: 0
+  staticSound: {fileID: 8300000, guid: 6b6eb777f75704a1d91169dd43bd119f, type: 3}

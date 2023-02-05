@@ -91,6 +91,8 @@ public class main : MonoBehaviour
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
         menuSound = GameObject.Find("ambience").GetComponent<AudioSource>();
 
+        masterVol = PlayerPrefs.GetFloat("masterVol", masterVol); //sets high score to the one saved
+
         playing = false;
         isOver = false;
         scoreShowing = false;
@@ -439,6 +441,12 @@ public class main : MonoBehaviour
             sign = Instantiate(milestoneSigns[Random.Range(0, milestoneSigns.Length)], GameObject.Find("Signs").transform);
         }
         sign.GetComponentInChildren<TextMeshProUGUI>().text = milestone + "m";
+    }
+
+    public void changeVol(float newVol)
+    {
+        masterVol = newVol;
+        PlayerPrefs.SetFloat("masterVol", masterVol); //saves the master volume level
     }
 
 }

@@ -116,7 +116,11 @@ public class radio_menu : MonoBehaviour
         string artist = text.Substring(0, split);
         string name = text.Substring(split+3);
 
-        if(name.Length >= 20)
+        if (artist.Length >= 19)
+        {
+            artist = artist.Substring(0, 17) + "...";
+        }
+        if (name.Length >= 20)
         {
             name = name.Substring(0, 18) + "...";
         }

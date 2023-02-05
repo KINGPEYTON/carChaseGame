@@ -76,6 +76,8 @@ public class radio_manager : MonoBehaviour
         makeRadio(twoAMTurnUp, twoAMTurnUpNames, "radio/89.3 2am Turn-up");
         makeRadio(FUM, FUMNames, "radio/91.5 FUM Fun Unaltered Music");
         makeRadio(moldieOldies, moldieOldiesNames, "radio/92.7 The Moldie Oldies");
+        makeRadio(rockHard, rockHardNames, "radio/94.5 Rock Hard");
+        makeRadio(alternativeAlt, alternativeAltNames, "radio/97.7 Alternative Ault");
     }
 
     // Update is called once per frame
@@ -169,7 +171,7 @@ public class radio_manager : MonoBehaviour
             music.Stop();
         }
 
-        music.volume = musicVol;
+        music.volume = musicVol * GameObject.Find("contoller").GetComponent<main>().masterVol;
         staticTimer = staticTime;
 
         PlayerPrefs.SetInt("radio", radioID); //saves the new high score
@@ -179,7 +181,8 @@ public class radio_manager : MonoBehaviour
     public void updateVol(float newVol)
     {
         musicVol = newVol;
-        music.volume = musicVol;
+        music.volume = musicVol * GameObject.Find("contoller").GetComponent<main>().masterVol;
+        PlayerPrefs.SetFloat("musicVol", musicVol); //saves the new high score
     }
 
     private void makeRadio(List<AudioClip> station, List<string> stationNames, string path)
@@ -189,11 +192,14 @@ public class radio_manager : MonoBehaviour
 
         for (int i = 0; i < stationList.Length; i++)
         {
-            AudioClip song = stationList[i] as AudioClip;
-            string name = stationList[i].name;
-            station.Add(song);
-            stationNames.Add(name);
-            stationTime += song.length;
+            //if (stationList[i].name.IndexOf(".mp3") > -1)
+            {
+                AudioClip song = stationList[i] as AudioClip;
+                string name = stationList[i].name;
+                station.Add(song);
+                stationNames.Add(name);
+                stationTime += song.length;
+            }
         }
 
         radios.Add(station);

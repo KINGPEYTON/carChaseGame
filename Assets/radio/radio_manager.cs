@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-    using UnityEditor;
-#endif
+using System.IO;
 
 public class radio_manager : MonoBehaviour
 {
@@ -188,18 +186,16 @@ public class radio_manager : MonoBehaviour
     private void makeRadio(List<AudioClip> station, List<string> stationNames, string path)
     {
         float stationTime = 0;
-        var stationList = Resources.LoadAll(path);
-
+        
+        var stationList = Resources.LoadAll(path, typeof(AudioClip));
+        
         for (int i = 0; i < stationList.Length; i++)
         {
-            //if (stationList[i].name.IndexOf(".mp3") > -1)
-            {
                 AudioClip song = stationList[i] as AudioClip;
                 string name = stationList[i].name;
                 station.Add(song);
                 stationNames.Add(name);
                 stationTime += song.length;
-            }
         }
 
         radios.Add(station);

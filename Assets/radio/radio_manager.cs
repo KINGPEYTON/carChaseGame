@@ -38,6 +38,7 @@ public class radio_manager : MonoBehaviour
 
     public List<List<AudioClip>> radios = new List<List<AudioClip>>();
     public List<List<string>> radioNames = new List<List<string>>();
+
     public int radioID;
     public float totalTime;
     public float musicVol;
@@ -67,8 +68,8 @@ public class radio_manager : MonoBehaviour
         musicStatic = music.GetComponent<AudioLowPassFilter>();
         musicStatic2 = music.GetComponent<AudioDistortionFilter>();
 
-        radioID = PlayerPrefs.GetInt("radio", radioID); //sets high score to the one saved
-        musicVol = PlayerPrefs.GetFloat("musicVol", musicVol); //sets high score to the one saved
+        radioID = PlayerPrefs.GetInt("radio", radioID); //sets the radio station to the one it was last on
+        musicVol = PlayerPrefs.GetFloat("musicVol", musicVol); //sets the radio volume to the one it was last on
 
         makeRadio(new List<AudioClip>(), new List<string>(), "???");
         makeRadio(twoAMTurnUp, twoAMTurnUpNames, "radio/89.3 2am Turn-up");
@@ -76,6 +77,14 @@ public class radio_manager : MonoBehaviour
         makeRadio(moldieOldies, moldieOldiesNames, "radio/92.7 The Moldie Oldies");
         makeRadio(rockHard, rockHardNames, "radio/94.5 Rock Hard");
         makeRadio(alternativeAlt, alternativeAltNames, "radio/97.7 Alternative Ault");
+        makeRadio(HOD, HODNames, "radio/99.1 HOD Headquarters Of Dance");
+        makeRadio(myPOP, myPOPNames, "radio/100.3 My Pop");
+        makeRadio(hopBop, hopBopNames, "radio/102.3 Hop Bop Radio");
+        //makeRadio(feelingsFM, feelingsFMNames, "radio/103.1 Feelings FM");
+        //makeRadio(cityVibes, cityVibesNames, "radio/103.9 City Vibes");
+        //makeRadio(countrysideRadio, countrysideRadioNames, "radio/105.7 Countryside Radio");
+        //makeRadio(foreignMusic, foreignMusicNames, "radio/106.9 Foreign Music");
+        //makeRadio(themeHQ, themeHQNames, "radio/107.5 Theme HQ");
     }
 
     // Update is called once per frame

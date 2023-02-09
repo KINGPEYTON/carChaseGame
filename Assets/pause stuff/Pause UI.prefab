@@ -2474,6 +2474,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areYouSureToCreate: {fileID: 7383676449683467863, guid: 7f8c2816bf07a475fabdf397d6900972, type: 3}
+  contoller: {fileID: 0}
   cover: {fileID: 5105386079391213674}
   mainSign: {fileID: 8118315043293253832}
   resumeSign: {fileID: 4703214421087983270}
@@ -2822,7 +2823,7 @@ MonoBehaviour:
   - 92.7 The Moldie Oldies
   - 94.5 Rock Hard
   - 97.7 Alternative Ault
-  - 99.1 HOD Headquarters Of Dance
+  - 99.1 Headquarters Of Dance
   - 100.3 My Pop
   - 102.3 Hop Bop Radio
   - 103.1 Feelings FM

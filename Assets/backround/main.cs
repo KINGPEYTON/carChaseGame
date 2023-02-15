@@ -15,6 +15,8 @@ public class main : MonoBehaviour
     public float highScore;
 
     public float masterVol;
+    public float sfxVol;
+    public float musicVol;
 
     public GameObject pauseMenu;
 
@@ -77,6 +79,8 @@ public class main : MonoBehaviour
     public List<float> bannedLanes;
     public List<int> carsPast;
 
+    public GameObject settingsUI;
+
     public AudioClip menuAmbience;
     public AudioClip gameAmbience;
     public AudioSource menuSound;
@@ -92,6 +96,8 @@ public class main : MonoBehaviour
         menuSound = GameObject.Find("ambience").GetComponent<AudioSource>();
 
         masterVol = PlayerPrefs.GetFloat("masterVol", masterVol); //sets high score to the one saved
+        sfxVol = PlayerPrefs.GetFloat("sfxVol", sfxVol); //sets high score to the one saved
+        musicVol = PlayerPrefs.GetFloat("musicVol", musicVol); //sets the radio volume to the one it was last on
 
         playing = false;
         isOver = false;
@@ -102,8 +108,6 @@ public class main : MonoBehaviour
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
-
-        masterVol = 1.0f;
 
         menuSound.clip = menuAmbience;
         menuSound.Play();
@@ -370,7 +374,7 @@ public class main : MonoBehaviour
 
         carTimer = 0;
 
-        AudioSource.PlayClipAtPoint(startEngine, new Vector3(-0.5f, 0, -10), masterVol);
+        AudioSource.PlayClipAtPoint(startEngine, new Vector3(-0.5f, 0, -10), masterVol * sfxVol);
         menuSound.clip = gameAmbience;
         menuSound.Play();
     }
@@ -410,7 +414,7 @@ public class main : MonoBehaviour
     {
         if(Time.deltaTime > 0 && playing)
         {
-            AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol);
+            AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol * sfxVol);
             Time.timeScale = 0;
             Instantiate(pauseMenu);
             menuSound.Pause();
@@ -420,12 +424,13 @@ public class main : MonoBehaviour
     public void shopButton()
     {
 
-        AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol);
+        AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol * sfxVol);
     }
 
     public void settingsButton()
     {
-        AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol);
+        AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol * sfxVol);
+        Instantiate(settingsUI);
     }
 
     public void setMilestone()
@@ -443,10 +448,22 @@ public class main : MonoBehaviour
         sign.GetComponentInChildren<TextMeshProUGUI>().text = milestone + "m";
     }
 
-    public void changeVol(float newVol)
+    public void changeMasterVol(float newVol)
     {
         masterVol = newVol;
         PlayerPrefs.SetFloat("masterVol", masterVol); //saves the master volume level
+    }
+
+    public void changeSfxVol(float newVol)
+    {
+        sfxVol = newVol;
+        PlayerPrefs.SetFloat("sfxVol", sfxVol); //saves the master volume level
+    }
+
+    public void changeMusicVol(float newVol)
+    {
+        musicVol = newVol;
+        PlayerPrefs.SetFloat("musicVol", musicVol); //saves the master volume level
     }
 
 }

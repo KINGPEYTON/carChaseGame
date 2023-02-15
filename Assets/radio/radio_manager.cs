@@ -5,6 +5,8 @@ using System.IO;
 
 public class radio_manager : MonoBehaviour
 {
+    public main controller;
+
     public List<AudioClip> twoAMTurnUp;
     public List<string> twoAMTurnUpNames;
     public List<AudioClip> FUM;
@@ -41,7 +43,6 @@ public class radio_manager : MonoBehaviour
 
     public int radioID;
     public float totalTime;
-    public float musicVol;
     public AudioSource music;
     public AudioLowPassFilter musicStatic;
     public AudioDistortionFilter musicStatic2;
@@ -64,12 +65,13 @@ public class radio_manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        controller = GameObject.Find("contoller").GetComponent<main>();
+
         music = GameObject.Find("Main Camera").GetComponent<AudioSource>();
         musicStatic = music.GetComponent<AudioLowPassFilter>();
         musicStatic2 = music.GetComponent<AudioDistortionFilter>();
 
         radioID = PlayerPrefs.GetInt("radio", radioID); //sets the radio station to the one it was last on
-        musicVol = PlayerPrefs.GetFloat("musicVol", musicVol); //sets the radio volume to the one it was last on
 
         makeRadio(new List<AudioClip>(), new List<string>(), "???");
         makeRadio(twoAMTurnUp, twoAMTurnUpNames, "radio/89.3 2am Turn-up");
@@ -80,8 +82,8 @@ public class radio_manager : MonoBehaviour
         makeRadio(HOD, HODNames, "radio/99.1 HOD Headquarters Of Dance");
         makeRadio(myPOP, myPOPNames, "radio/100.3 My Pop");
         makeRadio(hopBop, hopBopNames, "radio/102.3 Hop Bop Radio");
-        //makeRadio(feelingsFM, feelingsFMNames, "radio/103.1 Feelings FM");
-        //makeRadio(cityVibes, cityVibesNames, "radio/103.9 City Vibes");
+        makeRadio(feelingsFM, feelingsFMNames, "radio/103.1 Feelings FM");
+        makeRadio(cityVibes, cityVibesNames, "radio/103.9 City Vibes");
         //makeRadio(countrysideRadio, countrysideRadioNames, "radio/105.7 Countryside Radio");
         //makeRadio(foreignMusic, foreignMusicNames, "radio/106.9 Foreign Music");
         //makeRadio(themeHQ, themeHQNames, "radio/107.5 Theme HQ");
@@ -95,6 +97,7 @@ public class radio_manager : MonoBehaviour
         if (music == null)
         {
             music = GameObject.Find("Main Camera").GetComponent<AudioSource>();
+            controller = GameObject.Find("contoller").GetComponent<main>();
             musicStatic = music.GetComponent<AudioLowPassFilter>();
             musicStatic2 = music.GetComponent<AudioDistortionFilter>();
             updateStation(radioID, 0);
@@ -127,6 +130,11 @@ public class radio_manager : MonoBehaviour
                 musicStatic2.distortionLevel = 0;
             }
         }
+
+        if(music.volume != controller.musicVol * controller.masterVol)
+        {
+            updateVol(controller.musicVol);
+        }
     }
 
     void ShuffleStations<T>(IList<T> list, IList<string> list2)
@@ -155,18 +163,25 @@ public class radio_manager : MonoBehaviour
         }
         radioID = station;
 
+        if (totalTime % radioTotalTimes[station] < radioTimes[station])
+        {
+            radioTimes[station] = 0;
+            radioList[station] = 0;
+        }
+
         if (radioID > 0)
         {
             while ((radioTimes[station] + (float)radios[station][radioList[station]].length) < totalTime % radioTotalTimes[station])
             {
+                if (totalTime % radioTotalTimes[station] < radioTimes[station])
+                {
+                    radioTimes[station] = 0;
+                    radioList[station] = 0;
+                }
+
+
                 radioTimes[station] += (float)radios[station][radioList[station]].length;
                 radioList[station]++;
-            }
-
-            if (totalTime % radioTotalTimes[station] < radioTimes[station])
-            {
-                radioTimes[station] = 0;
-                radioList[station] = 0;
             }
 
             music.clip = radios[station][radioList[station]];
@@ -178,18 +193,16 @@ public class radio_manager : MonoBehaviour
             music.Stop();
         }
 
-        music.volume = musicVol * GameObject.Find("contoller").GetComponent<main>().masterVol;
+        updateVol(controller.musicVol);
         staticTimer = staticTime;
 
         PlayerPrefs.SetInt("radio", radioID); //saves the new high score
-        PlayerPrefs.SetFloat("musicVol", musicVol); //saves the new high score
     }
 
     public void updateVol(float newVol)
     {
-        musicVol = newVol;
-        music.volume = musicVol * GameObject.Find("contoller").GetComponent<main>().masterVol;
-        PlayerPrefs.SetFloat("musicVol", musicVol); //saves the new high score
+        controller.changeMusicVol(newVol);
+        music.volume = controller.musicVol * controller.masterVol;
     }
 
     private void makeRadio(List<AudioClip> station, List<string> stationNames, string path)

@@ -8,6 +8,8 @@ public delegate void methodType();
 
 public class youSure : MonoBehaviour {
 
+	public main controller;
+
 	public methodType methodToCall;
 
 	public string message;
@@ -27,6 +29,8 @@ public class youSure : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		controller = GameObject.Find("contoller").GetComponent<main>();
+
 		inPos = false;
 		coverColor = 0;
 		targetPos = 642f;
@@ -86,7 +90,7 @@ public class youSure : MonoBehaviour {
 
 	public void yes(){
 		SimpleMethod(methodToCall);
-		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), GameObject.Find("contoller").GetComponent<main>().masterVol);
+		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
 
 		Destroy(gameObject);
 	}
@@ -94,6 +98,6 @@ public class youSure : MonoBehaviour {
 	public void no(){
 		inPos = true;
 		targetPos = -600;
-		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), GameObject.Find("contoller").GetComponent<main>().masterVol);
+		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
 	}
 }

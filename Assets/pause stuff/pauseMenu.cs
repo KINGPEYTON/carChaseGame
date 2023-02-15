@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class pauseMenu : MonoBehaviour
 {
     public GameObject areYouSureToCreate;
+    public GameObject settingsUI;
     public main contoller;
 
     public Image cover;
@@ -136,7 +137,7 @@ public class pauseMenu : MonoBehaviour
     {
         inPos = true;
         mainTargetPos = -500;
-        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
+        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
     }
 
     public void menu()
@@ -144,12 +145,13 @@ public class pauseMenu : MonoBehaviour
         youSure areYouSure = Instantiate(areYouSureToCreate, gameObject.transform).GetComponent<youSure>();
         areYouSure.methodToCall = manuMethod;
         areYouSure.message = "you want to exit to the main menu?";
-        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
+        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
     }
 
     public void settings()
     {
-        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
+        Instantiate(settingsUI);
+        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
     }
 
     void manuMethod()

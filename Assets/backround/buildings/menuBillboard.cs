@@ -23,7 +23,7 @@ public class menuBillboard : MonoBehaviour
         myButton = GetComponent<Button>();
 
         staticTimer = 1f;
-        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0,0,-10), controller.masterVol);
+        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0,0,-10), controller.masterVol  * controller.sfxVol);
         colorVar = 100;
     }
 
@@ -59,7 +59,7 @@ public class menuBillboard : MonoBehaviour
 
     public void click()
     {
-        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol);
+        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol  * controller.sfxVol);
         controller.newGame();
     }
 }

@@ -32,7 +32,7 @@ public class radio_menu : MonoBehaviour
     {
         manager = GameObject.Find("radioManager").GetComponent<radio_manager>();
 
-        vol.value = manager.musicVol;
+        vol.value = manager.controller.musicVol;
         volChange();
     }
 
@@ -58,7 +58,9 @@ public class radio_menu : MonoBehaviour
             }else
             {
                 stationText.text = radioNames[manager.radioID];
+                songText.text = radioText(manager.radioNames[manager.radioID][manager.radioList[manager.radioID]]);
             }
+
         }
         else
         {
@@ -71,6 +73,8 @@ public class radio_menu : MonoBehaviour
         {
             updateBars();
         }
+
+        vol.value = manager.controller.musicVol;
     }
 
     public void setStation(int station)
@@ -103,7 +107,7 @@ public class radio_menu : MonoBehaviour
 
     public void volChange()
     {
-        manager.musicVol = vol.value;
+        manager.controller.changeMusicVol(vol.value);
 
         volIcon.sprite = volIcons[(int)((1-vol.value)*4)];
 

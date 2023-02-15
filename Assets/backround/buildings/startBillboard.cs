@@ -76,7 +76,7 @@ public class startBillboard : MonoBehaviour
         settingsButton.interactable = false;
         statics.SetActive(true);
         staticTimer = 1f;
-        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0,0,-10), controller.masterVol);
+        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0,0,-10), controller.masterVol * controller.sfxVol);
     }
 
 }

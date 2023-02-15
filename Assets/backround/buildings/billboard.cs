@@ -6,7 +6,6 @@ public class billboard : buildings
 {
 
     public Sprite ad;
-
     public float adTimer;
 
     public GameObject adOBJ;
@@ -40,7 +39,7 @@ public class billboard : buildings
             setAd();
             adTimer = 100;
             staticTimer = 1f;
-            AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol);
+            AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         }
 
         if (staticTimer > 0)

@@ -8226,7 +8226,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1938774551}
         m_TargetAssemblyTypeName: main, Assembly-CSharp
-        m_MethodName: shopButton
+        m_MethodName: settingsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12853,14 +12853,6 @@ PrefabInstance:
     - target: {fileID: 4097127957120550974, guid: 9e7fbfb6ae8c9418f9af67a5d4911b9e, type: 3}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4097127957120550974, guid: 9e7fbfb6ae8c9418f9af67a5d4911b9e, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.55
-      objectReference: {fileID: 0}
-    - target: {fileID: 4097127957120550974, guid: 9e7fbfb6ae8c9418f9af67a5d4911b9e, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: 4097127957120550974, guid: 9e7fbfb6ae8c9418f9af67a5d4911b9e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20358,6 +20350,7 @@ MonoBehaviour:
   overBus: {fileID: 4640645863578781013, guid: 9b34c48b5f6c34d4e911000e4784ba0b, type: 3}
   bannedLanes: []
   carsPast: 0000000000000000
+  settingsUI: {fileID: 3914550148770872345, guid: 806e32ce56b4b452ca8aa7c11267be32, type: 3}
   menuAmbience: {fileID: 8300000, guid: 7501916f8c90c4e868d55484fcc27ea2, type: 3}
   gameAmbience: {fileID: 8300000, guid: 3d5927ae1d4c84c0d8f1c89b54858511, type: 3}
   menuSound: {fileID: 0}

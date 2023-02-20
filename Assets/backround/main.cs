@@ -21,7 +21,7 @@ public class main : MonoBehaviour
     public int coins; //amount of coins a player has collected in a game
     public int totalCoins; //amount of coins a player has in total
 
-    public GameObject coin; //coin gameobject to spawn
+    public GameObject[] coin; //coin gameobject to spawn
     public float coinTimer; //
 
     public GameObject pauseMenu;
@@ -41,7 +41,10 @@ public class main : MonoBehaviour
     public playerCar playerCar;
     public AudioClip startEngine;
 
-    public GameObject divider; //divider gameobject to spawn
+    public GameObject divider1; //divider gameobject to spawn
+    public GameObject divider2; //divider gameobject to spawn
+    public GameObject divider3; //divider gameobject to spawn
+    public GameObject divider4; //divider gameobject to spawn
     public float dividerTimer;
 
     public GameObject building; //building gameobject to spawn
@@ -141,10 +144,10 @@ public class main : MonoBehaviour
             if (dividerTimer > 15)
             {
                 //spawns a new yellow lane divider for each lane
-                Instantiate(divider, new Vector3(12, 0.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider, new Vector3(12, -1.25f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider, new Vector3(12, -3.75f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider1, new Vector3(12, 0.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider2, new Vector3(12, -1.25f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider3, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider4, new Vector3(12, -3.75f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
                 dividerTimer = 0;
             }
 
@@ -253,9 +256,9 @@ public class main : MonoBehaviour
             }
 
             coinTimer += Time.deltaTime * mph;
-            if(coinTimer > 100)
+            if(coinTimer > 350)
             {
-                Instantiate(coin, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
+                Instantiate(coin[Random.Range(0,coin.Length)], new Vector3(12, -1.85f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
                 coinTimer = 0;
             }
 

@@ -18,6 +18,12 @@ public class main : MonoBehaviour
     public float sfxVol;
     public float musicVol;
 
+    public int coins; //amount of coins a player has collected in a game
+    public int totalCoins; //amount of coins a player has in total
+
+    public GameObject coin; //coin gameobject to spawn
+    public float coinTimer; //
+
     public GameObject pauseMenu;
 
     public GameObject scoreBlimp;
@@ -95,16 +101,18 @@ public class main : MonoBehaviour
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
         menuSound = GameObject.Find("ambience").GetComponent<AudioSource>();
 
-        masterVol = PlayerPrefs.GetFloat("masterVol", masterVol); //sets high score to the one saved
-        sfxVol = PlayerPrefs.GetFloat("sfxVol", sfxVol); //sets high score to the one saved
-        musicVol = PlayerPrefs.GetFloat("musicVol", musicVol); //sets the radio volume to the one it was last on
+        masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
+        sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
+        musicVol = PlayerPrefs.GetFloat("musicVol", 1); //sets the radio volume to the one it was last on
 
         playing = false;
         isOver = false;
         scoreShowing = false;
         mph = 0; //sets inital mph
 
-        highScore = PlayerPrefs.GetInt("highscore", (int)highScore); //sets high score to the one saved
+        coins = 0;
+        highScore = PlayerPrefs.GetInt("highscore", 0); //sets high score to the one saved
+        totalCoins = PlayerPrefs.GetInt("coins", 0); //sets high score to the one saved
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
@@ -242,6 +250,13 @@ public class main : MonoBehaviour
                     carList = 0;
                 }
                 carTimer = 0;
+            }
+
+            coinTimer += Time.deltaTime * mph;
+            if(coinTimer > 100)
+            {
+                Instantiate(coin, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
+                coinTimer = 0;
             }
 
             if (billboards.ToArray()[0].transform.position.x < -9.25f)
@@ -446,6 +461,13 @@ public class main : MonoBehaviour
             sign = Instantiate(milestoneSigns[Random.Range(0, milestoneSigns.Length)], GameObject.Find("Signs").transform);
         }
         sign.GetComponentInChildren<TextMeshProUGUI>().text = milestone + "m";
+    }
+
+    public void collectCoin(int ammount)
+    {
+        coins += ammount;
+        totalCoins += ammount;
+        PlayerPrefs.SetInt("coins", totalCoins); //saves the total coins
     }
 
     public void changeMasterVol(float newVol)

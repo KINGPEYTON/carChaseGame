@@ -62,45 +62,50 @@ public class pauseMenu : MonoBehaviour
                 //print(coverColor);
                 cover.color = new Color32(36, 36, 36, (byte)coverColor);
                 coverColor += (Time.unscaledDeltaTime * (speedTime/10));
-            } else
+            } else if (coverColor > 175)
             {
-                cover.color = new Color32(36, 36, 36, 175);
+                coverColor = 175;
+                cover.color = new Color32(36, 36, 36, (byte)coverColor);
             }
             if (mainSign.transform.position.y < mainTargetPos)
             {
                 mainSign.transform.position = new Vector3(1389, mainCurPos, 0);
                 mainCurPos += (Time.unscaledDeltaTime * speedTime);
             }
-            else
+            else if (mainSign.transform.position.y > mainTargetPos)
             {
-                mainSign.transform.position = new Vector3(1389, 642, 0);
+                resumeCurPos = 642;
+                mainSign.transform.position = new Vector3(1389, mainCurPos, 0);
             }
             if (resumeSign.transform.position.x < resumeTargetPos)
             {
                 resumeSign.transform.position = new Vector3(resumeCurPos, 357.2f, 0);
                 resumeCurPos += (Time.unscaledDeltaTime * speedTime);
             }
-            else
+            else if (resumeSign.transform.position.x > resumeTargetPos)
             {
-                resumeSign.transform.position = new Vector3(364, 357.2f, 0);
+                resumeCurPos = 364;
+                resumeSign.transform.position = new Vector3(resumeCurPos, 357.2f, 0);
             }
             if (menuSign.transform.position.x > menuTargetPos)
             {
                 menuSign.transform.position = new Vector3(menuCurPos, 437.2f, 0);
                 menuCurPos -= (Time.unscaledDeltaTime * speedTime);
             }
-            else
+            else if (menuSign.transform.position.x < menuTargetPos)
             {
-                menuSign.transform.position = new Vector3(2404, 437.2f, 0);
+                menuCurPos = 2404;
+                menuSign.transform.position = new Vector3(menuCurPos, 437.2f, 0);
             }
             if (settingsSign.transform.position.y < settingsTargetPos)
             {
                 settingsSign.transform.position = new Vector3(1150, settingsCurPos, 0);
                 settingsCurPos += (Time.unscaledDeltaTime * speedTime);
             }
-            else
+            else if (settingsSign.transform.position.y > settingsTargetPos)
             {
-                settingsSign.transform.position = new Vector3(1150, 92, 0);
+                settingsCurPos = 92;
+                settingsSign.transform.position = new Vector3(1150, settingsCurPos, 0);
             }
         }
         else

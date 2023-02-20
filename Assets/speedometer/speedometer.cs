@@ -9,8 +9,9 @@ public class speedometer : MonoBehaviour
     public main controller;
 
     public TextMeshProUGUI speedText;
-    public TextMeshProUGUI unitText;
+    public TextMeshProUGUI coinText;
     public Image speedMeter;
+    public ParticleSystem smoke;
 
     public float startSpeed;
     public float maxSpeed;
@@ -25,6 +26,8 @@ public class speedometer : MonoBehaviour
 
     public float endTextTimer;
 
+    public float coinTextTimer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +35,8 @@ public class speedometer : MonoBehaviour
 
         startSpeed = controller.playerCar.startMph;
         maxSpeed = startSpeed + ((1 / controller.playerCar.upMph) * 77.0f);
+
+        smoke.enableEmission = false;
 
         endTextTimer = 1;
     }
@@ -56,6 +61,16 @@ public class speedometer : MonoBehaviour
             {
                 speedText.text = "WTF";
             }
+
+            if (coinTextTimer < 1.5)
+            {
+                coinText.text = ((int)((controller.totalCoins / 1.5) * (1.5 - coinTextTimer))).ToString();
+                coinTextTimer += Time.deltaTime;
+            }
+            else
+            {
+                coinText.text = controller.coins.ToString();
+            }
         }
         else if (controller.isOver)
         {
@@ -65,10 +80,13 @@ public class speedometer : MonoBehaviour
                 endTextTimer = 0;
             }
             endTextTimer += Time.deltaTime;
+            coinText.text = controller.coins.ToString();
+            smoke.enableEmission = true;
         }
         else
         {
             speedText.text = "---";
+            coinText.text = controller.totalCoins.ToString();
         }
         speed1.text = (Mathf.Round(((int)((maxSpeed / 7) * 0.5f)) / 5) * 5).ToString();
         speed2.text = (Mathf.Round(((int)((maxSpeed / 7) * 1.5f)) / 5) * 5).ToString();

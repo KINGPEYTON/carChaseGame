@@ -6,6 +6,8 @@ public class roadDivider : MonoBehaviour
 {
     public GameObject controller;
 
+    public float speed;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +17,7 @@ public class roadDivider : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = transform.position - new Vector3(Time.deltaTime/5 * controller.GetComponent<main>().mph, 0, 0); //moves divider across the screen
+        transform.position = transform.position - new Vector3(Time.deltaTime/speed * controller.GetComponent<main>().mph, 0, 0); //moves divider across the screen
         //Debug.Log("Hello: ");
         if (transform.position.x <= -12) //checks if its offscreen
         { 

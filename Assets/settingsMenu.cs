@@ -50,7 +50,7 @@ public class settingsMenu : MonoBehaviour
         exitTargetPos = 2257;
         mainTargetPos = 542;
 
-        settingsCurPos = -1500;
+        settingsCurPos = -1750;
         exitCurPos = 5500;
         mainCurPos = -3500;
 
@@ -71,57 +71,58 @@ public class settingsMenu : MonoBehaviour
                 cover.color = new Color32(36, 36, 36, (byte)coverColor);
                 coverColor += (Time.unscaledDeltaTime * (speedTime / 20));
             }
-            else
+            else if (coverColor > 175)
             {
-                cover.color = new Color32(36, 36, 36, 175);
                 coverColor = 175;
+                cover.color = new Color32(36, 36, 36, (byte)coverColor);
             }
             if (scrollableSigns.transform.position.y < mainTargetPos)
             {
                 scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0);
-                mainCurPos += (Time.unscaledDeltaTime * speedTime);
                 settingsSlider.gameObject.transform.position = new Vector3(1389, mainCurPos - 575, 0);
+                mainCurPos += (Time.unscaledDeltaTime * speedTime);
             }
-            else
+            else if (scrollableSigns.transform.position.y > mainTargetPos)
             {
-                scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, 542, 0);
-                settingsSlider.gameObject.transform.position = new Vector3(1389, 67, 0);
                 mainCurPos = 542;
+                scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0);
+                settingsSlider.gameObject.transform.position = new Vector3(1389, mainCurPos-475, 0);
             }
             if (exitSign.transform.position.x > exitTargetPos)
             {
                 exitSign.transform.position = new Vector3(exitCurPos, 670, 0);
                 exitCurPos -= (Time.unscaledDeltaTime * speedTime);
             }
-            else
+            else if (exitSign.transform.position.x < exitTargetPos)
             {
-                exitSign.transform.position = new Vector3(2257, 670, 0);
                 exitCurPos = 2257;
+                exitSign.transform.position = new Vector3(exitCurPos, 670, 0);
             }
             if (settingsSign.transform.position.x < settingsTargetPos)
             {
                 settingsSign.transform.position = new Vector3(settingsCurPos, 672f, 0);
                 settingsCurPos += (Time.unscaledDeltaTime * speedTime);
             }
-            else
+            else if (settingsSign.transform.position.x < settingsTargetPos)
             {
-                settingsSign.transform.position = new Vector3(1137, 672, 0);
                 settingsCurPos = 1137;
+                settingsSign.transform.position = new Vector3(settingsCurPos, 672, 0);
             }
+
 
             if (slideCurPos > slideTargetPos)
             {
                 scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0); ;
-                slideCurPos -= (Time.unscaledDeltaTime * speedTime);
-                if(Mathf.Abs(slideCurPos - slideTargetPos) < 50)
+                slideCurPos -= (Time.unscaledDeltaTime * (speedTime/100));
+                if(Mathf.Abs(slideCurPos - slideTargetPos) < 500)
                 {
                     slideCurPos = slideTargetPos;
                 }
             } else if (slideCurPos < slideTargetPos)
             {
                 scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0); ;
-                slideCurPos += (Time.unscaledDeltaTime * speedTime);
-                if (Mathf.Abs(slideCurPos - slideTargetPos) < 50)
+                slideCurPos += (Time.unscaledDeltaTime * (speedTime/100));
+                if (Mathf.Abs(slideCurPos - slideTargetPos) < 500)
                 {
                     slideCurPos = slideTargetPos;
                 }

@@ -142,6 +142,12 @@ public class playerCar : MonoBehaviour
                     AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
                 }
                 crash(); //what happens when the player crashes
+            } else if (collision.tag == "coin")
+            {
+                if (!collision.GetComponent<coins>().collected)
+                {
+                    collision.GetComponent<coins>().pickup();
+                }
             }
         }
     }

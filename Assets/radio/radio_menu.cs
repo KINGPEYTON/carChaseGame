@@ -79,28 +79,24 @@ public class radio_menu : MonoBehaviour
 
     public void setStation(int station)
     {
-        prevRadio = getRadio();
-        manager.updateStation(station, 2.0f);
-        radioChangeTimer = 0.75f;
-        targetRadio = getRadio();
-        songText.text = "";
+        changeStation(manager.radioID, 2.0f);
     }
 
     public void nextStation()
     {
-        prevRadio = getRadio();
-        manager.updateStation(manager.radioID + 1, 2.0f);
-        radioChangeTimer = 0.75f;
-        targetRadio = getRadio();
-        songText.text = "";
+        changeStation(manager.radioID + 1, 2.0f);
     }
 
     public void prevStation()
     {
+        changeStation(manager.radioID - 1, 2.0f);
+    }
 
+    public void changeStation(int station, float time)
+    {
         prevRadio = getRadio();
-        manager.updateStation(manager.radioID - 1, 2.0f);
-        radioChangeTimer = 0.75f;
+        manager.updateStation(station, time);
+        radioChangeTimer = time/2.5f;
         targetRadio = getRadio();
         songText.text = "";
     }

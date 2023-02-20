@@ -86,7 +86,7 @@ public class radio_manager : MonoBehaviour
         makeRadio(cityVibes, cityVibesNames, "radio/103.9 City Vibes");
         //makeRadio(countrysideRadio, countrysideRadioNames, "radio/105.7 Countryside Radio");
         //makeRadio(foreignMusic, foreignMusicNames, "radio/106.9 Foreign Music");
-        //makeRadio(themeHQ, themeHQNames, "radio/107.5 Theme HQ");
+        makeRadio(themeHQ, themeHQNames, "radio/107.5 Theme HQ");
     }
 
     // Update is called once per frame

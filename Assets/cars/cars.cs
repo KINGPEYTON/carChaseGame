@@ -20,22 +20,24 @@ public class cars : MonoBehaviour
 
     public float turningTimer;
     public float turnTime; // the time it shoul take the player car to switch lanes
-    public int blinkTime; 
     public float targPos;
     public float disMove; //speed the car has to move to get to targetPos on time
     public float overshoot; // keeps track of the distance moved so you know it wont go too far
 
+    public int blinkTime;
+    public float speedMin;
+    public float speedMax;
+
     // Start is called before the first frame update
     void Start()
     {
-        speed = Random.Range(12, 18);
+        speed = Random.Range(speedMin, speedMax);
         controller = GameObject.Find("contoller").GetComponent<main>();
         GetComponent<SpriteRenderer>().sprite = skins[Random.Range(0, skins.Length)]; //set the skin to a random one at spawn
         setLane();
 
 
         turnTime = 3.5f;
-        blinkTime = 7;
         switchLane(blinkTime);
     }
 

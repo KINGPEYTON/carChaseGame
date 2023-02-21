@@ -8,11 +8,12 @@ public class overBus : bus
     public TextMeshProUGUI highscore;
 
     // Start is called before the first frame update
-    public override void Start()
+    void OnEnable()
     {
-        base.Start();
-        speed = 9;
+        speedMin = 9;
+        speedMax = 9;
 
+        controller = GameObject.Find("contoller").GetComponent<main>();
         highscore.text = "High Score: " + (int)controller.highScore + "m";
     }
 

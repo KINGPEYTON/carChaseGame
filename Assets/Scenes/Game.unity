@@ -20337,6 +20337,7 @@ MonoBehaviour:
   - {fileID: 325261401243915131, guid: 64c9ec6365ad54e68865f9ad927832f6, type: 3}
   - {fileID: 2715033560204347904, guid: 7982a01123e1f4ce69f479db61450936, type: 3}
   - {fileID: 5290505348407048222, guid: 2a1fc0ee44c574423900e993fb16c980, type: 3}
+  - {fileID: 3392975029318256513, guid: dfeaffdf7d8594e81971665c4f9d0c81, type: 3}
   coinTimer: 200
   pauseMenu: {fileID: 5105386078417603160, guid: f178d89f29680474f92f877c1a435f86, type: 3}
   scoreBlimp: {fileID: 590628916}

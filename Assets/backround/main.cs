@@ -129,7 +129,7 @@ public class main : MonoBehaviour
     {
         if (playing) //if in a game 
         {
-            if (mph < playerCar.startMph)
+            if (mph < playerCar.startMph) //checks if the game is in its starting animation
             {
                 mph += (mph/2 + 15.0f) * Time.deltaTime;
             }
@@ -140,201 +140,30 @@ public class main : MonoBehaviour
 
             score += (mph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
 
-            dividerTimer += Time.deltaTime * mph; //timer to spawn new lane divider
-            if (dividerTimer > 15)
-            {
-                //spawns a new yellow lane divider for each lane
-                Instantiate(divider1, new Vector3(12, 0.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider2, new Vector3(12, -1.25f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider3, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                Instantiate(divider4, new Vector3(12, -3.75f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-                dividerTimer = 0;
-            }
+            //make road elements
+            spawnDivider();
+            spawnGuard();
 
-            guardTimer += Time.deltaTime * mph; //timer to spawn new lane divider
-            if (guardTimer > 2)
-            {
-                //spawns a new rail guard for the edge of the road
-                Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                Instantiate(guard, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                guardTimer = 0;
-            }
+            //make backround elements
+            spawnFrontBuilding();
+            spawnBackBuilding();
+            spawnSkyline();
+            spawnCloud();
 
-            //front buildings
-            buildingTimer1 += Time.deltaTime * mph; //timer that spawns a new builing
-            if (buildingTimer1 > 30.5)
-            {
-                if (buildingList1 < 4)
-                {
-                    Instantiate(building1, new Vector3(12, 0.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                    buildingList1++;
-                    buildingTimer1 = 0;
-                }
-                else
-                {
-                    if (billboardList1 < 3)
-                    {
-                        GameObject bboard = Instantiate(billboard1, new Vector3(12, -2.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                        bboard.GetComponent<buildings>().isBillboard = true;
-                        billboards.Add(bboard);
-                        buildingList1 = 0;
-                        buildingTimer1 = 0;
-                        billboardList1++;
-                    }
-                    else
-                    {
-                        GameObject bboard = Instantiate(bigBillboard1, new Vector3(13.125f, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                        bboard.GetComponent<buildings>().isBigBillboard = true;
-                        billboards.Add(bboard);
-                        buildingList1 = 0;
-                        buildingTimer1 = -18.5f;
-                        billboardList1 = 0;
-                    }
-                }
-            }
+            //make game element
+            spawnGameCar();
+            spawnCoin();
 
-            //backround buildings
-            buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
-            if (buildingTimer > 25.5)
-            {
-                if (buildingList < 6)
-                {
-                    Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                    buildingList++;
-                    buildingTimer = 0;
-                }
-                else
-                {
-                    if (billboardList < 3)
-                    {
-                        GameObject bboard = Instantiate(billboard, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                        bboard.GetComponent<buildings>().isBillboard = true;
-                        buildingList = 0;
-                        buildingTimer = -25;
-                        billboardList++;
-                    }
-                    else
-                    {
-                        GameObject bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                        bboard.GetComponent<buildings>().isBigBillboard = true;
-                        buildingList = 0; buildingTimer = -25;
-                        billboardList = 0;
-                    }
-                }
-            }
-
-            //skyline buildings
-            skylineTimer += Time.deltaTime * mph; //timer that spawns a new builing
-            if (skylineTimer > 150)
-            {
-                Instantiate(skyline, new Vector3(13.5f, 2.8f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                skylineTimer = 0;
-            }
-
-            //clouds
-            cloudTimer += Time.deltaTime * mph; //timer that spawns a new builing
-            if (cloudTimer > 925)
-            {
-                Instantiate(cloud, new Vector3(13.5f, Random.Range(2.5f, 5.8f), 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                cloudTimer = 0;
-            }
-
-
-            carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
-            if (carTimer > 80)
-            {
-                if (carList < 7) {
-                    Instantiate(cars, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-                    carList++;
-                }
-                else
-                {
-                    Instantiate(bus, new Vector3(13, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-                    carList = 0;
-                }
-                carTimer = 0;
-            }
-
-            coinTimer += Time.deltaTime * mph;
-            if(coinTimer > 350)
-            {
-                Instantiate(coin[Random.Range(0,coin.Length)], new Vector3(12, -1.85f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
-                coinTimer = 0;
-            }
-
-            if (billboards.ToArray()[0].transform.position.x < -9.25f)
-            {
-                billboards.Remove(billboards.ToArray()[0]);
-            }
-
-            if (!scoreShowing)
-            {
-                string scoretxt = scoreText.text = "Don't Crash Bro";
-                scoreText.text = scoretxt.Substring(textNum);
-
-                if (textNum >= scoretxt.Length-1)
-                {
-                    textNum = 0;
-                    scoreShowing = true;
-                }
-
-            } else
-            {
-                string scoretxt = "Score: " + (int)score + "m";
-                if (textNum <= scoretxt.Length-1)
-                {
-                    scoreText.text = scoretxt.Substring(0, textNum);
-                } else
-                {
-                    scoreText.text = scoretxt;
-                }
-            }
-
-            textTimer += Time.deltaTime;
-
-            if (textTimer >= 0.10f)
-            {
-                textTimer = 0;
-                textNum++;
-            }
+            //set blimp text
+            blimpText();
         }
         else //if game isnt playing
         {
-            carTimer += Time.deltaTime; //timer to spawn a new car after game is over
-            if (carTimer > 1.0f) 
-            {
-                GameObject newCar = this.gameObject;
-                if (!isOver)
-                {
-                    newCar = Instantiate(cars, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
-                    carTimer = 0;
-                } else
-                {
-                    if (carList < 3)
-                    {
-                        newCar = Instantiate(cars, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
-                        carList++;
-                    }
-                    else
-                    {
-                        newCar = Instantiate(overBus, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("Extra").transform); //spawn new car in a random lane behind the player
-                        carList = 0;
-                    }
-                }
-
-                newCar.GetComponent<cars>().setLane();
-
-                if (newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
-                {
-                    carsPast.Add(newCar.GetComponent<cars>().lane);
-                    carsPast.Remove(carsPast.ToArray()[0]);
-                }
-
-                carTimer = 0;
-            }
+            spawnMenuCar();
         }
 
 
+        // update blimp
         if ((scoreBlimp.transform.position.x < -7.79f || scoreBlimp.transform.position.x > -4.82f) && Mathf.Abs(scoreBlimp.transform.position.x - newBlimpLocation.x) > 1.0) //if blimp went out of bounce on the X
         {
             updateBlimpX(); // find new target location for blimp
@@ -344,11 +173,242 @@ public class main : MonoBehaviour
             updateBlimpY(); // find new target location for blimp
         }
 
-        scoreBlimp.transform.position += blimpSpeed * Time.deltaTime;
+        scoreBlimp.transform.position += blimpSpeed * Time.deltaTime; // updates blimp position
 
+        //makes milestone sign
         if (score > (milestone + 210))
         {
             setMilestone();
+        }
+    }
+
+    void spawnDivider()
+    {
+        dividerTimer += Time.deltaTime * mph; //timer to spawn new lane divider
+        if (dividerTimer > 15)
+        {
+            //spawns a new yellow lane divider for each lane
+            Instantiate(divider1, new Vector3(12, 0.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+            Instantiate(divider2, new Vector3(12, -1.25f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+            Instantiate(divider3, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+            Instantiate(divider4, new Vector3(12, -3.75f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+            dividerTimer = 0;
+        }
+    }
+
+    void spawnGuard()
+    {
+        guardTimer += Time.deltaTime * mph; //timer to spawn new road guard 
+        if (guardTimer > 2)
+        {
+            //spawns a new rail guard for the edge of the road
+            Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+            Instantiate(guard, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+            guardTimer = 0;
+        }
+    }
+
+    void spawnFrontBuilding()        //front buildings
+    {
+        buildingTimer1 += Time.deltaTime * mph; //timer that spawns a new builing
+        if (buildingTimer1 > 30.5)
+        {
+            if (buildingList1 < 4)
+            {
+                Instantiate(building1, new Vector3(12, 0.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                buildingList1++;
+                buildingTimer1 = 0;
+            }
+            else
+            {
+                if (billboardList1 < 3)
+                {
+                    GameObject bboard = Instantiate(billboard1, new Vector3(12, -2.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    bboard.GetComponent<buildings>().isBillboard = true;
+                    billboards.Add(bboard);
+                    buildingList1 = 0;
+                    buildingTimer1 = 0;
+                    billboardList1++;
+                }
+                else
+                {
+                    GameObject bboard = Instantiate(bigBillboard1, new Vector3(13.125f, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    bboard.GetComponent<buildings>().isBigBillboard = true;
+                    billboards.Add(bboard);
+                    buildingList1 = 0;
+                    buildingTimer1 = -18.5f;
+                    billboardList1 = 0;
+                }
+            }
+        }
+    }
+
+    void spawnBackBuilding()        //backround buildings
+    {
+        buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
+        if (buildingTimer > 25.5)
+        {
+            if (buildingList < 6)
+            {
+                Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                buildingList++;
+                buildingTimer = 0;
+            }
+            else
+            {
+                if (billboardList < 3)
+                {
+                    GameObject bboard = Instantiate(billboard, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    bboard.GetComponent<buildings>().isBillboard = true;
+                    buildingList = 0;
+                    buildingTimer = -25;
+                    billboardList++;
+                }
+                else
+                {
+                    GameObject bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    bboard.GetComponent<buildings>().isBigBillboard = true;
+                    buildingList = 0; buildingTimer = -25;
+                    billboardList = 0;
+                }
+            }
+        }
+    }
+
+    void spawnSkyline()        //skyline buildings
+    {
+        skylineTimer += Time.deltaTime * mph; //timer that spawns a new builing
+        if (skylineTimer > 150)
+        {
+            Instantiate(skyline, new Vector3(13.5f, 2.8f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+            skylineTimer = 0;
+        }
+    }
+
+    void spawnCloud()        //clouds
+
+    {
+        cloudTimer += Time.deltaTime * mph; //timer that spawns a new builing
+        if (cloudTimer > 925)
+        {
+            Instantiate(cloud, new Vector3(13.5f, Random.Range(2.5f, 5.8f), 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+            cloudTimer = 0;
+        }
+    }
+
+    void spawnGameCar()
+    {
+        carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
+        if (carTimer > 80)
+        {
+            if (carList < 7)
+            {
+                spawnNormalCar();
+                carList++;
+            }
+            else
+            {
+                carList = 0;
+            }
+            carTimer = 0;
+        }
+    }
+
+    void spawnMenuCar()
+    {
+        carTimer += Time.deltaTime; //timer to spawn a new car after game is over
+        if (carTimer > 1.0f)
+        {
+            GameObject newCar = this.gameObject;
+            if (!isOver)
+            {
+                newCar = Instantiate(cars, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                carTimer = 0;
+            }
+            else
+            {
+                if (carList < 3)
+                {
+                    newCar = Instantiate(cars, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                    carList++;
+                }
+                else
+                {
+                    newCar = Instantiate(overBus, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("Extra").transform); //spawn new car in a random lane behind the player
+                    carList = 0;
+                }
+            }
+
+            newCar.GetComponent<cars>().setLane();
+
+            if (newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
+            {
+                carsPast.Add(newCar.GetComponent<cars>().lane);
+                carsPast.Remove(carsPast[0]);
+            }
+
+            carTimer = 0;
+        }
+    }
+
+    void spawnNormalCar()
+    {
+        Instantiate(cars, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+    }
+
+    void spawnSpecalCar()
+    {
+        Instantiate(bus, new Vector3(13, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+    }
+
+    void spawnCoin()
+    {
+        coinTimer += Time.deltaTime * mph;
+        if (coinTimer > 350)
+        {
+            Instantiate(coin[Random.Range(0, coin.Length)], new Vector3(12, -1.85f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
+            coinTimer = 0;
+        }
+
+        if (billboards.ToArray()[0].transform.position.x < -9.25f)
+        {
+            billboards.Remove(billboards.ToArray()[0]);
+        }
+    }
+
+    void blimpText()
+    {
+        if (!scoreShowing)
+        {
+            string scoretxt = scoreText.text = "Don't Crash Bro";
+            scoreText.text = scoretxt.Substring(textNum);
+
+            if (textNum >= scoretxt.Length - 1)
+            {
+                textNum = 0;
+                scoreShowing = true;
+            }
+
+        }
+        else
+        {
+            string scoretxt = "Score: " + (int)score + "m";
+            if (textNum <= scoretxt.Length - 1)
+            {
+                scoreText.text = scoretxt.Substring(0, textNum);
+            }
+            else
+            {
+                scoreText.text = scoretxt;
+            }
+        }
+
+        textTimer += Time.deltaTime;
+
+        if (textTimer >= 0.10f)
+        {
+            textTimer = 0;
+            textNum++;
         }
     }
 

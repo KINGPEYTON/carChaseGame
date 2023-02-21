@@ -84,8 +84,8 @@ public class radio_manager : MonoBehaviour
         makeRadio(hopBop, hopBopNames, "radio/102.3 Hop Bop Radio");
         makeRadio(feelingsFM, feelingsFMNames, "radio/103.1 Feelings FM");
         makeRadio(cityVibes, cityVibesNames, "radio/103.9 City Vibes");
-        //makeRadio(countrysideRadio, countrysideRadioNames, "radio/105.7 Countryside Radio");
-        //makeRadio(foreignMusic, foreignMusicNames, "radio/106.9 Foreign Music");
+        makeRadio(countrysideRadio, countrysideRadioNames, "radio/105.7 Countryside Radio");
+        makeRadio(foreignMusic, foreignMusicNames, "radio/106.9 Foreign Music");
         makeRadio(themeHQ, themeHQNames, "radio/107.5 Theme HQ");
     }
 

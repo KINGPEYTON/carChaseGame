@@ -74,7 +74,7 @@ public class pauseMenu : MonoBehaviour
             }
             else if (mainSign.transform.position.y > mainTargetPos)
             {
-                resumeCurPos = 642;
+                mainCurPos = 642;
                 mainSign.transform.position = new Vector3(1389, mainCurPos, 0);
             }
             if (resumeSign.transform.position.x < resumeTargetPos)

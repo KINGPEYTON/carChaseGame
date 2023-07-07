@@ -78,9 +78,11 @@ public class main : MonoBehaviour
     public GameObject milestoneBigSign;
     public int milestone;
 
-    public GameObject cars; //car gameobject to spawn
+    public GameObject regCar; //car gameobject to spawn
+    public GameObject sportCar; //car gameobject to spawn
     public float carList; //how many cars have spawned since the last bus
     public float carTimer;
+    public float specalCarOdds;
 
     public GameObject bus; //bus gmaeobject to spawn
     public GameObject overBus; //bus gmaeobject to spawn
@@ -116,6 +118,8 @@ public class main : MonoBehaviour
         coins = 0;
         highScore = PlayerPrefs.GetInt("highscore", 0); //sets high score to the one saved
         totalCoins = PlayerPrefs.GetInt("coins", 0); //sets high score to the one saved
+
+        specalCarOdds = 7;
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
@@ -301,13 +305,14 @@ public class main : MonoBehaviour
         carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
         if (carTimer > 80)
         {
-            if (carList < 7)
+            if (carList < specalCarOdds)
             {
                 spawnNormalCar();
                 carList++;
             }
             else
             {
+                spawnSpecalCar();
                 carList = 0;
             }
             carTimer = 0;
@@ -322,14 +327,14 @@ public class main : MonoBehaviour
             GameObject newCar = this.gameObject;
             if (!isOver)
             {
-                newCar = Instantiate(cars, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                newCar = Instantiate(regCar, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                 carTimer = 0;
             }
             else
             {
                 if (carList < 3)
                 {
-                    newCar = Instantiate(cars, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                    newCar = Instantiate(regCar, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                     carList++;
                 }
                 else
@@ -353,7 +358,15 @@ public class main : MonoBehaviour
 
     void spawnNormalCar()
     {
-        Instantiate(cars, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        int odds = Random.Range(0, 25);
+        if (odds < 23)
+        {
+            Instantiate(regCar, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        }
+        else
+        {
+            Instantiate(sportCar, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        }
     }
 
     void spawnSpecalCar()

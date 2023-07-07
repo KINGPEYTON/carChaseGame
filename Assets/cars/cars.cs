@@ -189,7 +189,7 @@ public class cars : MonoBehaviour
         }
         else
         {
-            switchTimer = 100;
+            switchTimer = 1000;
         }
     }
 }

@@ -20385,9 +20385,11 @@ MonoBehaviour:
   - {fileID: 5855905677727291259, guid: 25d88c05c4f9c49f289e333c89c3633c, type: 3}
   milestoneBigSign: {fileID: 6197188019286433716, guid: c340fa8682f4248d38f67eddcdb3ace8, type: 3}
   milestone: 0
-  cars: {fileID: 4097127957120550962, guid: 9e7fbfb6ae8c9418f9af67a5d4911b9e, type: 3}
+  regCar: {fileID: 4097127957120550962, guid: 9e7fbfb6ae8c9418f9af67a5d4911b9e, type: 3}
+  sportCar: {fileID: 4097127957120550962, guid: 7b9e757758d7a4a6d9890389fec49f4d, type: 3}
   carList: 0
   carTimer: 6
+  specalCarOdds: 0
   bus: {fileID: 8227202790723308854, guid: e52a557c186a145838b61dfb5ae88030, type: 3}
   overBus: {fileID: 4640645863578781013, guid: 9b34c48b5f6c34d4e911000e4784ba0b, type: 3}
   bannedLanes: []

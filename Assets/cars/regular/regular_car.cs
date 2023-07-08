@@ -9,5 +9,6 @@ public class regular_car : cars
         blinkTime = 25;
         speedMin = 12;
         speedMax = 18;
+        odds = 0;
     }
 }

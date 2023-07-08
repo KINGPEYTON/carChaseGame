@@ -125,6 +125,7 @@ MonoBehaviour:
   blinkTime: 0
   speedMin: 0
   speedMax: 0
+  odds: 0.05
 --- !u!61 &4097127957120550973
 BoxCollider2D:
   m_ObjectHideFlags: 0

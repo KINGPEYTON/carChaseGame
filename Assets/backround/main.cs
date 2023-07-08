@@ -78,9 +78,10 @@ public class main : MonoBehaviour
     public GameObject milestoneBigSign;
     public int milestone;
 
-    public GameObject regCar; //car gameobject to spawn
-    public GameObject sportCar; //car gameobject to spawn
-    public float carList; //how many cars have spawned since the last bus
+    public List<GameObject> carsList;
+    public List<float> carsOdds;
+    public List<float> carsCurrOdds;
+    public int carList; //how many cars have spawned since the last bus
     public float carTimer;
     public float specalCarOdds;
 
@@ -126,6 +127,8 @@ public class main : MonoBehaviour
 
         menuSound.clip = menuAmbience;
         menuSound.Play();
+
+        setCarOdds();
     }
 
     // Update is called once per frame
@@ -319,6 +322,25 @@ public class main : MonoBehaviour
         }
     }
 
+    GameObject getCarFromOdds()
+    {
+        float newCarOdds = Random.Range(0.0f, 1.0f);
+        float oddsAccum = 0.0f;
+
+        for(int i = 0; i < carsOdds.Count; i++)
+        {
+            oddsAccum += carsOdds[i];
+            if(oddsAccum > newCarOdds)
+            {
+                changeOdds(i, carsOdds, carsCurrOdds);
+                return carsList[i];
+            }
+        }
+
+        changeOdds(0, carsOdds, carsCurrOdds);
+        return carsList[0];
+    }
+
     void spawnMenuCar()
     {
         carTimer += Time.deltaTime; //timer to spawn a new car after game is over
@@ -327,14 +349,14 @@ public class main : MonoBehaviour
             GameObject newCar = this.gameObject;
             if (!isOver)
             {
-                newCar = Instantiate(regCar, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                newCar = Instantiate(getCarFromOdds(), new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                 carTimer = 0;
             }
             else
             {
                 if (carList < 3)
                 {
-                    newCar = Instantiate(regCar, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                    newCar = Instantiate(getCarFromOdds(), new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                     carList++;
                 }
                 else
@@ -358,15 +380,7 @@ public class main : MonoBehaviour
 
     void spawnNormalCar()
     {
-        int odds = Random.Range(0, 25);
-        if (odds < 23)
-        {
-            Instantiate(regCar, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-        }
-        else
-        {
-            Instantiate(sportCar, new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-        }
+        Instantiate(getCarFromOdds(), new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
     }
 
     void spawnSpecalCar()
@@ -564,4 +578,23 @@ public class main : MonoBehaviour
         PlayerPrefs.SetFloat("musicVol", musicVol); //saves the master volume level
     }
 
+    private void setCarOdds()
+    {
+        for (int i = 0; i < carsList.Count; i++)
+        {
+            float addOdds = carsList[i].GetComponent<cars>().odds;
+            carsOdds.Add(addOdds);
+            carsCurrOdds.Add(addOdds);
+        }
+    }
+
+    private void changeOdds(int index, List<float> setList, List<float> currentList)
+    {
+        for(int i = 0; i < setList.Count; i++)
+        {
+            currentList[i] += setList[i] / 3;
+        }
+
+        currentList[index] = setList[index] / 2;
+    }
 }

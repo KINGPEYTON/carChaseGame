@@ -28,6 +28,8 @@ public class cars : MonoBehaviour
     public float speedMin;
     public float speedMax;
 
+    public float odds;
+
     // Start is called before the first frame update
     void Start()
     {

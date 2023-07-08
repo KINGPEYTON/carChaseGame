@@ -6,8 +6,9 @@ public class sport_car : cars
 {
     void OnEnable()
     {
-        blinkTime = 0;
+        blinkTime = 1;
         speedMin = 18;
         speedMax = 23;
+        odds = 0.05f;
     }
 }

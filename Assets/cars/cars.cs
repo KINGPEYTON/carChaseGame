@@ -75,7 +75,7 @@ public class cars : MonoBehaviour
                 transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / speed), 0, 0); //car movment in the start up animation
             }
 
-            if (turnDown != null && turnDown != null) // checks if its a car that can turn
+            if (blinkTime > -1) // checks if its a car that can turn
             {
                 turnDown.SetActive(switchDown && turningTimer % 1 < 0.5f); //turns the down blinker on if it should
                 turnUp.SetActive(switchUp && turningTimer % 1 < 0.5f); //turns the up blinker on if it should
@@ -175,7 +175,7 @@ public class cars : MonoBehaviour
         GetComponent<SpriteRenderer>().sortingOrder = 3 + lane;
         targPos = transform.position.y;
 
-        if (turnDown != null && turnDown != null)
+        if (blinkTime > -1)
         {
             turnUp.GetComponent<SpriteRenderer>().sortingOrder = 2 + lane;
             turnDown.GetComponent<SpriteRenderer>().sortingOrder = 4 + lane;

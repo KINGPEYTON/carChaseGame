@@ -50,6 +50,9 @@ public class main : MonoBehaviour
     public GameObject building; //building gameobject to spawn
     public GameObject billboard; //building gameobject to spawn
     public GameObject bigBillboard; //building gameobject to spawn
+    public List<Sprite> buildingSkins;
+    public List<float> buildingsOdds;
+    public List<float> buildingsCurrOdds;
     public float buildingList;
     public float billboardList;
     public float buildingTimer;
@@ -57,6 +60,9 @@ public class main : MonoBehaviour
     public GameObject building1; //building gameobject to spawn
     public GameObject billboard1; //building gameobject to spawn
     public GameObject bigBillboard1; //building gameobject to spawn
+    public List<Sprite> building1Skins;
+    public List<float> buildings1Odds;
+    public List<float> buildings1CurrOdds;
     public float buildingList1;
     public float billboardList1;
     public float buildingTimer1;
@@ -120,7 +126,7 @@ public class main : MonoBehaviour
         highScore = PlayerPrefs.GetInt("highscore", 0); //sets high score to the one saved
         totalCoins = PlayerPrefs.GetInt("coins", 0); //sets high score to the one saved
 
-        specalCarOdds = 7;
+        specalCarOdds = 0.05f;
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
@@ -129,6 +135,8 @@ public class main : MonoBehaviour
         menuSound.Play();
 
         setCarOdds();
+        setBuildingOdds();
+        setBuilding1Odds();
     }
 
     // Update is called once per frame
@@ -222,7 +230,8 @@ public class main : MonoBehaviour
         {
             if (buildingList1 < 4)
             {
-                Instantiate(building1, new Vector3(12, 0.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                buildings newBuilding1 = Instantiate(building1, new Vector3(12, 0.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); ; //spawns new backround building
+                newBuilding1.setSkin(getbuilding1FromOdds());
                 buildingList1++;
                 buildingTimer1 = 0;
             }
@@ -257,7 +266,8 @@ public class main : MonoBehaviour
         {
             if (buildingList < 6)
             {
-                Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                buildings newBuilding = Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                newBuilding.setSkin(getbuildingFromOdds());
                 buildingList++;
                 buildingTimer = 0;
             }
@@ -265,16 +275,15 @@ public class main : MonoBehaviour
             {
                 if (billboardList < 3)
                 {
-                    GameObject bboard = Instantiate(billboard, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                    bboard.GetComponent<buildings>().isBillboard = true;
-                    buildingList = 0;
-                    buildingTimer = -25;
+                    buildings bboard = Instantiate(billboard, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                    bboard.isBillboard = true;
+                    buildingList = 0; buildingTimer = -25;
                     billboardList++;
                 }
                 else
                 {
-                    GameObject bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                    bboard.GetComponent<buildings>().isBigBillboard = true;
+                    buildings bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                    bboard.isBigBillboard = true;
                     buildingList = 0; buildingTimer = -25;
                     billboardList = 0;
                 }
@@ -308,37 +317,19 @@ public class main : MonoBehaviour
         carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
         if (carTimer > 80)
         {
-            if (carList < specalCarOdds)
+            float specalCar = Random.Range(0.0f, 1.0f);
+            if (specalCar > specalCarOdds)
             {
                 spawnNormalCar();
-                carList++;
+                specalCarOdds += 0.1f;
             }
             else
             {
                 spawnSpecalCar();
-                carList = 0;
+                specalCarOdds = 0.05f;
             }
             carTimer = 0;
         }
-    }
-
-    GameObject getCarFromOdds()
-    {
-        float newCarOdds = Random.Range(0.0f, 1.0f);
-        float oddsAccum = 0.0f;
-
-        for(int i = 0; i < carsOdds.Count; i++)
-        {
-            oddsAccum += carsOdds[i];
-            if(oddsAccum > newCarOdds)
-            {
-                changeOdds(i, carsOdds, carsCurrOdds);
-                return carsList[i];
-            }
-        }
-
-        changeOdds(0, carsOdds, carsCurrOdds);
-        return carsList[0];
     }
 
     void spawnMenuCar()
@@ -401,6 +392,63 @@ public class main : MonoBehaviour
         {
             billboards.Remove(billboards.ToArray()[0]);
         }
+    }
+
+    GameObject getCarFromOdds()
+    {
+        float newCarOdds = Random.Range(0.0f, 1.0f);
+        float oddsAccum = 0.0f;
+
+        for (int i = 0; i < carsOdds.Count; i++)
+        {
+            oddsAccum += carsCurrOdds[i];
+            if (oddsAccum > newCarOdds)
+            {
+                changeOdds(i, carsOdds, carsCurrOdds);
+                return carsList[i];
+            }
+        }
+
+        changeOdds(0, carsOdds, carsCurrOdds);
+        return carsList[0];
+    }
+
+    Sprite getbuildingFromOdds()
+    {
+        float newBuildingOdds = Random.Range(0.0f, 1.0f);
+        float oddsAccum = 0.0f;
+
+        for (int i = 0; i < buildingsOdds.Count; i++)
+        {
+            oddsAccum += buildingsCurrOdds[i];
+            if (oddsAccum > newBuildingOdds)
+            {
+                changeOdds(i, buildingsOdds, buildingsCurrOdds);
+                return buildingSkins[i];
+            }
+        }
+
+        changeOdds(0, buildingsOdds, buildingsCurrOdds);
+        return buildingSkins[0];
+    }
+
+    Sprite getbuilding1FromOdds()
+    {
+        float newBuilding1Odds = Random.Range(0.0f, 1.0f);
+        float oddsAccum = 0.0f;
+
+        for (int i = 0; i < buildings1Odds.Count; i++)
+        {
+            oddsAccum += buildings1CurrOdds[i];
+            if (oddsAccum > newBuilding1Odds)
+            {
+                changeOdds(i, buildings1Odds, buildings1CurrOdds);
+                return building1Skins[i];
+            }
+        }
+
+        changeOdds(0, buildings1Odds, buildings1CurrOdds);
+        return building1Skins[0];
     }
 
     void blimpText()
@@ -585,6 +633,26 @@ public class main : MonoBehaviour
             float addOdds = carsList[i].GetComponent<cars>().odds;
             carsOdds.Add(addOdds);
             carsCurrOdds.Add(addOdds);
+        }
+    }
+
+    private void setBuildingOdds()
+    {
+        float[] buildingOddsNew = { 0.25f, 0.3f, 0.45f };
+        for (int i = 0; i < buildingSkins.Count; i++)
+        {
+            buildingsOdds.Add(buildingOddsNew[i]);
+            buildingsCurrOdds.Add(buildingOddsNew[i]);
+        }
+    }
+
+    private void setBuilding1Odds()
+    {
+        float[] building1OddsNew = {1.0f};
+        for (int i = 0; i < building1Skins.Count; i++)
+        {
+            buildings1Odds.Add(building1OddsNew[i]);
+            buildings1CurrOdds.Add(building1OddsNew[i]);
         }
     }
 

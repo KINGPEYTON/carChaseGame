@@ -10,6 +10,8 @@ public class overBus : bus
     // Start is called before the first frame update
     void OnEnable()
     {
+        blinkTime = -1;
+
         speedMin = 9;
         speedMax = 9;
 

@@ -16,17 +16,21 @@ public class buildings : MonoBehaviour
     public virtual void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
-        GetComponent<SpriteRenderer>().sprite = skins[Random.Range(0, skins.Length)]; //set the skin to a random one at spawn
+        //setSkin(skins[Random.Range(0, skins.Length)]); //set the skin to a random one at spawn
     }
 
     // Update is called once per frame
     public virtual void Update()
     {
         transform.position = transform.position - new Vector3(Time.deltaTime / speed * controller.mph, 0, 0); //moves building across the screen
-        //Debug.Log("Hello: ");
         if (transform.position.x <= -14) //checks if its offscreen
         {
             Destroy(gameObject);
         }
+    }
+
+    public void setSkin(Sprite skin)
+    {
+        GetComponent<SpriteRenderer>().sprite = skin;
     }
 }

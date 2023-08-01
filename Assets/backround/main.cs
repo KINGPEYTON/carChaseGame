@@ -47,6 +47,10 @@ public class main : MonoBehaviour
     public GameObject divider4; //divider gameobject to spawn
     public float dividerTimer;
 
+    public GameObject manhole;
+    public float manholeTimer;
+    public float manholeSpawn;
+
     public GameObject building; //building gameobject to spawn
     public GameObject billboard; //building gameobject to spawn
     public GameObject bigBillboard; //building gameobject to spawn
@@ -158,6 +162,7 @@ public class main : MonoBehaviour
             //make road elements
             spawnDivider();
             spawnGuard();
+            spawnManhole();
 
             //make backround elements
             spawnFrontBuilding();
@@ -220,6 +225,20 @@ public class main : MonoBehaviour
             Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
             Instantiate(guard, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
             guardTimer = 0;
+        }
+    }
+
+    void spawnManhole()
+    {
+        manholeTimer += Time.deltaTime * mph; //timer to spawn new road guard 
+        if (manholeTimer > manholeSpawn)
+        {
+            int manholeLayer = Random.Range(0, 5);
+            GameObject newManhole = Instantiate(manhole, new Vector3(12, (manholeLayer * -1.25f) + 0.55f, 0), Quaternion.identity, GameObject.Find("misc backround").transform);
+            newManhole.gameObject.GetComponentInChildren<ParticleSystem>(false).GetComponent<Renderer>().sortingOrder = 2 + manholeLayer;
+            newManhole.transform.localScale = new Vector3((0.4f + (0.05f * manholeLayer)), (0.4f + (0.05f * manholeLayer)), 1);
+            manholeTimer = 0;
+            manholeSpawn = Random.Range(100, 350);
         }
     }
 

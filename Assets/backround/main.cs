@@ -51,6 +51,9 @@ public class main : MonoBehaviour
     public float manholeTimer;
     public float manholeSpawn;
 
+    public GameObject planeAd;
+    public float planeAdTimer;
+
     public GameObject building; //building gameobject to spawn
     public GameObject billboard; //building gameobject to spawn
     public GameObject bigBillboard; //building gameobject to spawn
@@ -170,6 +173,9 @@ public class main : MonoBehaviour
             spawnSkyline();
             spawnCloud();
 
+            //make sky elements
+            spawnAdPlane();
+
             //make game element
             spawnGameCar();
             spawnCoin();
@@ -239,6 +245,17 @@ public class main : MonoBehaviour
             newManhole.transform.localScale = new Vector3((0.4f + (0.05f * manholeLayer)), (0.4f + (0.05f * manholeLayer)), 1);
             manholeTimer = 0;
             manholeSpawn = Random.Range(100, 350);
+        }
+    }
+
+    void spawnAdPlane()
+    {
+        planeAdTimer += Time.deltaTime; //timer to spawn new road guard 
+        if (planeAdTimer > 31)
+        {
+            //spawns a new rail guard for the edge of the road
+            Instantiate(planeAd, new Vector3(12, 4.5f, 0), Quaternion.identity, GameObject.Find("misc backround").transform);
+            planeAdTimer = 0;
         }
     }
 

@@ -101,6 +101,9 @@ MonoBehaviour:
   controller: {fileID: 0}
   speed: 0
   smoke: {fileID: 8972096960566850362}
+  skins:
+  - {fileID: 21300000, guid: 3e1a2a7c796874acc818ea9a1d6635f0, type: 3}
+  - {fileID: 21300000, guid: 3dcbb332fc3fd4347800cc18b359e7d3, type: 3}
 --- !u!1 &8972096960566850357
 GameObject:
   m_ObjectHideFlags: 0

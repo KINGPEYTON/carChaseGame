@@ -41,11 +41,11 @@ public class pausePlane : MonoBehaviour
         {
             if (inPos)
             {
-                if ((transform.position.x > maxX || transform.position.x < minX) && Mathf.Abs(transform.position.x - newPlaneLocation.x) > 1.0) //if blimp went out of bounce on the X
+                if ((transform.position.x > maxX || transform.position.x < minX) && Mathf.Abs(transform.position.x - newPlaneLocation.x) > 1.0) //if plane went out of bounce on the X
                 {
                     updateX(); // find new target location for blimp
                 }
-                if ((transform.position.y > 4.68f || transform.position.y < 4.46f) && Mathf.Abs(transform.position.y - newPlaneLocation.y) > 0.25) //if blimp went out of bounce on the X
+                if ((transform.position.y > 4.68f || transform.position.y < 4.46f) && Mathf.Abs(transform.position.y - newPlaneLocation.y) > 0.25) //if plane went out of bounce on the Y
                 {
                     updateY(); // find new target location for blimp
                 }

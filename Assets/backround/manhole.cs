@@ -7,6 +7,7 @@ public class manhole : MonoBehaviour
     public GameObject controller;
     public float speed;
     public ParticleSystem smoke;
+    public Sprite[] skins; //array of car skins
 
     // Start is called before the first frame update
     void Start()
@@ -14,9 +15,21 @@ public class manhole : MonoBehaviour
         controller = GameObject.Find("contoller");
         speed = 5;
 
-        smoke.emissionRate = Random.Range(20, 80);
-        smoke.startLifetime = Random.Range(0.25f, 0.75f);
-        smoke.startSpeed = Random.Range(3, 10);
+        int manholeVal = Random.Range(0, skins.Length);
+        GetComponent<SpriteRenderer>().sprite = skins[manholeVal]; //set the skin to a random one at spawn
+
+        if (manholeVal == 0)
+        {
+            smoke.emissionRate = Random.Range(5, 40);
+            smoke.startLifetime = Random.Range(0.15f, 0.55f);
+            smoke.startSpeed = Random.Range(2, 6);
+        }
+        else
+        {
+            smoke.emissionRate = Random.Range(30, 80);
+            smoke.startLifetime = Random.Range(0.45f, 0.75f);
+            smoke.startSpeed = Random.Range(5, 10);
+        }
     }
 
     // Update is called once per frame

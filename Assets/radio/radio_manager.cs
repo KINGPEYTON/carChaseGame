@@ -131,9 +131,9 @@ public class radio_manager : MonoBehaviour
             }
         }
 
-        if(music.volume != controller.musicVol * controller.masterVol)
+        if(music.volume != controller.radioVol * controller.musicVol * controller.masterVol)
         {
-            updateVol(controller.musicVol);
+            updateVol(controller.radioVol);
         }
     }
 
@@ -193,7 +193,7 @@ public class radio_manager : MonoBehaviour
             music.Stop();
         }
 
-        updateVol(controller.musicVol);
+        updateVol(controller.radioVol);
         staticTimer = staticTime;
 
         PlayerPrefs.SetInt("radio", radioID); //saves the new high score
@@ -201,8 +201,8 @@ public class radio_manager : MonoBehaviour
 
     public void updateVol(float newVol)
     {
-        controller.changeMusicVol(newVol);
-        music.volume = controller.musicVol * controller.masterVol;
+        controller.changeRadioVol(newVol);
+        music.volume = controller.radioVol * controller.musicVol * controller.masterVol;
     }
 
     private void makeRadio(List<AudioClip> station, List<string> stationNames, string path)

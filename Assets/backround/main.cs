@@ -17,11 +17,13 @@ public class main : MonoBehaviour
     public float masterVol;
     public float sfxVol;
     public float musicVol;
+    public float radioVol;
 
     public int coins; //amount of coins a player has collected in a game
     public int totalCoins; //amount of coins a player has in total
 
-    public GameObject[] coin; //coin gameobject to spawn
+    public GameObject[] coin; //coin gameobject to 
+    public GameObject[] coin2; //coin gameobject to spawn
     public float coinTimer; //
 
     public GameObject pauseMenu;
@@ -78,6 +80,9 @@ public class main : MonoBehaviour
     public int skylineList;
     public float skylineTimer;
 
+    public GameObject crain;
+    public float crainTimer;
+
     public GameObject cloud;
     public float cloudTimer;
 
@@ -96,10 +101,13 @@ public class main : MonoBehaviour
     public List<float> carsCurrOdds;
     public int carList; //how many cars have spawned since the last bus
     public float carTimer;
+    public float largeCarOdds;
     public float specalCarOdds;
 
     public GameObject bus; //bus gmaeobject to spawn
     public GameObject overBus; //bus gmaeobject to spawn
+
+    public GameObject maniacVan; //van gmaeobject to spawn
 
     public List<float> bannedLanes;
     public List<int> carsPast;
@@ -112,6 +120,25 @@ public class main : MonoBehaviour
 
     public AudioClip clickSound;
 
+    public bool topLane;
+    public float topLaneTime;
+    public float topLaneTimer;
+
+    public GameObject topCurrSide;
+    public GameObject topSide;
+    public GameObject topCurrBar;
+    public GameObject topBar;
+    public GameObject topCurrRoad;
+    public GameObject topRoad;
+
+    public GameObject topLaneRoadL;
+    public GameObject topLaneRoadR;
+    public GameObject topLaneCurrRoad;
+    public GameObject topLaneLineL;
+    public GameObject topLaneLineR;
+    public float topLaneLineTimer;
+    public GameObject yelloBarrel;
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -122,7 +149,8 @@ public class main : MonoBehaviour
 
         masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
-        musicVol = PlayerPrefs.GetFloat("musicVol", 1); //sets the radio volume to the one it was last on
+        musicVol = PlayerPrefs.GetFloat("musicVol", 1); //sets the music volume to the one it was last on
+        radioVol = PlayerPrefs.GetFloat("radioVol", 1); //sets the radio volume to the one it was last on
 
         playing = false;
         isOver = false;
@@ -133,10 +161,13 @@ public class main : MonoBehaviour
         highScore = PlayerPrefs.GetInt("highscore", 0); //sets high score to the one saved
         totalCoins = PlayerPrefs.GetInt("coins", 0); //sets high score to the one saved
 
-        specalCarOdds = 0.05f;
+        largeCarOdds = 0.05f;
+        specalCarOdds = 0.01f;
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
+
+        topLaneTimer = Random.Range(500,3000);
 
         menuSound.clip = menuAmbience;
         menuSound.Play();
@@ -170,6 +201,7 @@ public class main : MonoBehaviour
             //make backround elements
             spawnFrontBuilding();
             spawnBackBuilding();
+            spawnCrain();
             spawnSkyline();
             spawnCloud();
 
@@ -179,6 +211,7 @@ public class main : MonoBehaviour
             //make game element
             spawnGameCar();
             spawnCoin();
+            newTopLane();
 
             //set blimp text
             blimpText();
@@ -214,7 +247,10 @@ public class main : MonoBehaviour
         if (dividerTimer > 15)
         {
             //spawns a new yellow lane divider for each lane
-            Instantiate(divider1, new Vector3(12, 0.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+            if (topLane)
+            {
+                Instantiate(divider1, new Vector3(12, 0.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+            }
             Instantiate(divider2, new Vector3(12, -1.25f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
             Instantiate(divider3, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
             Instantiate(divider4, new Vector3(12, -3.75f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
@@ -228,7 +264,21 @@ public class main : MonoBehaviour
         if (guardTimer > 2)
         {
             //spawns a new rail guard for the edge of the road
-            Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+            if (topLane)
+            {
+                Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+            }
+            else
+            {
+                if (topLaneTime >= 0)
+                {
+                    Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                }
+                else
+                {
+                    Instantiate(guard2, new Vector3(12, 0.55f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                }
+            }
             Instantiate(guard, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
             guardTimer = 0;
         }
@@ -239,7 +289,15 @@ public class main : MonoBehaviour
         manholeTimer += Time.deltaTime * mph; //timer to spawn new road guard 
         if (manholeTimer > manholeSpawn)
         {
-            int manholeLayer = Random.Range(0, 5);
+            int manholeLayer = 0;
+            if (topRoad)
+            {
+                manholeLayer = Random.Range(1, 5);
+            }
+            else
+            {
+                manholeLayer = Random.Range(0, 5);
+            }
             GameObject newManhole = Instantiate(manhole, new Vector3(12, (manholeLayer * -1.25f) + 0.55f, 0), Quaternion.identity, GameObject.Find("misc backround").transform);
             newManhole.gameObject.GetComponentInChildren<ParticleSystem>(false).GetComponent<Renderer>().sortingOrder = 2 + manholeLayer;
             newManhole.transform.localScale = new Vector3((0.4f + (0.05f * manholeLayer)), (0.4f + (0.05f * manholeLayer)), 1);
@@ -327,12 +385,22 @@ public class main : MonoBehaviour
         }
     }
 
+    void spawnCrain()        //skyline buildings
+    {
+        crainTimer -= Time.deltaTime * mph; //timer that spawns a new builing
+        if (crainTimer < 0)
+        {
+            Instantiate(crain, new Vector3(13.5f, 2.5f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+            crainTimer = Random.Range(250, 825);
+        }
+    }
+
     void spawnSkyline()        //skyline buildings
     {
         skylineTimer += Time.deltaTime * mph; //timer that spawns a new builing
         if (skylineTimer > 150)
         {
-            Instantiate(skyline, new Vector3(13.5f, 2.8f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+            Instantiate(skyline, new Vector3(13.5f, 2.5f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
             skylineTimer = 0;
         }
     }
@@ -348,21 +416,102 @@ public class main : MonoBehaviour
         }
     }
 
+    void newTopLane()
+    {
+        topLaneTimer -= Time.deltaTime * mph;
+        if (topLaneTimer <= 0 && topLaneTime <= 0)
+        {
+            topLane = !topLane;
+            topLaneTime = 250.0f;
+        }
+        if (!topLane)
+        {
+            if (topLaneTime > 0)
+            {
+                if (topLaneCurrRoad == null)
+                {
+                    topLaneCurrRoad = Instantiate(topLaneRoadL, new Vector3(24.5f, 0, 0), Quaternion.identity);
+                    Instantiate(topLaneLineL, new Vector3(12, 0.6f, 0), Quaternion.identity);
+                }
+                topLaneTime -= Time.deltaTime * mph;
+                if (topLaneTime <= 0)
+                {
+                    topCurrBar.GetComponent<sideBar>().movingOut = true;
+                    topCurrSide.GetComponent<sideBar>().movingOut = true;
+                    topCurrRoad.GetComponent<sideBar>().movingOut = true;
+                    topLaneCurrRoad.GetComponent<sideBar>().movingOut = true;
+                    topCurrSide = Instantiate(topSide, new Vector3(24.5f, 0.33f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    topCurrBar = Instantiate(topBar, new Vector3(24.5f, 0.80f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    Instantiate(yelloBarrel, new Vector3(12f, 0.50f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    topLaneTimer = Random.Range(250, 750);
+                }
+                else
+                {
+                    if (topLaneLineTimer > 12)
+                    {
+                        Instantiate(topLaneLineL, new Vector3(12, 0.6f, 0), Quaternion.identity);
+                        topLaneLineTimer = 0;
+                    }
+                    topLaneLineTimer += Time.deltaTime * mph;
+                }
+
+            }
+        }
+        else
+        {
+            if (topLaneTime > 0)
+            {
+                if (topLaneCurrRoad == null)
+                {
+                    topLaneCurrRoad = Instantiate(topLaneRoadR, new Vector3(24.5f, 0, 0), Quaternion.identity);
+                    topCurrRoad = Instantiate(topRoad, new Vector3(24, -2, 0), Quaternion.identity);
+                    topCurrBar.GetComponent<sideBar>().movingOut = true;
+                    topCurrSide.GetComponent<sideBar>().movingOut = true;
+                    topCurrSide = Instantiate(topSide, new Vector3(24.5f, 1.14f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    topCurrBar = Instantiate(topBar, new Vector3(24.5f, 1.61f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    Instantiate(yelloBarrel, new Vector3(12f, 0.50f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                }
+                topLaneTime -= Time.deltaTime * mph;
+                if (topLaneTime <= 0)
+                {
+                    topLaneCurrRoad.GetComponent<sideBar>().movingOut = true;
+                    topLaneTimer = Random.Range(750, 2500);
+                }
+                else
+                {
+                    if (topLaneLineTimer > 12)
+                    {
+                        Instantiate(topLaneLineR, new Vector3(12, 0.6f, 0), Quaternion.identity);
+                        topLaneLineTimer = 0;
+                    }
+                    topLaneLineTimer += Time.deltaTime * mph;
+                }
+
+            }
+        }
+    }
+
     void spawnGameCar()
     {
         carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
         if (carTimer > 80)
         {
             float specalCar = Random.Range(0.0f, 1.0f);
-            if (specalCar > specalCarOdds)
+            if (specalCar > largeCarOdds + specalCarOdds)
             {
                 spawnNormalCar();
-                specalCarOdds += 0.1f;
+                largeCarOdds += 0.1f;
+                specalCarOdds += 0.001f;
+            }
+            else if(specalCar > largeCarOdds)
+            {
+                spawnSpecalCar();
+                specalCarOdds = 0.005f;
             }
             else
             {
-                spawnSpecalCar();
-                specalCarOdds = 0.05f;
+                spawnLargeCar();
+                largeCarOdds = 0.05f;
             }
             carTimer = 0;
         }
@@ -376,19 +525,46 @@ public class main : MonoBehaviour
             GameObject newCar = this.gameObject;
             if (!isOver)
             {
-                newCar = Instantiate(getCarFromOdds(), new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                float newLane = 0;
+                if (topLane)
+                {
+                    newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+                }
+                else
+                {
+                    newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+                }
+                newCar = Instantiate(getCarFromOdds(), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                 carTimer = 0;
             }
             else
             {
                 if (carList < 3)
                 {
-                    newCar = Instantiate(getCarFromOdds(), new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                    float newLane = 0;
+                    if (topLane)
+                    {
+                        newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+                    }
+                    else
+                    {
+                        newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+                    }
+                    newCar = Instantiate(getCarFromOdds(), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                     carList++;
                 }
                 else
                 {
-                    newCar = Instantiate(overBus, new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("Extra").transform); //spawn new car in a random lane behind the player
+                    float newLane = 0;
+                    if (topLane)
+                    {
+                        newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+                    }
+                    else
+                    {
+                        newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+                    }
+                    newCar = Instantiate(overBus, new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("Extra").transform); //spawn new car in a random lane behind the player
                     carList = 0;
                 }
             }
@@ -407,12 +583,44 @@ public class main : MonoBehaviour
 
     void spawnNormalCar()
     {
-        Instantiate(getCarFromOdds(), new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        float newLane = 0;
+        if (topLane)
+        {
+            newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+        }
+        else
+        {
+            newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+        }
+        Instantiate(getCarFromOdds(), new Vector3(12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+    }
+
+    void spawnLargeCar()
+    {
+        float newLane = 0;
+        if (topLane)
+        {
+            newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+        }
+        else
+        {
+            newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+        }
+        Instantiate(bus, new Vector3(13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
     }
 
     void spawnSpecalCar()
     {
-        Instantiate(bus, new Vector3(13, (Random.Range(0, -5) * 1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        float newLane = 0;
+        if (topLane)
+        {
+            newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+        }
+        else
+        {
+            newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+        }
+        Instantiate(maniacVan, new Vector3(25, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
     }
 
     void spawnCoin()
@@ -420,7 +628,14 @@ public class main : MonoBehaviour
         coinTimer += Time.deltaTime * mph;
         if (coinTimer > 350)
         {
-            Instantiate(coin[Random.Range(0, coin.Length)], new Vector3(12, -1.85f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
+            if (topLane)
+            {
+                Instantiate(coin[Random.Range(0, coin.Length)], new Vector3(12, -1.85f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
+            }
+            else
+            {
+                Instantiate(coin2[Random.Range(0, coin2.Length)], new Vector3(12, -1.85f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
+            }
             coinTimer = 0;
         }
 
@@ -660,6 +875,13 @@ public class main : MonoBehaviour
     {
         musicVol = newVol;
         PlayerPrefs.SetFloat("musicVol", musicVol); //saves the master volume level
+    }
+
+
+    public void changeRadioVol(float newVol)
+    {
+        radioVol = newVol;
+        PlayerPrefs.SetFloat("radioVol", radioVol); //saves the master volume level
     }
 
     private void setCarOdds()

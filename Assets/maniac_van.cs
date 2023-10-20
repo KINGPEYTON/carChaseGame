@@ -15,6 +15,7 @@ public class maniac_van : cars
     public float partyBeatTimer;
     public float partyBeatTime;
     public GameObject partyMusic;
+    public AudioSource musicPlayer;
 
     public GameObject coins;
     public float coinTimer;
@@ -34,6 +35,8 @@ public class maniac_van : cars
         turningTimer = Random.Range(0.0f, 5.0f);
 
         partyBeatTime = 0.422f;
+        party.sprite = partySkins[Random.Range(0, partySkins.Length)];
+        musicPlayer.volume = controller.musicVol;
     }
 
     // Update is called once per frame
@@ -58,7 +61,7 @@ public class maniac_van : cars
         if(coinTimer < 0)
         {
             Instantiate(coins, transform.position, Quaternion.identity, GameObject.Find("coins").transform);
-            coinTimer = Random.Range(0.8f, 1.25f);
+            coinTimer = Random.Range(0.5f, 1.15f);
         }
         coinTimer -= Time.deltaTime;
 
@@ -97,13 +100,15 @@ public class maniac_van : cars
         if (partyBeatTimer > partyBeatTime)
         {
             partyList++;
-            if(partyList > partySkins.Length)
+            if(partyList >= partySkins.Length)
             {
                 partyList = 0;
             }
             party.sprite = partySkins[partyList];
             partyBeatTimer -= partyBeatTime;
         }
+
+        musicPlayer.volume = controller.musicVol;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

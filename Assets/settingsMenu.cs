@@ -155,8 +155,6 @@ public class settingsMenu : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-
-        musicVol.value = contoller.musicVol;
     }
 
     public void exit()

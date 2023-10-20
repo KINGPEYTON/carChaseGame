@@ -30,7 +30,7 @@ public class coins : MonoBehaviour
     {
         if (!collected)
         {
-            transform.position = transform.position - new Vector3(Time.deltaTime / 5 * controller.GetComponent<main>().mph, 0, 0); //moves coin across the screen
+            transform.position = transform.position - new Vector3(Time.deltaTime / 6 * controller.GetComponent<main>().mph, 0, 0); //moves coin across the screen
             if (transform.position.x <= -12) //checks if its offscreen
             {
                 Destroy(gameObject);

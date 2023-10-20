@@ -145,6 +145,7 @@ MonoBehaviour:
   partyBeatTimer: 0
   partyBeatTime: 0
   partyMusic: {fileID: 8441947114986734930}
+  musicPlayer: {fileID: 7380043963766142696}
   coins: {fileID: 4218232472382792144, guid: 4c316639989564bd683ee84114f2ea93, type: 3}
   coinTimer: 0
 --- !u!61 &98328009427470596

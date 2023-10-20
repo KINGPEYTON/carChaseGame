@@ -90,7 +90,30 @@ public class playerCar : MonoBehaviour
 
     public void laneUp() //if tap is above player car
     {
-        if (targetPos.y < 0.65f && Mathf.Abs(transform.position.y - targetPos.y) < 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        float maxLane = 0;
+        if (controller.topLane)
+        {
+            if(controller.topLaneTime < 130)
+            {
+                maxLane = 0.65f;
+            }
+            else
+            {
+                maxLane = -0.6f;
+            }
+        }
+        else
+        {
+            if (controller.topLaneTime < 10)
+            {
+                maxLane = -0.6f;
+            }
+            else
+            {
+                maxLane = 0.65f;
+            }
+        }
+        if (targetPos.y < maxLane && Mathf.Abs(transform.position.y - targetPos.y) < 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
         {
             targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
@@ -142,7 +165,13 @@ public class playerCar : MonoBehaviour
                     AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
                 }
                 crash(); //what happens when the player crashes
-            } else if (collision.tag == "coin")
+            }
+            else if (collision.tag == "barrier")
+            {
+                AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+                crash(); //what happens when the player crashes
+            }
+            else if (collision.tag == "coin")
             {
                 if (!collision.GetComponent<coins>().collected)
                 {

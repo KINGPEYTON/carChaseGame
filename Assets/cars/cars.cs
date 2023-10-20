@@ -55,7 +55,16 @@ public class cars : MonoBehaviour
                 switchTimer -= Time.deltaTime;
                 if (switchTimer < 0) //checks if its time to switch lanes
                 {
-                    if (Random.Range(0, 2) == 0 && lane > 0) //randomly decides which lane to switch to and if its a valid lane
+                    int maxLane = 0;
+                    if (controller.topLane)
+                    {
+                        maxLane = 0;
+                    }
+                    else
+                    {
+                        maxLane = 1;
+                    }
+                    if (Random.Range(0, 2) == 0 && lane > maxLane) //randomly decides which lane to switch to and if its a valid lane
                     {
                         switchUp = true; //initiats the switch up
                         targPos += 1.25f;
@@ -118,9 +127,12 @@ public class cars : MonoBehaviour
             }
             else //sets hazards off if it crashes
             {
-                turningTimer += Time.deltaTime;
-                turnDown.SetActive(turningTimer % 1 < 0.5f); //turns the down blinker on if it should
-                turnUp.SetActive(turningTimer % 1 < 0.5f); //turns the up blinker on if it should
+                if (turnDown != null && turnUp != null)
+                {
+                    turningTimer += Time.deltaTime;
+                    turnDown.SetActive(turningTimer % 1 < 0.5f); //turns the down blinker on if it should
+                    turnUp.SetActive(turningTimer % 1 < 0.5f); //turns the up blinker on if it should
+                }
             }
         }
 
@@ -164,7 +176,16 @@ public class cars : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(-14, (Random.Range(0, -5) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
+            float maxLane = 0;
+            if (controller.topLane)
+            {
+                maxLane = 0.65f;
+            }
+            else
+            {
+                maxLane = -0.6f;
+            }
+            transform.position = new Vector3(-14, maxLane, 0);  //spawn new car in a random lane before going on screen;
         }
         setLane();
     }

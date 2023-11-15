@@ -13,7 +13,6 @@ public class manhole : MonoBehaviour
     void Start()
     {
         controller = GameObject.Find("contoller");
-        speed = 5;
 
         int manholeVal = Random.Range(0, skins.Length);
         GetComponent<SpriteRenderer>().sprite = skins[manholeVal]; //set the skin to a random one at spawn

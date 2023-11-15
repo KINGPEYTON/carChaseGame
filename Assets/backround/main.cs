@@ -56,6 +56,9 @@ public class main : MonoBehaviour
     public GameObject planeAd;
     public float planeAdTimer;
 
+    public GameObject bigPlane;
+    public float bigPlaneTimer;
+
     public GameObject building; //building gameobject to spawn
     public GameObject billboard; //building gameobject to spawn
     public GameObject bigBillboard; //building gameobject to spawn
@@ -107,7 +110,13 @@ public class main : MonoBehaviour
     public GameObject bus; //bus gmaeobject to spawn
     public GameObject overBus; //bus gmaeobject to spawn
 
+    public List<GameObject> carsSpecialList;
+    public List<float> carsSpecialOdds;
+    public List<float> carsSpecialCurrOdds;
+
     public GameObject maniacVan; //van gmaeobject to spawn
+    public GameObject vanChase;
+    public GameObject policeCar;
 
     public List<float> bannedLanes;
     public List<int> carsPast;
@@ -167,12 +176,15 @@ public class main : MonoBehaviour
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
 
-        topLaneTimer = Random.Range(500,3000);
+        topLaneTimer = Random.Range(500, 3000);
+
+        bigPlaneTimer = Random.Range(15, 65);
 
         menuSound.clip = menuAmbience;
         menuSound.Play();
 
-        setCarOdds();
+        setCarOdds(carsOdds, carsCurrOdds, carsList);
+        setCarOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList);
         setBuildingOdds();
         setBuilding1Odds();
     }
@@ -207,6 +219,7 @@ public class main : MonoBehaviour
 
             //make sky elements
             spawnAdPlane();
+            spawnBigPlane();
 
             //make game element
             spawnGameCar();
@@ -314,6 +327,17 @@ public class main : MonoBehaviour
             //spawns a new rail guard for the edge of the road
             Instantiate(planeAd, new Vector3(12, 4.5f, 0), Quaternion.identity, GameObject.Find("misc backround").transform);
             planeAdTimer = 0;
+        }
+    }
+
+    void spawnBigPlane()
+    {
+        bigPlaneTimer -= Time.deltaTime;
+        if (bigPlaneTimer <= 0)
+        {
+            //spawns a new rail guard for the edge of the road
+            Instantiate(bigPlane, GameObject.Find("misc backround").transform);
+            bigPlaneTimer = Random.Range(28, 81);
         }
     }
 
@@ -501,12 +525,12 @@ public class main : MonoBehaviour
             {
                 spawnNormalCar();
                 largeCarOdds += 0.1f;
-                specalCarOdds += 0.001f;
+                specalCarOdds += 0.00175f;
             }
             else if(specalCar > largeCarOdds)
             {
                 spawnSpecalCar();
-                specalCarOdds = 0.005f;
+                specalCarOdds = 0.01f;
             }
             else
             {
@@ -534,7 +558,7 @@ public class main : MonoBehaviour
                 {
                     newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
                 }
-                newCar = Instantiate(getCarFromOdds(), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                 carTimer = 0;
             }
             else
@@ -550,7 +574,7 @@ public class main : MonoBehaviour
                     {
                         newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
                     }
-                    newCar = Instantiate(getCarFromOdds(), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                    newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
                     carList++;
                 }
                 else
@@ -592,7 +616,7 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        Instantiate(getCarFromOdds(), new Vector3(12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
     }
 
     void spawnLargeCar()
@@ -620,7 +644,7 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        Instantiate(maniacVan, new Vector3(25, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        Instantiate(getCarFromOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList), new Vector3(25, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
     }
 
     void spawnCoin()
@@ -645,23 +669,23 @@ public class main : MonoBehaviour
         }
     }
 
-    GameObject getCarFromOdds()
+    GameObject getCarFromOdds(List<float> oddsList, List<float> currOddsList, List<GameObject> carList)
     {
         float newCarOdds = Random.Range(0.0f, 1.0f);
         float oddsAccum = 0.0f;
 
-        for (int i = 0; i < carsOdds.Count; i++)
+        for (int i = 0; i < oddsList.Count; i++)
         {
-            oddsAccum += carsCurrOdds[i];
+            oddsAccum += currOddsList[i];
             if (oddsAccum > newCarOdds)
             {
-                changeOdds(i, carsOdds, carsCurrOdds);
-                return carsList[i];
+                changeOdds(i, oddsList, currOddsList);
+                return carList[i];
             }
         }
 
-        changeOdds(0, carsOdds, carsCurrOdds);
-        return carsList[0];
+        changeOdds(0, oddsList, currOddsList);
+        return carList[0];
     }
 
     Sprite getbuildingFromOdds()
@@ -884,12 +908,22 @@ public class main : MonoBehaviour
         PlayerPrefs.SetFloat("radioVol", radioVol); //saves the master volume level
     }
 
-    private void setCarOdds()
+    private void setCarOdds(List<float> oddsList, List<float> currOddsList, List<GameObject> carList)
+    {
+        for (int i = 0; i < carList.Count; i++)
+        {
+            float addOdds = carList[i].GetComponent<cars>().odds;
+            oddsList.Add(addOdds);
+            currOddsList.Add(addOdds);
+        }
+    }
+
+    private void setSpecialCarOdds()
     {
         for (int i = 0; i < carsList.Count; i++)
         {
-            float addOdds = carsList[i].GetComponent<cars>().odds;
-            carsOdds.Add(addOdds);
+            float addOdds = carsSpecialList[i].GetComponent<cars>().odds;
+            carsSpecialOdds.Add(addOdds);
             carsCurrOdds.Add(addOdds);
         }
     }

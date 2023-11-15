@@ -32,6 +32,10 @@ public class plane_ad : MonoBehaviour
         }
 
         transform.position += planeSpeed * Time.deltaTime;
+        if (transform.position.x < -20)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void updateY()

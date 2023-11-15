@@ -120,7 +120,9 @@ public class playerCar : MonoBehaviour
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
             GetComponent<SpriteRenderer>().sortingOrder--;
 
-            AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol * controller.sfxVol); 
+            AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol * controller.sfxVol);
+
+            playHorn();
         }
     }
 
@@ -134,6 +136,8 @@ public class playerCar : MonoBehaviour
             GetComponent<SpriteRenderer>().sortingOrder++;
 
             AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
+
+            playHorn();
         }
     }
 
@@ -150,7 +154,7 @@ public class playerCar : MonoBehaviour
         {
             if (collision.tag == "car")
             {
-                collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the pkayer)
+                collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
                 controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
                 if (collision.transform.position.y < transform.position.y)
                 {
@@ -185,5 +189,31 @@ public class playerCar : MonoBehaviour
     {
         transform.position = new Vector3(-12, (-lane * 1.25f) + 0.65f, 0);
         GetComponent<SpriteRenderer>().sortingOrder = 2 + lane;
+    }
+
+    private void playHorn()
+    {
+        Transform closestCar = findClosestCar();
+        float closestDist = transform.position.x - closestCar.position.x;
+        //Debug.Log(closestDist + " : "+ closestCar.position.x);
+        if (closestDist < 2.75f && closestDist > 1)
+        {
+            AudioSource.PlayClipAtPoint(closestCar.GetComponent<cars>().horn, new Vector3(0, 0, -9), controller.masterVol * controller.sfxVol);
+        }
+    }
+
+    private Transform findClosestCar()
+    {
+        Transform cardsOBJ = GameObject.Find("cars").transform;
+        Transform closest = cardsOBJ.GetChild(0);
+        for (int i = 1; i < cardsOBJ.childCount; i++)
+        {
+            Transform currCar = cardsOBJ.GetChild(i).transform;
+            if(targetPos.x - currCar.position.x > 0 && currCar.position.x < closest.position.x && currCar.position.y == targetPos.y)
+            {
+                closest = currCar;
+            }
+        }
+        return closest;
     }
 }

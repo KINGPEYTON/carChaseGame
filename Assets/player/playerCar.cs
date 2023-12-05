@@ -4,19 +4,34 @@ using UnityEngine;
 
 public class playerCar : MonoBehaviour
 {
+    public main controller;
+    public playerManager pManager;
+
     public float startMph; // the mph the car will start at
     public float upMph; //how fast the car will speed up
     public float moveTime; // the time it shoul take the player car to switch lanes
 
-    public main controller;
+    public Sprite bodySprite;
+    public Sprite crashSprite;
+    public Sprite windowSprite;
+    public Color windowTint;
+    public Sprite wheelSprite;
+    public Sprite liveryMaskSprite;
+    public Sprite liverySprite;
+    public Color liveryColor;
+
+    public SpriteRenderer body;
+    public SpriteRenderer window;
+    public SpriteRenderer liveryMask;
+    public SpriteRenderer livery;
+    public SpriteRenderer wheelF;
+    public SpriteRenderer wheelB;
+
     public bool tapped;
 
     public Vector3 targetPos; //where the player car has to go
     public float disMove; //speed the car has to move to get to targetPos on time
     public float overshoot; // keeps track of the distance moved so you know it wont go too far
-
-    public Sprite reg;
-    public Sprite crashed;
 
     public float startPos;
 
@@ -24,18 +39,26 @@ public class playerCar : MonoBehaviour
     public AudioClip crash1;
     public AudioClip crash2;
 
-    private void OnEnable()
+    void OnEnable()
     {
-        startMph = 30f;
-        upMph = 0.5f;
-        moveTime = 1.0f;
+        pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
+
+        PlayerPrefs.SetInt("playerCarType", 0); //saves the player car type
+        PlayerPrefs.SetInt("playerBody", 4); //saves the new high score
+        PlayerPrefs.SetInt("wheelBody", 1); //saves the new high score
+        PlayerPrefs.SetInt("windowTint", 2); //saves the new high score
+        PlayerPrefs.SetInt("liveryTint", 2); //saves the new high score
+        PlayerPrefs.SetInt("liveryColorTint", 2); //saves the new high score
+
+        getPlayerCustomazation();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
-        GetComponent<SpriteRenderer>().sprite = reg; //sets it to the non crashed skin
+
+        setPlayerCustomazation();
 
         startPos = -7f;
     }
@@ -85,7 +108,10 @@ public class playerCar : MonoBehaviour
                     targetPos = transform.position;
                 }
             }
-        } 
+        }
+
+        wheelB.transform.Rotate(0.0f, 0.0f, -Time.deltaTime * controller.mph * 10, Space.Self);
+        wheelF.transform.Rotate(0.0f, 0.0f, -Time.deltaTime * controller.mph * 10, Space.Self);
     }
 
     public void laneUp() //if tap is above player car
@@ -118,7 +144,7 @@ public class playerCar : MonoBehaviour
             targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
-            GetComponent<SpriteRenderer>().sortingOrder--;
+            changeOrder(-1);
 
             AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol * controller.sfxVol);
 
@@ -133,7 +159,7 @@ public class playerCar : MonoBehaviour
             targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
             disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
             overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
-            GetComponent<SpriteRenderer>().sortingOrder++;
+            changeOrder(1);
 
             AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
 
@@ -143,7 +169,7 @@ public class playerCar : MonoBehaviour
 
     public void crash()
     {
-        GetComponent<SpriteRenderer>().sprite = crashed; //car crashed
+        body.sprite = crashSprite; //car crashed
         controller.gameOver(); //sets the game to its game over state
         AudioSource.PlayClipAtPoint(crash1, new Vector3 (0,0,-10), controller.masterVol * controller.sfxVol);
     }
@@ -158,13 +184,13 @@ public class playerCar : MonoBehaviour
                 controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
                 if (collision.transform.position.y < transform.position.y)
                 {
-                    GetComponent<SpriteRenderer>().sortingOrder--;
+                    changeOrder(-1);
                     controller.bannedLanes.Add(collision.GetComponent<cars>().lane-1);
                     AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
                 }
                 else if (collision.transform.position.y > transform.position.y)
                 {
-                    GetComponent<SpriteRenderer>().sortingOrder++;
+                    changeOrder(1);
                     controller.bannedLanes.Add(collision.GetComponent<cars>().lane+1);
                     AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
                 }
@@ -188,7 +214,64 @@ public class playerCar : MonoBehaviour
     public void setLane(int lane)
     {
         transform.position = new Vector3(-12, (-lane * 1.25f) + 0.65f, 0);
-        GetComponent<SpriteRenderer>().sortingOrder = 2 + lane;
+        body.sortingOrder = 2 + lane;
+    }
+
+    private void changeOrder(int change)
+    {
+        body.sortingOrder += change;
+        window.sortingOrder += change;
+        wheelF.sortingOrder += change;
+        wheelB.sortingOrder += change;
+    }
+
+    private void getPlayerCustomazation()
+    {
+        int carTypeSave = PlayerPrefs.GetInt("playerCarType", 0); //grabes the id of the car type the player last used
+        int bodySave = PlayerPrefs.GetInt("playerBody", 0); //grabes the id of the body skin the player last used
+        int wheelSave = PlayerPrefs.GetInt("wheelBody", 0); //grabes the id of the wheel the player last used
+        int tintSave = PlayerPrefs.GetInt("windowTint", 0); //grabes the id of the tint the player last used
+        int liverySave = PlayerPrefs.GetInt("liveryTint", 0); //grabes the id of the tint the player last used
+        int liveryColorSave = PlayerPrefs.GetInt("liveryColorTint", 0); //grabes the id of the tint the player last used
+
+        bodySprite = pManager.bodies[carTypeSave][bodySave];
+        crashSprite = pManager.crashes[carTypeSave][bodySave];
+        wheelSprite = pManager.wheels[wheelSave];
+        windowSprite = pManager.windows[carTypeSave];
+        windowTint = pManager.windowColors[tintSave];
+
+        setCarStats(carTypeSave, wheelSave, tintSave);
+    }
+
+    private void setPlayerCustomazation()
+    {
+        body.sprite = bodySprite; //sets it to the non crashed skin
+        wheelB.sprite = wheelSprite; //sets the back wheel to the correct skin
+        wheelF.sprite = wheelSprite; //sets the front wheel to the correct skin
+        window.sprite = windowSprite; //sets the window to the correct skin
+        window.color = windowTint;
+    }
+
+    private void setCarStats(int carTypeSave, int wheelSave, int tintSave)
+    {
+        startMph = calcStartMPH(carTypeSave);
+        upMph = calcUpMPH(carTypeSave, wheelSave);
+        moveTime = calcmoveTime(carTypeSave, wheelSave);
+    }
+
+    private float calcStartMPH(int carTypeSave)
+    {
+        return pManager.carPartsData.carTypes[carTypeSave].startMPH;
+    }
+
+    private float calcUpMPH(int carTypeSave, int wheelSave)
+    {
+        return pManager.carPartsData.carTypes[carTypeSave].speedUp + pManager.carPartsData.wheelTypes[wheelSave].speedUp;
+    }
+
+    private float calcmoveTime(int carTypeSave, int wheelSave)
+    {
+        return pManager.carPartsData.carTypes[carTypeSave].moveTime + pManager.carPartsData.wheelTypes[wheelSave].moveTime;
     }
 
     private void playHorn()

@@ -107,6 +107,10 @@ public class main : MonoBehaviour
     public float largeCarOdds;
     public float specalCarOdds;
 
+    public List<GameObject> carsLargeList;
+    public List<float> carsLargeOdds;
+    public List<float> carsLargeCurrOdds;
+
     public GameObject bus; //bus gmaeobject to spawn
     public GameObject overBus; //bus gmaeobject to spawn
 
@@ -184,6 +188,7 @@ public class main : MonoBehaviour
         menuSound.Play();
 
         setCarOdds(carsOdds, carsCurrOdds, carsList);
+        setCarOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList);
         setCarOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList);
         setBuildingOdds();
         setBuilding1Odds();
@@ -630,7 +635,7 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        Instantiate(bus, new Vector3(13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
     }
 
     void spawnSpecalCar()

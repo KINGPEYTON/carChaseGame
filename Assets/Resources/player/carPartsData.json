@@ -1,0 +1,93 @@
+﻿{
+    "carTypes": [
+        {
+            "typeName": "Cool Sport",
+            "startMPH": 30,
+            "speedUp": 0.5,
+            "moveTime": 1
+        },
+        {
+            "typeName": "Retro",
+            "startMPH": 20,
+            "speedUp": 0.75,
+            "moveTime": 1
+        }
+    ],
+    "wheelTypes": [
+        {
+            "wheelName": "Basic Wheel",
+            "speedUp": 0.0,
+            "moveTime": 0
+        },
+        {
+            "wheelName": "Sport Wheel",
+            "speedUp": 0.10,
+            "moveTime": -0.25
+        }
+    ],
+    "windowTints": [
+        {
+            "tintColor": "Blue Glare",
+            "screenEffect": 0.10,
+            "ColorR": 215,
+            "ColorB": 227,
+            "ColorG": 244
+        },
+        {
+            "tintColor": "Blue Tint",
+            "screenEffect": 0.10,
+            "ColorR": 79,
+            "ColorB": 140,
+            "ColorG": 244
+        },
+        {
+            "tintColor": "Navy Tint",
+            "screenEffect": 0.10,
+            "ColorR": 17,
+            "ColorB": 76,
+            "ColorG": 158
+        },
+        {
+            "tintColor": "Dark Tint",
+            "screenEffect": 0.10,
+            "ColorR": 81,
+            "ColorB": 81,
+            "ColorG": 81
+        },
+        {
+            "tintColor": "Gray Tint",
+            "screenEffect": 0.10,
+            "ColorR": 175,
+            "ColorB": 175,
+            "ColorG": 175
+        },
+        {
+            "tintColor": "Light Tint",
+            "screenEffect": 0.10,
+            "ColorR": 229,
+            "ColorB": 229,
+            "ColorG": 229
+        },
+        {
+            "tintColor": "Clear",
+            "screenEffect": 0.10,
+            "ColorR": 252,
+            "ColorB": 252,
+            "ColorG": 252
+        }
+    ],
+    "liveryColors": [
+        {
+            "colorName": "Navy",
+            "ColorR": 17,
+            "ColorB": 76,
+            "ColorG": 158
+        },
+        {
+            "tintColor": "Blue",
+            "ColorR": 79,
+            "ColorB": 140,
+            "ColorG": 244
+        }
+    ]
+}

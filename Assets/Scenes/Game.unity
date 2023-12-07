@@ -9627,7 +9627,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 7
+  m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: df9624d93bf90489d871dda5a4f96054, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -10359,6 +10359,108 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1273415526}
   m_CullTransparentMesh: 1
+--- !u!1 &1274450695
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1274450699}
+  - component: {fileID: 1274450698}
+  - component: {fileID: 1274450697}
+  - component: {fileID: 1274450696}
+  m_Layer: 5
+  m_Name: smoke screen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1274450696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274450695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1274450697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274450695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!223 &1274450698
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274450695}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 250
+  m_TargetDisplay: 0
+--- !u!224 &1274450699
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274450695}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1320599380}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!1 &1275949105
 GameObject:
   m_ObjectHideFlags: 0
@@ -10717,6 +10819,97 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e7fbfb6ae8c9418f9af67a5d4911b9e, type: 3}
+--- !u!1 &1320599379
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1320599380}
+  - component: {fileID: 1320599383}
+  - component: {fileID: 1320599382}
+  - component: {fileID: 1320599381}
+  m_Layer: 5
+  m_Name: smoke screen image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1320599380
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1320599379}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1274450699}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 369.76}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1320599381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1320599379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b89e476d8421745c3a4dff980cde131d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distortIMG: {fileID: 0}
+  controller: {fileID: 0}
+  lastScreenDistort: 0
+--- !u!114 &1320599382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1320599379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 0}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 1190d0d3d62404b459140f417423f250, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1320599383
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1320599379}
+  m_CullTransparentMesh: 1
 --- !u!4 &1321769342 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 161309805598393534, guid: 92a8273f308964e0ca2c61031c2330da, type: 3}
@@ -13378,10 +13571,15 @@ MonoBehaviour:
   bodySprite: {fileID: 0}
   crashSprite: {fileID: 0}
   windowSprite: {fileID: 0}
-  wheelSprite: {fileID: 0}
   windowTint: {r: 0, g: 0, b: 0, a: 0}
+  wheelSprite: {fileID: 0}
+  liveryMaskSprite: {fileID: 0}
+  liverySprite: {fileID: 0}
+  liveryColor: {r: 0, g: 0, b: 0, a: 0}
   body: {fileID: 160000939}
   window: {fileID: 249655682}
+  liveryMask: {fileID: 1712579200}
+  livery: {fileID: 1234434194}
   wheelF: {fileID: 655729042}
   wheelB: {fileID: 1940376412}
   tapped: 0
@@ -14464,7 +14662,7 @@ GameObject:
   - component: {fileID: 1712579199}
   - component: {fileID: 1712579200}
   m_Layer: 0
-  m_Name: livery
+  m_Name: livery mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21480,10 +21678,16 @@ MonoBehaviour:
   windows: []
   windowNames: []
   windowColors: []
+  livery: []
+  liveryMask: []
+  liveryNames: []
+  liveryColors: []
   carPartsData:
     carTypes: []
     wheelTypes: []
     windowTints: []
+    liveryTypes: []
+    liveryColors: []
 --- !u!1 &1903820423
 GameObject:
   m_ObjectHideFlags: 0
@@ -22121,6 +22325,8 @@ MonoBehaviour:
   mph: 0
   score: 0
   highScore: 0
+  screenDistort: 0
+  screenDistortTarget: 0
   masterVol: 0
   sfxVol: 0
   musicVol: 0
@@ -22261,9 +22467,7 @@ MonoBehaviour:
   - {fileID: 2038349743856518929, guid: a8c35ad63e6084fcf89ef0c7231da7fe, type: 3}
   carsSpecialOdds: []
   carsSpecialCurrOdds: []
-  maniacVan: {fileID: 5416322368492017578, guid: 82ba8d1d5c3c247d4a5a474d9324eff2, type: 3}
-  vanChase: {fileID: 0}
-  policeCar: {fileID: 0}
+  policeCar: {fileID: 9034021018002404895, guid: 5055315abaf4e4a8694b0318e2f1d148, type: 3}
   bannedLanes: []
   carsPast: 0000000000000000
   settingsUI: {fileID: 3914550148770872345, guid: 806e32ce56b4b452ca8aa7c11267be32, type: 3}
@@ -25629,3 +25833,4 @@ SceneRoots:
   - {fileID: 2075505976}
   - {fileID: 241457794}
   - {fileID: 1901251797}
+  - {fileID: 1274450699}

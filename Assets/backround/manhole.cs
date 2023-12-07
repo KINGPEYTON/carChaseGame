@@ -40,4 +40,9 @@ public class manhole : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public float getSmokeValue()
+    {
+        return (smoke.emissionRate * smoke.startSpeed);
+    }
 }

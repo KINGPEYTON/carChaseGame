@@ -47,7 +47,7 @@ public class playerManager : MonoBehaviour
             getCarTypeAssets(f, "player/cars/"+f);
         }
         getCarAssets(wheels, wheelNames, "player/wheels");
-        getCarStuff(livery, liveryNames, "player/livery");
+        getCarAssets(livery, liveryNames, "player/livery");
     }
 
     private void getCarTypeAssets(string name, string path)
@@ -105,21 +105,28 @@ public class playerManager : MonoBehaviour
 
         foreach (carTypesReader carType in carDataInJson.carTypes)
         {
-            //Debug.Log("Car Type: " + carType.typeName + " with Start MPH of " + carType.startMPH + " and an incress of " + carType.speedUp);
             carNames.Add(carType.typeName);
         }
 
         foreach (carWheelReader wheelType in carDataInJson.wheelTypes)
         {
-            //Debug.Log("Wheel Type: " + wheelType.wheelName + " modifying the speed incress by " + wheelType.speedUp + " changing and a move speed by " + wheelType.moveTime);
             wheelNames.Add(wheelType.wheelName);
         }
 
         foreach (carWindowReader windowTint in carDataInJson.windowTints)
         {
-            //Debug.Log("Window Tint: " + windowTint.tintColor + " chancing the effect by " + windowTint.screenEffect);
             windowNames.Add(windowTint.tintColor);
             windowColors.Add(new Color32(windowTint.ColorR, windowTint.ColorB, windowTint.ColorG, 255));
+        }
+
+        foreach (carLiveryReader liveryType in carDataInJson.liveryTypes)
+        {
+            liveryNames.Add(liveryType.liveryName);
+        }
+
+        foreach (carLiveryColorReader liveryColor in carDataInJson.liveryColors)
+        {
+            liveryColors.Add(new Color32(liveryColor.ColorR, liveryColor.ColorB, liveryColor.ColorG, 255));
         }
 
         return carDataInJson;
@@ -133,6 +140,8 @@ public class carPartsReader
     public carTypesReader[] carTypes;
     public carWheelReader[] wheelTypes;
     public carWindowReader[] windowTints;
+    public carLiveryReader[] liveryTypes;
+    public carLiveryColorReader[] liveryColors;
 }
 
 [System.Serializable]
@@ -161,4 +170,19 @@ public class carWindowReader
     public byte ColorR;
     public byte ColorG;
     public byte  ColorB;
+}
+
+[System.Serializable]
+public class carLiveryReader
+{
+    public string liveryName;
+}
+
+[System.Serializable]
+public class carLiveryColorReader
+{
+    public string liveryColor;
+    public byte ColorR;
+    public byte ColorG;
+    public byte ColorB;
 }

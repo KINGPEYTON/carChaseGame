@@ -10,6 +10,7 @@ public class playerCar : MonoBehaviour
     public float startMph; // the mph the car will start at
     public float upMph; //how fast the car will speed up
     public float moveTime; // the time it shoul take the player car to switch lanes
+    public float smokeMulitplyer;
 
     public Sprite bodySprite;
     public Sprite crashSprite;
@@ -22,7 +23,7 @@ public class playerCar : MonoBehaviour
 
     public SpriteRenderer body;
     public SpriteRenderer window;
-    public SpriteRenderer liveryMask;
+    public SpriteMask liveryMask;
     public SpriteRenderer livery;
     public SpriteRenderer wheelF;
     public SpriteRenderer wheelB;
@@ -48,7 +49,7 @@ public class playerCar : MonoBehaviour
         PlayerPrefs.SetInt("wheelBody", 1); //saves the new high score
         PlayerPrefs.SetInt("windowTint", 2); //saves the new high score
         PlayerPrefs.SetInt("liveryTint", 2); //saves the new high score
-        PlayerPrefs.SetInt("liveryColorTint", 2); //saves the new high score
+        PlayerPrefs.SetInt("liveryColorTint", 17); //saves the new high score
 
         getPlayerCustomazation();
     }
@@ -208,6 +209,20 @@ public class playerCar : MonoBehaviour
                     collision.GetComponent<coins>().pickup();
                 }
             }
+            else if (collision.tag == "smoke")
+            {
+                float smokeLevel = collision.GetComponent<manhole>().getSmokeValue() * smokeMulitplyer;
+                if (smokeLevel > 500)
+                {
+                    smokeLevel = 500;
+                }
+
+                if (controller.screenDistortTarget < smokeLevel/500)
+                {
+                    
+                    controller.screenDistortTarget = smokeLevel / 500;
+                }
+            }
         }
     }
 
@@ -215,6 +230,10 @@ public class playerCar : MonoBehaviour
     {
         transform.position = new Vector3(-12, (-lane * 1.25f) + 0.65f, 0);
         body.sortingOrder = 2 + lane;
+        window.sortingOrder = 2 + lane;
+        wheelF.sortingOrder = 2 + lane;
+        wheelB.sortingOrder = 2 + lane;
+        livery.sortingOrder = 2 + lane;
     }
 
     private void changeOrder(int change)
@@ -223,6 +242,7 @@ public class playerCar : MonoBehaviour
         window.sortingOrder += change;
         wheelF.sortingOrder += change;
         wheelB.sortingOrder += change;
+        livery.sortingOrder += change;
     }
 
     private void getPlayerCustomazation()
@@ -239,6 +259,9 @@ public class playerCar : MonoBehaviour
         wheelSprite = pManager.wheels[wheelSave];
         windowSprite = pManager.windows[carTypeSave];
         windowTint = pManager.windowColors[tintSave];
+        liveryMaskSprite = pManager.liveryMask[carTypeSave];
+        liverySprite = pManager.livery[liverySave];
+        liveryColor = pManager.liveryColors[liveryColorSave];
 
         setCarStats(carTypeSave, wheelSave, tintSave);
     }
@@ -250,6 +273,9 @@ public class playerCar : MonoBehaviour
         wheelF.sprite = wheelSprite; //sets the front wheel to the correct skin
         window.sprite = windowSprite; //sets the window to the correct skin
         window.color = windowTint;
+        liveryMask.sprite = liveryMaskSprite;
+        livery.sprite = liverySprite;
+        livery.color = liveryColor;
     }
 
     private void setCarStats(int carTypeSave, int wheelSave, int tintSave)
@@ -257,6 +283,7 @@ public class playerCar : MonoBehaviour
         startMph = calcStartMPH(carTypeSave);
         upMph = calcUpMPH(carTypeSave, wheelSave);
         moveTime = calcmoveTime(carTypeSave, wheelSave);
+        smokeMulitplyer = 1 - pManager.carPartsData.windowTints[tintSave].screenEffect;
     }
 
     private float calcStartMPH(int carTypeSave)

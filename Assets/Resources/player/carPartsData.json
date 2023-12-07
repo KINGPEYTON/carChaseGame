@@ -76,18 +76,167 @@
             "ColorG": 252
         }
     ],
+    "liveryTypes": [
+        {
+            "liveryName": "No Livery"
+        },
+        {
+            "liveryName": "Splatter Livery"
+        },
+        {
+            "liveryName": "Tiger Livery"
+        }
+    ],
     "liveryColors": [
         {
             "colorName": "Navy",
-            "ColorR": 17,
-            "ColorB": 76,
-            "ColorG": 158
+            "ColorR": 5,
+            "ColorB": 48,
+            "ColorG": 109
         },
         {
-            "tintColor": "Blue",
+            "tintColor": "Sky",
             "ColorR": 79,
             "ColorB": 140,
             "ColorG": 244
+        },
+        {
+            "tintColor": "Maroon",
+            "ColorR": 140,
+            "ColorB": 5,
+            "ColorG": 5
+        },
+        {
+            "tintColor": "Red",
+            "ColorR": 255,
+            "ColorB": 0,
+            "ColorG": 0
+        },
+        {
+            "tintColor": "Magenta",
+            "ColorR": 255,
+            "ColorB": 0,
+            "ColorG": 228
+        },
+        {
+            "tintColor": "Green",
+            "ColorR": 27,
+            "ColorB": 188,
+            "ColorG": 27
+        },
+        {
+            "tintColor": "Violet",
+            "ColorR": 175,
+            "ColorB": 100,
+            "ColorG": 255
+        },
+        {
+            "tintColor": "Blue",
+            "ColorR": 0,
+            "ColorB": 64,
+            "ColorG": 247
+        },
+        {
+            "tintColor": "Neon",
+            "ColorR": 48,
+            "ColorB": 255,
+            "ColorG": 38
+        },
+        {
+            "tintColor": "Pink",
+            "ColorR": 253,
+            "ColorB": 116,
+            "ColorG": 255
+        },
+        {
+            "tintColor": "Aqua",
+            "ColorR": 0,
+            "ColorB": 235,
+            "ColorG": 235
+        },
+        {
+            "tintColor": "Yellow",
+            "ColorR": 255,
+            "ColorB": 238,
+            "ColorG": 0
+        },
+        {
+            "tintColor": "Orange",
+            "ColorR": 242,
+            "ColorB": 114,
+            "ColorG": 10
+        },
+        {
+            "tintColor": "Purple",
+            "ColorR": 100,
+            "ColorB": 0,
+            "ColorG": 236
+        },
+        {
+            "tintColor": "Marine",
+            "ColorR": 0,
+            "ColorB": 100,
+            "ColorG": 100
+        },
+        {
+            "tintColor": "Forest",
+            "ColorR": 9,
+            "ColorB": 102,
+            "ColorG": 9
+        },
+        {
+            "tintColor": "Wooden",
+            "ColorR": 137,
+            "ColorB": 88,
+            "ColorG": 44
+        },
+        {
+            "tintColor": "Gold",
+            "ColorR": 220,
+            "ColorB": 185,
+            "ColorG": 0
+        },
+        {
+            "tintColor": "Silver",
+            "ColorR": 200,
+            "ColorB": 200,
+            "ColorG": 200
+        },
+        {
+            "tintColor": "Rust",
+            "ColorR": 183,
+            "ColorB": 74,
+            "ColorG": 14
+        },
+        {
+            "tintColor": "Sand",
+            "ColorR": 200,
+            "ColorB": 200,
+            "ColorG": 100
+        },
+        {
+            "tintColor": "Snow",
+            "ColorR": 242,
+            "ColorB": 242,
+            "ColorG": 242
+        },
+        {
+            "tintColor": "Void",
+            "ColorR": 25,
+            "ColorB": 25,
+            "ColorG": 25
+        },
+        {
+            "tintColor": "Smog",
+            "ColorR": 125,
+            "ColorB": 125,
+            "ColorG": 125
+        },
+        {
+            "tintColor": "Dark",
+            "ColorR": 75,
+            "ColorB": 75,
+            "ColorG": 75
         }
     ]
 }

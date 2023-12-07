@@ -14,6 +14,9 @@ public class main : MonoBehaviour
     public float score;
     public float highScore;
 
+    public float screenDistort;
+    public float screenDistortTarget;
+
     public float masterVol;
     public float sfxVol;
     public float musicVol;
@@ -118,8 +121,6 @@ public class main : MonoBehaviour
     public List<float> carsSpecialOdds;
     public List<float> carsSpecialCurrOdds;
 
-    public GameObject maniacVan; //van gmaeobject to spawn
-    public GameObject vanChase;
     public GameObject policeCar;
 
     public List<float> bannedLanes;
@@ -239,6 +240,8 @@ public class main : MonoBehaviour
             spawnMenuCar();
         }
 
+        //updates the smoke effict on the players screen
+        updateSmokeScreen();
 
         // update blimp
         if ((scoreBlimp.transform.position.x < -7.79f || scoreBlimp.transform.position.x > -4.82f) && Mathf.Abs(scoreBlimp.transform.position.x - newBlimpLocation.x) > 1.0) //if blimp went out of bounce on the X
@@ -520,6 +523,33 @@ public class main : MonoBehaviour
         }
     }
 
+    void updateSmokeScreen()
+    {
+        if (screenDistort == screenDistortTarget)
+        {
+            screenDistortTarget = 0;
+        }
+        else
+        {
+            if (screenDistort < screenDistortTarget)
+            {
+                screenDistort += Time.deltaTime * 0.75f;
+                if (screenDistort > screenDistortTarget)
+                {
+                    screenDistort = screenDistortTarget;
+                }
+            }
+            else if (screenDistort > screenDistortTarget)
+            {
+                screenDistort -= Time.deltaTime * 0.75f;
+                if(screenDistort < screenDistortTarget)
+                {
+                    screenDistort = screenDistortTarget;
+                }
+            }
+        }
+    }
+
     void spawnGameCar()
     {
         carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
@@ -563,7 +593,23 @@ public class main : MonoBehaviour
                 {
                     newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
                 }
-                newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
+                float specalCar = Random.Range(0.0f, 1.0f);
+                if (specalCar > largeCarOdds + specalCarOdds)
+                {
+                    newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(-12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                    largeCarOdds += 0.1f;
+                    specalCarOdds += 0.00175f;
+                }
+                else if (specalCar > largeCarOdds)
+                {
+                    newCar = Instantiate(policeCar, new Vector3(-12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                    specalCarOdds = 0.01f;
+                }
+                else
+                {
+                    newCar = Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                    largeCarOdds = 0.05f;
+                }
                 carTimer = 0;
             }
             else
@@ -785,6 +831,8 @@ public class main : MonoBehaviour
         isOver = true;
 
         GameObject.Find("Main Camera").GetComponent<AudioLowPassFilter>().cutoffFrequency = 2500;
+
+        screenDistortTarget = 0;
 
         gameGameOverButton();
     }

@@ -44,13 +44,6 @@ public class playerCar : MonoBehaviour
     {
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
 
-        PlayerPrefs.SetInt("playerCarType", 0); //saves the player car type
-        PlayerPrefs.SetInt("playerBody", 4); //saves the new high score
-        PlayerPrefs.SetInt("wheelBody", 1); //saves the new high score
-        PlayerPrefs.SetInt("windowTint", 2); //saves the new high score
-        PlayerPrefs.SetInt("liveryTint", 2); //saves the new high score
-        PlayerPrefs.SetInt("liveryColorTint", 17); //saves the new high score
-
         getPlayerCustomazation();
     }
 
@@ -58,8 +51,6 @@ public class playerCar : MonoBehaviour
     void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
-
-        setPlayerCustomazation();
 
         startPos = -7f;
     }
@@ -233,7 +224,7 @@ public class playerCar : MonoBehaviour
         window.sortingOrder = 2 + lane;
         wheelF.sortingOrder = 2 + lane;
         wheelB.sortingOrder = 2 + lane;
-        livery.sortingOrder = 2 + lane;
+        livery.sortingOrder = 3 + lane;
     }
 
     private void changeOrder(int change)
@@ -245,7 +236,7 @@ public class playerCar : MonoBehaviour
         livery.sortingOrder += change;
     }
 
-    private void getPlayerCustomazation()
+    public void getPlayerCustomazation()
     {
         int carTypeSave = PlayerPrefs.GetInt("playerCarType", 0); //grabes the id of the car type the player last used
         int bodySave = PlayerPrefs.GetInt("playerBody", 0); //grabes the id of the body skin the player last used
@@ -263,7 +254,11 @@ public class playerCar : MonoBehaviour
         liverySprite = pManager.livery[liverySave];
         liveryColor = pManager.liveryColors[liveryColorSave];
 
+        wheelB.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[carTypeSave].wheelB, pManager.carPartsData.carTypes[carTypeSave].wheelHight, 0);
+        wheelF.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[carTypeSave].wheelF, pManager.carPartsData.carTypes[carTypeSave].wheelHight, 0);
+
         setCarStats(carTypeSave, wheelSave, tintSave);
+        setPlayerCustomazation();
     }
 
     private void setPlayerCustomazation()

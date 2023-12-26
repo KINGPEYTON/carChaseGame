@@ -149,7 +149,7 @@ public class pauseMenu : MonoBehaviour
     {
         youSure areYouSure = Instantiate(areYouSureToCreate, gameObject.transform).GetComponent<youSure>();
         areYouSure.methodToCall = manuMethod;
-        areYouSure.message = "you want to exit to the main menu?";
+        areYouSure.message = "Are you sure you want to exit to the main menu?";
         AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
     }
 

@@ -41,7 +41,7 @@ public class youSure : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		displayMessage.text = "Are you sure " + message;
+		displayMessage.text = message;
 
         if (!inPos)
         {

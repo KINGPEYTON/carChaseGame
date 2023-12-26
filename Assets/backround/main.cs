@@ -902,12 +902,6 @@ public class main : MonoBehaviour
         }
     }
 
-    public void shopButton()
-    {
-
-        AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol * sfxVol);
-    }
-
     public void settingsButton()
     {
         AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol * sfxVol);

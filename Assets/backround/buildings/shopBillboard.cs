@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class startBillboard : MonoBehaviour
+public class shopBillboard : MonoBehaviour
 {
     public main controller;
     public Camera mainCamera;
@@ -36,6 +36,7 @@ public class startBillboard : MonoBehaviour
     public Image backround;
     public bool colorDir;
     public float colorVar;
+    public TextMeshProUGUI frontCoinText;
 
     public AudioClip staticSound;
 
@@ -54,6 +55,23 @@ public class startBillboard : MonoBehaviour
     public float displayUpMPH;
     public float displayMoveTime;
     public float displaySmokeMulitplyer;
+
+    public float displayStartMPHMin;
+    public float displayUpMPHMin;
+    public float displayMoveTimeMin;
+    public float displaySmokeMulitplyerMin;
+    public float displayStartMPHMax;
+    public float displayUpMPHMax;
+    public float displayMoveTimeMax;
+    public float displaySmokeMulitplyerMax;
+    public GameObject displayStartMPHBar;
+    public GameObject displayUpMPHBar;
+    public GameObject displayMoveTimeBar;
+    public GameObject displaySmokeMulitplyerBar;
+    public GameObject displayStartMPHBarChange;
+    public GameObject displayUpMPHBarChange;
+    public GameObject displayMoveTimeBarChange;
+    public GameObject displaySmokeMulitplyerBarChange;
 
     public Transform shopItemsTransform;
     public Transform shopCategoryTransform;
@@ -78,33 +96,36 @@ public class startBillboard : MonoBehaviour
         myButton = GetComponent<Button>();
         statics.SetActive(false);
         colorVar = 100;
-        shopButtonFunc(0.1f);
 
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
+
+        //shopButtonFunc(0.1f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        backround.color = new Color32((byte)colorVar, (byte)colorVar, 255, 255);
+        backround.color = new Color32((byte)colorVar, 220, (byte)colorVar, 255);
 
         if (colorDir)
         {
-            colorVar += Time.deltaTime * 60;
-            if(colorVar > 180)
+            colorVar += Time.deltaTime * 30;
+            if(colorVar > 150)
             {
                 colorDir = false;
             }
         }
         else
         {
-            colorVar -= Time.deltaTime * 60;
-            if (colorVar < 70)
+            colorVar -= Time.deltaTime * 30;
+            if (colorVar < 30)
             {
                 colorDir = true;
             }
         }
+
+        frontCoinText.text = controller.totalCoins.ToString();
 
         staticTimer -= Time.deltaTime;
 
@@ -211,7 +232,7 @@ public class startBillboard : MonoBehaviour
         }
     }
 
-    public void click()
+    public void startGame()
     {
         controller.StartGame();
         shopButton.interactable = false;
@@ -223,24 +244,29 @@ public class startBillboard : MonoBehaviour
 
     public void shopButtonFunc(float speed)
     {
-        AudioSource.PlayClipAtPoint(controller.clickSound, transform.position, controller.masterVol * controller.sfxVol);
-        inStore = true;
-        mainCamera.enabled = false;
-        sideCamera.enabled = true;
-        targetPos = new Vector3(-4, 3, -10);
-        targetSpeed = setTargetSpeed(targetPos, speed, sideCamera.transform.position);
-        inPos = false;
-        targetZoom = 1.55f;
-        zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
-        buttonCoverImage.SetActive(true);
-        signs.SetActive(false);
-        playerDisplay.SetActive(false);
+        if (!controller.playing)
+        {
+            AudioSource.PlayClipAtPoint(controller.clickSound, transform.position, controller.masterVol * controller.sfxVol);
+            inStore = true;
+            mainCamera.enabled = false;
+            sideCamera.enabled = true;
+            targetPos = new Vector3(4, 3, -10);
+            targetSpeed = setTargetSpeed(targetPos, speed, sideCamera.transform.position);
+            inPos = false;
+            targetZoom = 1.55f;
+            zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
+            buttonCoverImage.SetActive(true);
+            signs.SetActive(false);
+            playerDisplay.SetActive(false);
 
-        statics.SetActive(true);
-        staticTimer = 1f;
-        inStatic = true;
-        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
-        coinText.text = controller.totalCoins.ToString();
+            statics.SetActive(true);
+            staticTimer = 1f;
+            inStatic = true;
+            AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            coinText.text = controller.totalCoins.ToString();
+
+            setBarConstraints();
+        }
     }
 
     public Vector3 setTargetSpeed(Vector3 target, float speed, Vector3 currPos)
@@ -367,6 +393,7 @@ public class startBillboard : MonoBehaviour
         if (didEquip)
         {
             playerCar.getPlayerCustomazation();
+            getDisplayCarStats();
             updateItemButtons(catergoryID);
             coinText.text = controller.totalCoins.ToString();
 
@@ -424,6 +451,8 @@ public class startBillboard : MonoBehaviour
         activeCategoryButton.interactable = false;
         activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
 
+        showDisplayCarStatsChange(buttonID);
+
         toChange.sprite = spriteChange;
 
         if (unlocked)
@@ -474,6 +503,8 @@ public class startBillboard : MonoBehaviour
         activeCategoryButton = itemButtonList[buttonID].GetComponent<Button>();
         activeCategoryButton.interactable = false;
         activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
+
+        showDisplayCarStatsChange(buttonID);
 
         toChange.sprite = spriteChange;
         toChange2.sprite = spriteChange;
@@ -528,6 +559,8 @@ public class startBillboard : MonoBehaviour
         activeCategoryButton.interactable = false;
         activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
 
+        showDisplayCarStatsChange(buttonID);
+
         toChange.color = colorChange;
 
         if (unlocked)
@@ -579,6 +612,8 @@ public class startBillboard : MonoBehaviour
         activeCategoryButton = itemButtonList[buttonID].GetComponent<Button>();
         activeCategoryButton.interactable = false;
         activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
+
+        showDisplayCarStatsChange(buttonID);
 
         setDisplayCarType(buttonID);
 
@@ -663,11 +698,7 @@ public class startBillboard : MonoBehaviour
         categoryButton = categoryButtonList[buttonID];
         categoryButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(0, 125, 255, 255);
         categoryButton.interactable = false;
-
-        if (resetItemBar)
-        {
-            //slideItem();
-        }
+        getDisplayCarStats();
     }
 
     public void activateButtons(List<Sprite> iconList, List<string> nameList, SpriteRenderer toChange, int currSelect, carPart[] cost, List<bool> activeList)
@@ -996,9 +1027,140 @@ public class startBillboard : MonoBehaviour
         displayWheelF.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[typeID].wheelF, pManager.carPartsData.carTypes[typeID].wheelHight, 0);
     }
 
-    void getDisplayCarStats(int typeID)
+    void getDisplayCarStats()
     {
         displayStartMPH = playerCar.startMph;
+        displayUpMPH = playerCar.upMph;
+        displayMoveTime = playerCar.moveTime;
+        displaySmokeMulitplyer = playerCar.smokeMulitplyer;
+
+        float startBarVal = getValueScale(displayStartMPH, displayStartMPHMin, displayStartMPHMax, 0.5f);
+        float upBarVal = getValueScale(displayUpMPH, displayUpMPHMin, displayUpMPHMax, 0.5f);
+        float moveBarVal = getValueScale(displayMoveTime, displayMoveTimeMin, displayMoveTimeMax, 0.5f);
+        float smokeBarVal = getValueScale(displaySmokeMulitplyer, displaySmokeMulitplyerMin, displaySmokeMulitplyerMax, 0.5f);
+
+        displayStartMPHBar.transform.localScale = new Vector3(startBarVal, 0.5f, 0.5f);
+        displayStartMPHBarChange.transform.localScale = new Vector3(startBarVal, 0.5f, 0.5f);
+        displayUpMPHBar.transform.localScale = new Vector3(upBarVal, 0.5f, 0.5f);
+        displayUpMPHBarChange.transform.localScale = new Vector3(upBarVal, 0.5f, 0.5f);
+        displayMoveTimeBar.transform.localScale = new Vector3(moveBarVal, 0.5f, 0.5f);
+        displayMoveTimeBarChange.transform.localScale = new Vector3(moveBarVal, 0.5f, 0.5f);
+        displaySmokeMulitplyerBar.transform.localScale = new Vector3(smokeBarVal, 0.5f, 0.5f);
+        displaySmokeMulitplyerBarChange.transform.localScale = new Vector3(smokeBarVal, 0.5f, 0.5f);
+    }
+
+    void showDisplayCarStatsChange(int typeID)
+    { 
+        switch (catergoryID)
+        {
+            case 0:
+                if (typeID != PlayerPrefs.GetInt("playerCarType", 0))
+                {
+                    if (playerCar.calcStartMPH(typeID) < playerCar.startMph)
+                    {
+                        displayStartMPHBar.transform.localScale = new Vector3(getValueScale(playerCar.calcStartMPH(typeID), displayStartMPHMin, displayStartMPHMax, 0.5f), 0.5f, 0.5f);
+                        displayStartMPHBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+                    }
+                    else
+                    {
+                        displayStartMPHBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcStartMPH(typeID), displayStartMPHMin, displayStartMPHMax, 0.5f), 0.5f, 0.5f);
+                        displayStartMPHBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
+                    }
+
+                    if (playerCar.calcUpMPH(typeID, PlayerPrefs.GetInt("wheelBody", 0)) < playerCar.upMph)
+                    {
+                        displayUpMPHBar.transform.localScale = new Vector3(getValueScale(playerCar.calcUpMPH(typeID, PlayerPrefs.GetInt("wheelBody", 0)), displayUpMPHMin, displayUpMPHMax, 0.5f), 0.5f, 0.5f);
+                        displayUpMPHBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+                    }
+                    else
+                    {
+                        displayUpMPHBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcUpMPH(typeID, PlayerPrefs.GetInt("wheelBody", 0)), displayUpMPHMin, displayUpMPHMax, 0.5f), 0.5f, 0.5f);
+                        displayUpMPHBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
+                    }
+
+                    if (playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)) < playerCar.moveTime)
+                    {
+                        displayMoveTimeBar.transform.localScale = new Vector3(getValueScale(playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)), displayMoveTimeMin, displayMoveTimeMax, 0.5f), 0.5f, 0.5f);
+                        displayMoveTimeBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+                    }
+                    else
+                    {
+                        displayMoveTimeBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)), displayMoveTimeMin, displayMoveTimeMax, 0.5f), 0.5f, 0.5f);
+                        displayMoveTimeBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
+                    }
+                }
+                else
+                {
+                    getDisplayCarStats();
+                }
+                break;
+            case 2:
+                if (typeID != PlayerPrefs.GetInt("windowTint", 0))
+                {
+                    if (playerCar.calcSmokeMulitplyer(typeID) < playerCar.smokeMulitplyer)
+                    {
+                        displaySmokeMulitplyerBar.transform.localScale = new Vector3(getValueScale(playerCar.calcSmokeMulitplyer(typeID), displaySmokeMulitplyerMin, displaySmokeMulitplyerMax, 0.5f), 0.5f, 0.5f);
+                        displaySmokeMulitplyerBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+                    }
+                    else
+                    {
+                        displaySmokeMulitplyerBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcSmokeMulitplyer(typeID), displaySmokeMulitplyerMin, displaySmokeMulitplyerMax, 0.5f), 0.5f, 0.5f);
+                        displaySmokeMulitplyerBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
+                    }
+                }
+                else
+                {
+                    getDisplayCarStats();
+                }
+                break;
+            case 3:
+                if (typeID != PlayerPrefs.GetInt("wheelBody", 0))
+                {
+                    if (playerCar.calcUpMPH(typeID, PlayerPrefs.GetInt("wheelBody", 0)) < playerCar.upMph)
+                    {
+                        displayUpMPHBar.transform.localScale = new Vector3(getValueScale(playerCar.calcUpMPH(PlayerPrefs.GetInt("playerCarType", 0), typeID), displayUpMPHMin, displayUpMPHMax, 0.5f), 0.5f, 0.5f);
+                        displayUpMPHBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+                    }
+                    else
+                    {
+                        displayUpMPHBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcUpMPH(PlayerPrefs.GetInt("playerCarType", 0), typeID), displayUpMPHMin, displayUpMPHMax, 0.5f), 0.5f, 0.5f);
+                        displayUpMPHBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
+                    }
+
+                    if (playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)) < playerCar.moveTime)
+                    {
+                        displayMoveTimeBar.transform.localScale = new Vector3(getValueScale(playerCar.calcmoveTime(PlayerPrefs.GetInt("playerCarType", 0), typeID), displayMoveTimeMin, displayMoveTimeMax, 0.5f), 0.5f, 0.5f);
+                        displayMoveTimeBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+                    }
+                    else
+                    {
+                        displayMoveTimeBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcmoveTime(PlayerPrefs.GetInt("playerCarType", 0), typeID), displayMoveTimeMin, displayMoveTimeMax, 0.5f), 0.5f, 0.5f);
+                        displayMoveTimeBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
+                    }
+                }
+                else
+                {
+                    getDisplayCarStats();
+                }
+                break;
+        }
+    }
+
+    float getValueScale(float val, float min, float max, float scale)
+    {
+        return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
+    }
+
+    void setBarConstraints()
+    {
+        displayStartMPHMin = 15;
+        displayStartMPHMax = 60;
+        displayUpMPHMin = 0.45f;
+        displayUpMPHMax = 1;
+        displayMoveTimeMin = 1.2f;
+        displayMoveTimeMax = 0.25f;
+        displaySmokeMulitplyerMin = 1.2f;
+        displaySmokeMulitplyerMax = 0.2f;
     }
 
     void addCoins(int ammount)

@@ -60,7 +60,7 @@ public class playerCar : MonoBehaviour
     {
         if (controller.playing)
         {
-            if (startPos == transform.position.x && controller.billboards[0].gameObject.name != "Start Billboard") {
+            if (startPos == transform.position.x && controller.scoreShowing && controller.textNum >= 10) {
                 if (Input.touchCount > 0 && Time.timeScale > 0 && !tapped) // if the user touches the phone screen
                 {
                     Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
@@ -278,22 +278,27 @@ public class playerCar : MonoBehaviour
         startMph = calcStartMPH(carTypeSave);
         upMph = calcUpMPH(carTypeSave, wheelSave);
         moveTime = calcmoveTime(carTypeSave, wheelSave);
-        smokeMulitplyer = 1 - pManager.carPartsData.windowTints[tintSave].screenEffect;
+        smokeMulitplyer = calcSmokeMulitplyer(tintSave);
     }
 
-    private float calcStartMPH(int carTypeSave)
+    public float calcStartMPH(int carTypeSave)
     {
         return pManager.carPartsData.carTypes[carTypeSave].startMPH;
     }
 
-    private float calcUpMPH(int carTypeSave, int wheelSave)
+    public float calcUpMPH(int carTypeSave, int wheelSave)
     {
         return pManager.carPartsData.carTypes[carTypeSave].speedUp + pManager.carPartsData.wheelTypes[wheelSave].speedUp;
     }
 
-    private float calcmoveTime(int carTypeSave, int wheelSave)
+    public float calcmoveTime(int carTypeSave, int wheelSave)
     {
         return pManager.carPartsData.carTypes[carTypeSave].moveTime + pManager.carPartsData.wheelTypes[wheelSave].moveTime;
+    }
+
+    public float calcSmokeMulitplyer(int tintSave)
+    {
+        return 1 - pManager.carPartsData.windowTints[tintSave].screenEffect;
     }
 
     private void playHorn()

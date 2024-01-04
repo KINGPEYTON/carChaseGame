@@ -29,6 +29,8 @@ public class playerCar : MonoBehaviour
     public SpriteRenderer wheelB;
 
     public bool tapped;
+    public float swipeDistToDetect;
+    public float firstTapPoint;
 
     public Vector3 targetPos; //where the player car has to go
     public float disMove; //speed the car has to move to get to targetPos on time
@@ -53,6 +55,7 @@ public class playerCar : MonoBehaviour
         controller = GameObject.Find("contoller").GetComponent<main>();
 
         startPos = -7f;
+        swipeDistToDetect = 0.25f;
     }
 
     // Update is called once per frame
@@ -61,23 +64,33 @@ public class playerCar : MonoBehaviour
         if (controller.playing)
         {
             if (startPos == transform.position.x && controller.scoreShowing && controller.textNum >= 10) {
-                if (Input.touchCount > 0 && Time.timeScale > 0 && !tapped) // if the user touches the phone screen
+                if (Input.touchCount > 0 && Time.timeScale > 0) // if the user touches the phone screen
                 {
                     Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
-                    tapped = true;
-
-                    if (tapPoint.y < 3.0f)
+                    if (tapped)
                     {
-                        if (tapPoint.y > transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.3) //if the tap if above the player car
+                        if (firstTapPoint < 3.0f)
                         {
-                            laneUp();
-                        }
-                        else if (tapPoint.y < transform.position.y && Mathf.Abs(tapPoint.y - transform.position.y) > 0.3) //if the tap is below the player car
-                        {
-                            laneDown();
+                            if ((tapPoint.y - firstTapPoint) > swipeDistToDetect) //if the tap if above the player car
+                            {
+                                laneUp();
+                                tapped = false;
+                            }
+                            else if ((tapPoint.y - firstTapPoint) < -swipeDistToDetect) //if the tap is below the player car
+                            {
+                                laneDown();
+                                tapped = false;
+                            }
                         }
                     }
-                } else
+                    else
+                    {
+                        tapped = true;
+                        firstTapPoint = tapPoint.y;
+                    }
+                    Debug.Log(tapPoint.y - firstTapPoint);
+                }
+                else if (Input.touchCount == 0)
                 {
                     tapped = false;
                 }
@@ -190,8 +203,7 @@ public class playerCar : MonoBehaviour
             }
             else if (collision.tag == "barrier")
             {
-                AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
-                crash(); //what happens when the player crashes
+                laneDown();
             }
             else if (collision.tag == "coin")
             {

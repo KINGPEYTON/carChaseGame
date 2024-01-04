@@ -40,10 +40,26 @@
     "windowTints": [
         {
             "tintColor": "Shiny",
-            "screenEffect": 0.10,
+            "screenEffect": 0.00,
             "ColorR": 215,
             "ColorB": 227,
             "ColorG": 244,
+            "cost": 1000
+        },
+        {
+            "tintColor": "Light",
+            "screenEffect": 0.05,
+            "ColorR": 229,
+            "ColorB": 229,
+            "ColorG": 229,
+            "cost": 1000
+        },
+        {
+            "tintColor": "Gray",
+            "screenEffect": 0.15,
+            "ColorR": 175,
+            "ColorB": 175,
+            "ColorG": 175,
             "cost": 1000
         },
         {
@@ -56,7 +72,7 @@
         },
         {
             "tintColor": "Navy",
-            "screenEffect": 0.10,
+            "screenEffect": 0.20,
             "ColorR": 17,
             "ColorB": 76,
             "ColorG": 158,
@@ -64,34 +80,10 @@
         },
         {
             "tintColor": "Dark",
-            "screenEffect": 0.10,
+            "screenEffect": 0.30,
             "ColorR": 81,
             "ColorB": 81,
             "ColorG": 81,
-            "cost": 1000
-        },
-        {
-            "tintColor": "Gray",
-            "screenEffect": 0.10,
-            "ColorR": 175,
-            "ColorB": 175,
-            "ColorG": 175,
-            "cost": 1000
-        },
-        {
-            "tintColor": "Light",
-            "screenEffect": 0.10,
-            "ColorR": 229,
-            "ColorB": 229,
-            "ColorG": 229,
-            "cost": 1000
-        },
-        {
-            "tintColor": "Clear",
-            "screenEffect": 0.10,
-            "ColorR": 252,
-            "ColorB": 252,
-            "ColorG": 252,
             "cost": 1000
         }
     ],

@@ -444,125 +444,45 @@ public class shopBillboard : MonoBehaviour
 
     public void selectCustomizationItem(int buttonID, SpriteRenderer toChange, Sprite spriteChange, int cost, bool unlocked)
     {
-        itemID = buttonID;
-        activeCategoryButton.interactable = true;
-        activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.pressedColor;
-        activeCategoryButton = itemButtonList[buttonID].GetComponent<Button>();
-        activeCategoryButton.interactable = false;
-        activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
+        selectItemButtonFunc(buttonID);
 
         showDisplayCarStatsChange(buttonID);
 
         toChange.sprite = spriteChange;
 
-        if (unlocked)
-        {
-            if (activeCategoryButton == selectedCategoryButton)
-            {
-                equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equiped";
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(75, 75, 255, 255);
-                cb.selectedColor = new Color32(75, 75, 255, 255);
-                equipbutton.colors = cb;
-            }
-            else
-            {
-                equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equip";
-
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(150, 150, 255, 255);
-                cb.selectedColor = new Color32(150, 150, 255, 255);
-                equipbutton.colors = cb;
-            }
-        }
-        else
-        {
-            equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Buy";
-
-            if (cost < controller.totalCoins)
-            {
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(45, 225, 45, 255);
-                cb.selectedColor = new Color32(45, 225, 45, 255);
-                equipbutton.colors = cb;
-            } else
-            {
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(225, 45, 45, 255);
-                cb.selectedColor = new Color32(225, 45, 45, 255);
-                equipbutton.colors = cb;
-            }
-        }
+        selectItemEquipFunc(cost, unlocked);
     }
 
     public void selectCustomizationItem(int buttonID, SpriteRenderer toChange, SpriteRenderer toChange2, Sprite spriteChange, int cost, bool unlocked)
     {
-        itemID = buttonID;
-        activeCategoryButton.interactable = true;
-        activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.pressedColor;
-        activeCategoryButton = itemButtonList[buttonID].GetComponent<Button>();
-        activeCategoryButton.interactable = false;
-        activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
-
-        showDisplayCarStatsChange(buttonID);
+        selectItemButtonFunc(buttonID);
 
         toChange.sprite = spriteChange;
         toChange2.sprite = spriteChange;
 
-        if (unlocked)
-        {
-            if (activeCategoryButton == selectedCategoryButton)
-            {
-                equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equiped";
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(75, 75, 255, 255);
-                cb.selectedColor = new Color32(75, 75, 255, 255);
-                equipbutton.colors = cb;
-            }
-            else
-            {
-                equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equip";
-
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(150, 150, 255, 255);
-                cb.selectedColor = new Color32(150, 150, 255, 255);
-                equipbutton.colors = cb;
-            }
-        }
-        else
-        {
-            equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Buy";
-
-            if (cost < controller.totalCoins)
-            {
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(45, 225, 45, 255);
-                cb.selectedColor = new Color32(45, 225, 45, 255);
-                equipbutton.colors = cb;
-            }
-            else
-            {
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(225, 45, 45, 255);
-                cb.selectedColor = new Color32(225, 45, 45, 255);
-                equipbutton.colors = cb;
-            }
-        }
+        selectItemEquipFunc(cost, unlocked);
     }
 
     public void selectCustomizationItem(int buttonID, SpriteRenderer toChange, Color colorChange, int cost, bool unlocked)
     {
-        itemID = buttonID;
-        activeCategoryButton.interactable = true;
-        activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.pressedColor;
-        activeCategoryButton = itemButtonList[buttonID].GetComponent<Button>();
-        activeCategoryButton.interactable = false;
-        activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
-
-        showDisplayCarStatsChange(buttonID);
+        selectItemButtonFunc(buttonID);
 
         toChange.color = colorChange;
 
+        selectItemEquipFunc(cost, unlocked);
+    }
+
+    public void selectCustomizationItem(int buttonID, int cost, bool unlocked)
+    {
+        selectItemButtonFunc(buttonID);
+
+        setDisplayCarType(buttonID);
+
+        selectItemEquipFunc(cost, unlocked);
+    }
+
+    void selectItemEquipFunc(int cost, bool unlocked)
+    {
         if (unlocked)
         {
             if (activeCategoryButton == selectedCategoryButton)
@@ -604,7 +524,7 @@ public class shopBillboard : MonoBehaviour
         }
     }
 
-    public void selectCustomizationItem(int buttonID, int cost, bool unlocked)
+    void selectItemButtonFunc(int buttonID)
     {
         itemID = buttonID;
         activeCategoryButton.interactable = true;
@@ -614,48 +534,6 @@ public class shopBillboard : MonoBehaviour
         activeCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
 
         showDisplayCarStatsChange(buttonID);
-
-        setDisplayCarType(buttonID);
-
-        if (unlocked)
-        {
-            if (activeCategoryButton == selectedCategoryButton)
-            {
-                equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equiped";
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(75, 75, 255, 255);
-                cb.selectedColor = new Color32(75, 75, 255, 255);
-                equipbutton.colors = cb;
-            }
-            else
-            {
-                equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equip";
-
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(150, 150, 255, 255);
-                cb.selectedColor = new Color32(150, 150, 255, 255);
-                equipbutton.colors = cb;
-            }
-        }
-        else
-        {
-            equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Buy";
-
-            if (cost < controller.totalCoins)
-            {
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(45, 225, 45, 255);
-                cb.selectedColor = new Color32(45, 225, 45, 255);
-                equipbutton.colors = cb;
-            }
-            else
-            {
-                ColorBlock cb = equipbutton.colors;
-                cb.normalColor = new Color32(225, 45, 45, 255);
-                cb.selectedColor = new Color32(225, 45, 45, 255);
-                equipbutton.colors = cb;
-            }
-        }
     }
 
     public void getItemButtons(int buttonID)
@@ -717,23 +595,7 @@ public class shopBillboard : MonoBehaviour
             newButton.transform.localPosition = new Vector3(-25 + (15 * i), 0.5f, 0);
             itemButtonList.Add(newButton);
         }
-        activeCategoryButton = itemButtonList[currSelect];
-        selectedCategoryButton = itemButtonList[currSelect];
-        activeCategoryButton.interactable = false;
-        ColorBlock cb = selectedCategoryButton.colors;
-        cb.normalColor = new Color32(175, 0, 0, 255);
-        cb.disabledColor = new Color32(255, 50, 50, 255);
-        cb.highlightedColor = new Color32(255, 150, 150, 255);
-        cb.pressedColor = new Color32(125, 0, 0, 255);
-        selectedCategoryButton.colors = cb;
-        selectedCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
-        setDisplayCar(PlayerPrefs.GetInt("playerCarType", 0));
-
-        equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equiped";
-        ColorBlock cb2 = equipbutton.colors;
-        cb2.normalColor = new Color32(75, 75, 255, 255);
-        cb2.selectedColor = new Color32(75, 75, 255, 255);
-        equipbutton.colors = cb2;
+        activateButtonsFunc(currSelect);
     }
 
     public void activateButtons(List<Sprite> iconList, List<string> nameList, SpriteRenderer toChange, SpriteRenderer toChange2, int currSelect, carPart[] cost, List<bool> activeList)
@@ -752,23 +614,7 @@ public class shopBillboard : MonoBehaviour
             newButton.transform.localPosition = new Vector3(-25 + (15 * i), 0.5f, 0);
             itemButtonList.Add(newButton);
         }
-        activeCategoryButton = itemButtonList[currSelect];
-        selectedCategoryButton = itemButtonList[currSelect];
-        activeCategoryButton.interactable = false;
-        ColorBlock cb = selectedCategoryButton.colors;
-        cb.normalColor = new Color32(175, 0, 0, 255);
-        cb.disabledColor = new Color32(255, 50, 50, 255);
-        cb.highlightedColor = new Color32(255, 150, 150, 255);
-        cb.pressedColor = new Color32(125, 0, 0, 255);
-        selectedCategoryButton.colors = cb;
-        selectedCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
-        setDisplayCar(PlayerPrefs.GetInt("playerCarType", 0));
-
-        equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equiped";
-        ColorBlock cb2 = equipbutton.colors;
-        cb2.normalColor = new Color32(75, 75, 255, 255);
-        cb2.selectedColor = new Color32(75, 75, 255, 255);
-        equipbutton.colors = cb2;
+        activateButtonsFunc(currSelect);
     }
 
     public void activateButtons(List<Color> iconList, List<string> nameList, Sprite icon, SpriteRenderer toChange, int currSelect, carPart[] cost, List<bool> activeList)
@@ -788,23 +634,7 @@ public class shopBillboard : MonoBehaviour
             newButton.transform.localPosition = new Vector3(-25 + (15 * i), 0.5f, 0);
             itemButtonList.Add(newButton);
         }
-        activeCategoryButton = itemButtonList[currSelect];
-        selectedCategoryButton = itemButtonList[currSelect];
-        activeCategoryButton.interactable = false;
-        ColorBlock cb = selectedCategoryButton.colors;
-        cb.normalColor = new Color32(175, 0, 0, 255);
-        cb.disabledColor = new Color32(255, 50, 50, 255);
-        cb.highlightedColor = new Color32(255, 150, 150, 255);
-        cb.pressedColor = new Color32(125, 0, 0, 255);
-        selectedCategoryButton.colors = cb;
-        selectedCategoryButton.transform.Find("Text Backround").GetComponent<Image>().color = activeCategoryButton.colors.highlightedColor;
-        setDisplayCar(PlayerPrefs.GetInt("playerCarType", 0));
-
-        equipbutton.transform.Find("text").GetComponent<TextMeshProUGUI>().text = "Equiped";
-        ColorBlock cb2 = equipbutton.colors;
-        cb2.normalColor = new Color32(75, 75, 255, 255);
-        cb2.selectedColor = new Color32(75, 75, 255, 255);
-        equipbutton.colors = cb2;
+        activateButtonsFunc(currSelect);
     }
 
     public void activateButtons(List<Sprite> iconList, List<string> nameList, int currSelect, carPart[] cost, List<bool> activeList)
@@ -823,6 +653,11 @@ public class shopBillboard : MonoBehaviour
             newButton.transform.localPosition = new Vector3(-25 + (15 * i), 0.5f, 0);
             itemButtonList.Add(newButton);
         }
+        activateButtonsFunc(currSelect);
+    }
+
+    void activateButtonsFunc(int currSelect)
+    {
         activeCategoryButton = itemButtonList[currSelect];
         selectedCategoryButton = itemButtonList[currSelect];
         activeCategoryButton.interactable = false;
@@ -846,40 +681,7 @@ public class shopBillboard : MonoBehaviour
     {
         Button newButton = Instantiate(itemButton, shopItemsTransform).GetComponent<Button>();
         newButton.onClick.AddListener(() => selectCustomizationItem(id, toChange, img, cost, unlocked));
-        newButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = text;
-        newButton.transform.Find("Image").GetComponent<Image>().sprite = img;
-        if (unlocked)
-        {
-            newButton.transform.Find("Cost").gameObject.SetActive(false);
-            newButton.transform.Find("Coin").gameObject.SetActive(false);
-        }
-        else
-        {
-            TextMeshProUGUI costText = newButton.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
-            costText.text = cost.ToString();
-            newButton.transform.Find("Coin").localPosition = new Vector3(7.3f - (cost.ToString().Length * 2.25f), 6, 0);
-
-            ColorBlock cb = newButton.colors;
-
-            if (cost < controller.totalCoins)
-            {
-                cb.normalColor = new Color32(150, 225, 150, 255);
-                cb.disabledColor = new Color32(75, 150, 150, 255);
-                cb.highlightedColor = new Color32(0, 255, 225, 255);
-                cb.pressedColor = new Color32(75, 150, 150, 255);
-            }
-            else
-            {
-                costText.color = new Color32(175, 0, 0, 255);
-                cb.normalColor = new Color32(150, 150, 150, 255);
-                cb.disabledColor = new Color32(75, 75, 150, 255);
-                cb.highlightedColor = new Color32(125, 125, 255, 255);
-                cb.pressedColor = new Color32(100, 100, 100, 255);
-            }
-            newButton.colors = cb;
-            newButton.transform.Find("Text Backround").GetComponent<Image>().color = cb.pressedColor;
-        }
-        toChange.sprite = img;
+        createButtonFunc(img, text, newButton, cost, unlocked);
         return newButton;
     }
 
@@ -887,40 +689,8 @@ public class shopBillboard : MonoBehaviour
     {
         Button newButton = Instantiate(itemButton, shopItemsTransform).GetComponent<Button>();
         newButton.onClick.AddListener(() => selectCustomizationItem(id, toChange, toChange2, img, cost, unlocked));
-        newButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = text;
-        newButton.transform.Find("Image").GetComponent<Image>().sprite = img;
-        if (unlocked)
-        {
-            newButton.transform.Find("Cost").gameObject.SetActive(false);
-            newButton.transform.Find("Coin").gameObject.SetActive(false);
-        }
-        else
-        {
-            TextMeshProUGUI costText = newButton.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
-            costText.text = cost.ToString();
-            newButton.transform.Find("Coin").localPosition = new Vector3(7.3f - (cost.ToString().Length * 2.25f), 6, 0);
+        createButtonFunc(img, text, newButton, cost, unlocked);
 
-            ColorBlock cb = newButton.colors;
-
-            if (cost < controller.totalCoins)
-            {
-                cb.normalColor = new Color32(150, 225, 150, 255);
-                cb.disabledColor = new Color32(75, 150, 150, 255);
-                cb.highlightedColor = new Color32(0, 255, 225, 255);
-                cb.pressedColor = new Color32(75, 150, 150, 255);
-            }
-            else
-            {
-                costText.color = new Color32(175, 0, 0, 255);
-                cb.normalColor = new Color32(150, 150, 150, 255);
-                cb.disabledColor = new Color32(75, 75, 150, 255);
-                cb.highlightedColor = new Color32(125, 125, 255, 255);
-                cb.pressedColor = new Color32(100, 100, 100, 255);
-            }
-            newButton.colors = cb;
-            newButton.transform.Find("Text Backround").GetComponent<Image>().color = cb.pressedColor;
-        }
-        toChange.sprite = img;
         return newButton;
     }
 
@@ -928,39 +698,8 @@ public class shopBillboard : MonoBehaviour
     {
         Button newButton = Instantiate(itemButton, shopItemsTransform).GetComponent<Button>();
         newButton.onClick.AddListener(() => selectCustomizationItem(id, toChange, col, cost, unlocked));
-        newButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = text;
-        newButton.transform.Find("Image").GetComponent<Image>().sprite = img;
-        if (unlocked)
-        {
-            newButton.transform.Find("Cost").gameObject.SetActive(false);
-            newButton.transform.Find("Coin").gameObject.SetActive(false);
-        }
-        else
-        {
-            TextMeshProUGUI costText = newButton.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
-            costText.text = cost.ToString();
-            newButton.transform.Find("Coin").localPosition = new Vector3(7.3f - (cost.ToString().Length * 2.25f), 6, 0);
+        createButtonFunc(img, text, newButton, cost, unlocked);
 
-            ColorBlock cb = newButton.colors;
-
-            if (cost < controller.totalCoins)
-            {
-                cb.normalColor = new Color32(150, 225, 150, 255);
-                cb.disabledColor = new Color32(75, 150, 150, 255);
-                cb.highlightedColor = new Color32(0, 255, 225, 255);
-                cb.pressedColor = new Color32(75, 150, 150, 255);
-            }
-            else
-            {
-                costText.color = new Color32(175, 0, 0, 255);
-                cb.normalColor = new Color32(150, 150, 150, 255);
-                cb.disabledColor = new Color32(75, 75, 150, 255);
-                cb.highlightedColor = new Color32(125, 125, 255, 255);
-                cb.pressedColor = new Color32(100, 100, 100, 255);
-            }
-            newButton.colors = cb;
-            newButton.transform.Find("Text Backround").GetComponent<Image>().color = cb.pressedColor;
-        }
         return newButton;
     }
 
@@ -968,6 +707,13 @@ public class shopBillboard : MonoBehaviour
     {
         Button newButton = Instantiate(itemButton, shopItemsTransform).GetComponent<Button>();
         newButton.onClick.AddListener(() => selectCustomizationItem(id, cost, unlocked));
+        createButtonFunc(img, text, newButton, cost, unlocked);
+
+        return newButton;
+    }
+
+    void createButtonFunc(Sprite img, string text, Button newButton, int cost, bool unlocked)
+    {
         newButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = text;
         newButton.transform.Find("Image").GetComponent<Image>().sprite = img;
         if (unlocked)
@@ -1001,7 +747,6 @@ public class shopBillboard : MonoBehaviour
             newButton.colors = cb;
             newButton.transform.Find("Text Backround").GetComponent<Image>().color = cb.pressedColor;
         }
-        return newButton;
     }
 
     void setDisplayCar(int typeID)
@@ -1019,7 +764,12 @@ public class shopBillboard : MonoBehaviour
 
     void setDisplayCarType(int typeID)
     {
-        displayBody.sprite = pManager.bodies[typeID][0];
+        int bod = 0;
+        if(typeID == PlayerPrefs.GetInt("playerCarType", 0))
+        {
+            bod = PlayerPrefs.GetInt("playerBody", 0);
+        }
+        displayBody.sprite = pManager.bodies[typeID][bod];
         displayWindow.sprite = pManager.windows[typeID];
         displayMask.sprite = pManager.liveryMask[typeID];
 
@@ -1094,10 +844,10 @@ public class shopBillboard : MonoBehaviour
                     getDisplayCarStats();
                 }
                 break;
-            case 2:
+            case 1:
                 if (typeID != PlayerPrefs.GetInt("windowTint", 0))
                 {
-                    if (playerCar.calcSmokeMulitplyer(typeID) < playerCar.smokeMulitplyer)
+                    if (playerCar.calcSmokeMulitplyer(typeID) > playerCar.smokeMulitplyer)
                     {
                         displaySmokeMulitplyerBar.transform.localScale = new Vector3(getValueScale(playerCar.calcSmokeMulitplyer(typeID), displaySmokeMulitplyerMin, displaySmokeMulitplyerMax, 0.5f), 0.5f, 0.5f);
                         displaySmokeMulitplyerBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);

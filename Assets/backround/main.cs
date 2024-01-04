@@ -260,6 +260,8 @@ public class main : MonoBehaviour
         {
             setMilestone();
         }
+
+        menuSound.volume = masterVol;
     }
 
     void spawnDivider()
@@ -533,7 +535,7 @@ public class main : MonoBehaviour
         {
             if (screenDistort < screenDistortTarget)
             {
-                screenDistort += Time.deltaTime * 0.75f;
+                screenDistort += Time.deltaTime * 0.95f;
                 if (screenDistort > screenDistortTarget)
                 {
                     screenDistort = screenDistortTarget;
@@ -541,7 +543,7 @@ public class main : MonoBehaviour
             }
             else if (screenDistort > screenDistortTarget)
             {
-                screenDistort -= Time.deltaTime * 0.75f;
+                screenDistort -= Time.deltaTime * 0.95f;
                 if(screenDistort < screenDistortTarget)
                 {
                     screenDistort = screenDistortTarget;

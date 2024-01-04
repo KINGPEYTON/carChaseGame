@@ -151,21 +151,39 @@ public class cars : MonoBehaviour
         {
             if(transform.position.y > collision.transform.position.y)
             {
-                disMove *= -1;
-                targPos += 1.25f;
+                if (disMove < 0)
+                {
+                    targPos += 1.25f;
+                    disMove *= -1;
+                }
                 switchUp = false;
                 overshoot = Mathf.Abs(targPos - transform.position.y); //calculates overshoot to where it needs to go
             }
             else if(transform.position.y < collision.transform.position.y)
             {
-                disMove *= -1;
-                targPos -= 1.25f;
+                if (disMove > 0)
+                {
+                    targPos -= 1.25f;
+                    disMove *= -1;
+                }
                 switchDown = false;
                 overshoot = Mathf.Abs(targPos - transform.position.y); //calculates overshoot to where it needs to go
             }
             else if (transform.position.x < collision.transform.position.x)
             {
                 speed = collision.GetComponent<cars>().speed - 1; //changes the speed so cars won't go through eachother
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "car") //if a car hits another car
+        {
+            if (transform.position.y == collision.transform.position.y && transform.position.x < collision.transform.position.x)
+            {
+                speed -= Time.deltaTime * 3;
+                collision.GetComponent<cars>().speed += Time.deltaTime * 4; //changes the speed so cars won't go through eachother
             }
         }
     }

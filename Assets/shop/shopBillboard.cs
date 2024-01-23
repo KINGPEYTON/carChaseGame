@@ -10,8 +10,11 @@ public class shopBillboard : MonoBehaviour
     public Camera mainCamera;
     public Camera sideCamera;
     public bool inStore;
-    public bool intro;
     public GameObject buttonCoverImage;
+
+    public bool intro;
+    public float introTimer;
+    public bool canStart;
 
     public GameObject parantOBJ;
     public GameObject areYouSureToCreate;
@@ -100,6 +103,13 @@ public class shopBillboard : MonoBehaviour
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
 
+        if (pManager.intro)
+        {
+            startup();
+            pManager.intro = false;
+        }
+        else { canStart = true; }
+
         //shopButtonFunc(0.1f);
     }
 
@@ -157,13 +167,13 @@ public class shopBillboard : MonoBehaviour
             storeAnimation();
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (intro)
         {
-            addCoins(1000);
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            pManager.resetUnlocks();
+            introTimer += Time.deltaTime;
+            if (introTimer > 2.0f)
+            {
+                startAnimation(2);
+            }
         }
     }
 
@@ -182,6 +192,7 @@ public class shopBillboard : MonoBehaviour
                 {
                     mainCamera.enabled = true;
                     sideCamera.enabled = false;
+                    canStart = true;
                 }
             }
         }
@@ -196,6 +207,7 @@ public class shopBillboard : MonoBehaviour
                 {
                     mainCamera.enabled = true;
                     sideCamera.enabled = false;
+                    canStart = true;
                 }
             }
         }
@@ -212,6 +224,7 @@ public class shopBillboard : MonoBehaviour
                     {
                         mainCamera.enabled = true;
                         sideCamera.enabled = false;
+                        canStart = true;
                     }
                 }
             }
@@ -226,6 +239,7 @@ public class shopBillboard : MonoBehaviour
                     {
                         mainCamera.enabled = true;
                         sideCamera.enabled = false;
+                        canStart = true;
                     }
                 }
             }
@@ -234,12 +248,15 @@ public class shopBillboard : MonoBehaviour
 
     public void startGame()
     {
-        controller.StartGame();
-        shopButton.interactable = false;
-        settingsButton.interactable = false;
-        statics.SetActive(true);
-        staticTimer = 1f;
-        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0,0,-10), controller.masterVol * controller.sfxVol);
+        if (canStart)
+        {
+            controller.StartGame();
+            shopButton.interactable = false;
+            settingsButton.interactable = false;
+            statics.SetActive(true);
+            staticTimer = 1f;
+            AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        }
     }
 
     public void shopButtonFunc(float speed)
@@ -248,6 +265,7 @@ public class shopBillboard : MonoBehaviour
         {
             AudioSource.PlayClipAtPoint(controller.clickSound, transform.position, controller.masterVol * controller.sfxVol);
             inStore = true;
+            canStart = false;
             mainCamera.enabled = false;
             sideCamera.enabled = true;
             targetPos = new Vector3(4, 3, -10);
@@ -291,6 +309,27 @@ public class shopBillboard : MonoBehaviour
         staticTimer = 1f;
         inStatic = true;
         AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+    }
+
+    void startAnimation(float speed)
+    {
+        intro = false;
+        inStore = false;
+        targetPos = new Vector3(0, 0, -10);
+        targetSpeed = setTargetSpeed(targetPos, speed, sideCamera.transform.position);
+        inPos = false;
+        targetZoom = 5;
+        zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
+    }
+
+    void startup()
+    {
+        intro = true;
+        introTimer = 0;
+        mainCamera.enabled = false;
+        sideCamera.enabled = true;
+        sideCamera.transform.position = new Vector3(-6.25f, 4.5f, -10);
+        sideCamera.orthographicSize = 1.75f;
     }
 
     public void equipItem()
@@ -916,5 +955,17 @@ public class shopBillboard : MonoBehaviour
     void addCoins(int ammount)
     {
         controller.totalCoins += ammount;
+    }
+
+    void debugCommands()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            addCoins(1000);
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            pManager.resetUnlocks();
+        }
     }
 }

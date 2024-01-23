@@ -29,8 +29,15 @@ public class playerCar : MonoBehaviour
     public SpriteRenderer wheelB;
 
     public bool tapped;
-    public float swipeDistToDetect;
     public float firstTapPoint;
+    public bool sliding;
+    public float slidePos;
+    public bool inPos;
+    public bool newTap;
+    public float slideTimer;
+
+    public float swipeDistToDetect;
+    public float slideTimeMax;
 
     public Vector3 targetPos; //where the player car has to go
     public float disMove; //speed the car has to move to get to targetPos on time
@@ -56,6 +63,7 @@ public class playerCar : MonoBehaviour
 
         startPos = -7f;
         swipeDistToDetect = 0.25f;
+        slideTimeMax = 0.55f;
     }
 
     // Update is called once per frame
@@ -73,36 +81,93 @@ public class playerCar : MonoBehaviour
                         {
                             if ((tapPoint.y - firstTapPoint) > swipeDistToDetect) //if the tap if above the player car
                             {
-                                laneUp();
-                                tapped = false;
+                                laneUp(1);
                             }
                             else if ((tapPoint.y - firstTapPoint) < -swipeDistToDetect) //if the tap is below the player car
                             {
-                                laneDown();
-                                tapped = false;
+                                laneDown(1);
+                            }
+                            else if (tapPoint.x < -5)
+                            {
+                                if ((Mathf.Abs(tapPoint.y - transform.position.y) > 0.25 && Mathf.Abs(tapPoint.y - transform.position.y) < 1.1) && !sliding && inPos)
+                                {
+                                    if (tapPoint.y > transform.position.y)
+                                    {
+                                        slideUp();
+                                    }
+                                    if (tapPoint.y < transform.position.y)
+                                    {
+                                        slideDown();
+                                    }
+                                }
                             }
                         }
+                        newTap = false;
                     }
-                    else
+                    else if (newTap)
                     {
                         tapped = true;
                         firstTapPoint = tapPoint.y;
                     }
-                    Debug.Log(tapPoint.y - firstTapPoint);
+                    //Debug.Log(tapPoint.y - firstTapPoint);
                 }
                 else if (Input.touchCount == 0)
                 {
                     tapped = false;
+                    newTap = true;
+                    if (sliding)
+                    {
+                        if(targetPos.y < firstTapPoint)
+                        {
+                            laneUp(4);
+                        } else if (targetPos.y > firstTapPoint)
+                        {
+                            laneDown(4);
+                        }
+                    }
                 }
 
-                if (transform.position != targetPos) //if player car isnt where its supose to be
+                if (sliding)
                 {
-                    transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the player towards where they need to be
-                    overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
-                    if (overshoot < 0) //checks if its past if target
+                    slideTimer -= Time.deltaTime;
+                    if (transform.position.y != slidePos) //if player car isnt where its supose to be
                     {
-                        transform.position = targetPos; //places player car where it should be
-                        overshoot = 0; //resets overshoot
+                        transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the player towards where they need to be
+                        overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
+                        if (overshoot < 0) //checks if its past if target
+                        {
+                            transform.position = new Vector3(transform.position.x, slidePos, 0); //places player car where it should be
+                            overshoot = 0; //resets overshoot
+                        }
+                    }
+                    else
+                    {
+                        if (slideTimer < 0)
+                        {
+                            if (targetPos.y < firstTapPoint)
+                            {
+                                laneUp(3);
+                            }
+                            else if (targetPos.y > firstTapPoint)
+                            {
+                                laneDown(3);
+                            }
+                            slideTimer = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    if (transform.position != targetPos) //if player car isnt where its supose to be
+                    {
+                        transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the player towards where they need to be
+                        overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
+                        if (overshoot < 0) //checks if its past if target
+                        {
+                            transform.position = targetPos; //places player car where it should be
+                            inPos = true;
+                            overshoot = 0; //resets overshoot
+                        }
                     }
                 }
             } else {
@@ -111,6 +176,7 @@ public class playerCar : MonoBehaviour
                 {
                     transform.position = new Vector3(startPos, transform.position.y, 0);
                     targetPos = transform.position;
+                    inPos = true;
                 }
             }
         }
@@ -119,12 +185,12 @@ public class playerCar : MonoBehaviour
         wheelF.transform.Rotate(0.0f, 0.0f, -Time.deltaTime * controller.mph * 10, Space.Self);
     }
 
-    public void laneUp() //if tap is above player car
+    public void laneUp(int multiplier) //if tap is above player car
     {
         float maxLane = 0;
         if (controller.topLane)
         {
-            if(controller.topLaneTime < 130)
+            if (controller.topLaneTime < 130)
             {
                 maxLane = 0.65f;
             }
@@ -144,31 +210,97 @@ public class playerCar : MonoBehaviour
                 maxLane = 0.65f;
             }
         }
-        if (targetPos.y < maxLane && Mathf.Abs(transform.position.y - targetPos.y) < 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        if (targetPos.y < maxLane && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
         {
-            targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
-            disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
-            overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
-            changeOrder(-1);
+            if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f || sliding)
+            {
+                targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
+                disMove = (targetPos.y - transform.position.y) * (moveTime*multiplier); //calculates the speed the player car needs to go to switch lanes
+                overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
+                changeOrder(-1);
 
-            AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol * controller.sfxVol);
+                AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol * controller.sfxVol);
+                sliding = false;
+                inPos = false;
+                tapped = false;
 
-            playHorn();
+                playHorn();
+            }
         }
     }
 
-    public void laneDown()
+    public void laneDown(int multiplier)
     {
-        if (targetPos.y > -4.35f && Mathf.Abs(transform.position.y - targetPos.y) < 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        if (targetPos.y > -4.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
         {
-            targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
-            disMove = (targetPos.y - transform.position.y) * moveTime; //calculates the speed the player car needs to go to switch lanes
-            overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
-            changeOrder(1);
+            if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f || sliding)
+            {
+                targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
+                disMove = (targetPos.y - transform.position.y) * (moveTime*multiplier); //calculates the speed the player car needs to go to switch lanes
+                overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
+                changeOrder(1);
 
-            AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
+                AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
+                sliding = false;
+                inPos = false;
+                tapped = false;
 
-            playHorn();
+                playHorn();
+            }
+        }
+    }
+
+    public void slideUp() //if tap is above player car
+    {
+        float maxLane = 0;
+        if (controller.topLane)
+        {
+            if (controller.topLaneTime < 130)
+            {
+                maxLane = 0.65f;
+            }
+            else
+            {
+                maxLane = -0.6f;
+            }
+        }
+        else
+        {
+            if (controller.topLaneTime < 10)
+            {
+                maxLane = -0.6f;
+            }
+            else
+            {
+                maxLane = 0.65f;
+            }
+        }
+        slidePos = transform.position.y + 0.625f;
+        if (slidePos < maxLane && Mathf.Abs(transform.position.y - slidePos) > 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        {
+            disMove = (slidePos - transform.position.y) * (moveTime); //calculates the speed the player car needs to go to switch lanes
+            overshoot = Mathf.Abs(slidePos - transform.position.y); //calculates overshoot to where it needs to go
+            sliding = true;
+            tapped = false;
+            slideTimer = slideTimeMax;
+
+            //AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol * controller.sfxVol);
+
+        }
+    }
+
+    public void slideDown()
+    {
+        slidePos = transform.position.y - 0.625f;
+        if (slidePos > -4.35f && Mathf.Abs(transform.position.y - slidePos) > 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        {
+            disMove = (slidePos - transform.position.y) * (moveTime); //calculates the speed the player car needs to go to switch lanes
+            overshoot = Mathf.Abs(slidePos - transform.position.y); //calculates overshoot to where it needs to go
+            sliding = true;
+            tapped = false;
+            slideTimer = slideTimeMax;
+
+            //AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
         }
     }
 
@@ -203,7 +335,7 @@ public class playerCar : MonoBehaviour
             }
             else if (collision.tag == "barrier")
             {
-                laneDown();
+                laneDown(1);
             }
             else if (collision.tag == "coin")
             {

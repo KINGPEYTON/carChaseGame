@@ -37,6 +37,8 @@ public class playerManager : MonoBehaviour
 
     public carPartsReader carPartsData;
 
+    public bool intro;
+
     void Awake()
     {
         GameObject obj = GameObject.Find("playerManager");
@@ -58,6 +60,8 @@ public class playerManager : MonoBehaviour
         }
         getCarAssets(wheels, wheelNames, " Wheel", "player/wheels");
         getCarAssets(livery, liveryNames, " Livery", "player/livery");
+
+        intro = true;
     }
 
     private void getCarTypeAssets(string name, string path, int ind)

@@ -22,6 +22,9 @@ public class main : MonoBehaviour
     public float musicVol;
     public float radioVol;
 
+    public bool inTutorial;
+    public int tutorialSteps;
+
     public int coins; //amount of coins a player has collected in a game
     public int totalCoins; //amount of coins a player has in total
 

@@ -86,7 +86,7 @@ public class playerCar : MonoBehaviour
                             else if ((tapPoint.y - firstTapPoint) < -swipeDistToDetect) //if the tap is below the player car
                             {
                                 laneDown(1);
-                            }
+                            }/*
                             else if (tapPoint.x < -5)
                             {
                                 if ((Mathf.Abs(tapPoint.y - transform.position.y) > 0.25 && Mathf.Abs(tapPoint.y - transform.position.y) < 1.1) && !sliding && inPos)
@@ -100,7 +100,7 @@ public class playerCar : MonoBehaviour
                                         slideDown();
                                     }
                                 }
-                            }
+                            }*/
                         }
                         newTap = false;
                     }
@@ -210,12 +210,12 @@ public class playerCar : MonoBehaviour
                 maxLane = 0.65f;
             }
         }
-        if (targetPos.y < maxLane && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        if (controller.inTutorial && controller.tutorialSteps < 3)
         {
-            if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f || sliding)
+            if(controller.tutorialSteps == 1 && controller.canSwipeTutorialTimer())
             {
                 targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
-                disMove = (targetPos.y - transform.position.y) * (moveTime*multiplier); //calculates the speed the player car needs to go to switch lanes
+                disMove = (targetPos.y - transform.position.y) * (moveTime * multiplier); //calculates the speed the player car needs to go to switch lanes
                 overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
                 changeOrder(-1);
 
@@ -223,20 +223,39 @@ public class playerCar : MonoBehaviour
                 sliding = false;
                 inPos = false;
                 tapped = false;
+                controller.resetSwipeTutorialTimer(1);
+            }
+        }
+        else
+        {
+            if (targetPos.y < maxLane && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+            {
+                if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f || sliding)
+                {
+                    targetPos += new Vector3(0, 1.25f, 0); //changes targetPos to the new lane it needs to go to
+                    disMove = (targetPos.y - transform.position.y) * (moveTime * multiplier); //calculates the speed the player car needs to go to switch lanes
+                    overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
+                    changeOrder(-1);
 
-                playHorn();
+                    AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol * controller.sfxVol);
+                    sliding = false;
+                    inPos = false;
+                    tapped = false;
+
+                    playHorn();
+                }
             }
         }
     }
 
     public void laneDown(int multiplier)
     {
-        if (targetPos.y > -4.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+        if (controller.inTutorial && controller.tutorialSteps < 3)
         {
-            if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f || sliding)
+            if (controller.tutorialSteps == 2 && controller.canSwipeTutorialTimer())
             {
                 targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
-                disMove = (targetPos.y - transform.position.y) * (moveTime*multiplier); //calculates the speed the player car needs to go to switch lanes
+                disMove = (targetPos.y - transform.position.y) * (moveTime * multiplier); //calculates the speed the player car needs to go to switch lanes
                 overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
                 changeOrder(1);
 
@@ -244,8 +263,27 @@ public class playerCar : MonoBehaviour
                 sliding = false;
                 inPos = false;
                 tapped = false;
+                controller.resetSwipeTutorialTimer(2.5f);
+            }
+        }
+        else
+        {
+            if (targetPos.y > -4.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+            {
+                if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f || sliding)
+                {
+                    targetPos += new Vector3(0, -1.25f, 0); //changes targetPos to the new lane it needs to go to
+                    disMove = (targetPos.y - transform.position.y) * (moveTime * multiplier); //calculates the speed the player car needs to go to switch lanes
+                    overshoot = Mathf.Abs(targetPos.y - transform.position.y); //calculates overshoot to where it needs to go
+                    changeOrder(1);
 
-                playHorn();
+                    AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
+                    sliding = false;
+                    inPos = false;
+                    tapped = false;
+
+                    playHorn();
+                }
             }
         }
     }
@@ -450,7 +488,7 @@ public class playerCar : MonoBehaviour
         Transform closestCar = findClosestCar();
         float closestDist = transform.position.x - closestCar.position.x;
         //Debug.Log(closestDist + " : "+ closestCar.position.x);
-        if (closestDist < 2.75f && closestDist > 1)
+        if ((closestDist < 2.75f && closestDist > 1) && closestCar.position.y == targetPos.y)
         {
             AudioSource.PlayClipAtPoint(closestCar.GetComponent<cars>().horn, new Vector3(0, 0, -9), controller.masterVol * controller.sfxVol);
         }
@@ -458,14 +496,20 @@ public class playerCar : MonoBehaviour
 
     private Transform findClosestCar()
     {
-        Transform cardsOBJ = GameObject.Find("cars").transform;
-        Transform closest = cardsOBJ.GetChild(0);
-        for (int i = 1; i < cardsOBJ.childCount; i++)
+        Transform carsOBJ = GameObject.Find("cars").transform;
+        Transform closest = carsOBJ.GetChild(0);
+        for (int i = 1; i < carsOBJ.childCount; i++)
         {
-            Transform currCar = cardsOBJ.GetChild(i).transform;
-            if(targetPos.x - currCar.position.x > 0 && currCar.position.x < closest.position.x && currCar.position.y == targetPos.y)
+            Transform currCar = carsOBJ.GetChild(i).transform;
+            if(currCar.position.y == targetPos.y)
             {
-                closest = currCar;
+                if (currCar.position.x < targetPos.x)
+                {
+                    if (currCar.position.x < closest.position.x)
+                    {
+                        closest = currCar;
+                    }
+                }
             }
         }
         return closest;

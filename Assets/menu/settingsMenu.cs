@@ -36,6 +36,8 @@ public class settingsMenu : MonoBehaviour
     public Slider sfxVol;
     public Slider musicVol;
 
+    public Button resetTutorialButton;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -59,6 +61,11 @@ public class settingsMenu : MonoBehaviour
         masterVol.value = contoller.masterVol;
         sfxVol.value = contoller.sfxVol;
         musicVol.value = contoller.musicVol;
+
+        if (contoller.inTutorial)
+        {
+            resetTutorialButton.interactable = false;
+        }
     }
 
     // Update is called once per frame
@@ -187,5 +194,17 @@ public class settingsMenu : MonoBehaviour
         {
             Debug.Log("You Fucked Up Bud");
         }
+    }
+
+    public void resetTutorial()
+    {
+        if(!contoller.playing && !contoller.isOver)
+        {
+            contoller.inTutorial = true;
+            contoller.tutorialSteps = 0;
+            contoller.startTutorial();
+        }
+
+        PlayerPrefs.SetInt("tutorialStep", 0);
     }
 }

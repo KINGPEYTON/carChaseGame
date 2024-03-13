@@ -103,12 +103,15 @@ public class shopBillboard : MonoBehaviour
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
 
-        if (pManager.intro)
+        if (pManager.intro && false) // delete this to make the start animation again
         {
             startup();
-            pManager.intro = false;
+            pManager.intro = false; // makes it so it wont go in the start animation again without closing the app
         }
-        else { canStart = true; }
+        else {
+            canStart = true;
+            controller.scoreBlimp.transform.position = new Vector3(-6.52f, 4.48f, 0);
+        } // skips the start animation
 
         //shopButtonFunc(0.1f);
     }
@@ -328,7 +331,7 @@ public class shopBillboard : MonoBehaviour
         introTimer = 0;
         mainCamera.enabled = false;
         sideCamera.enabled = true;
-        sideCamera.transform.position = new Vector3(-6.25f, 4.5f, -10);
+        sideCamera.transform.position = new Vector3(-6.25f, 4.85f, -10);
         sideCamera.orthographicSize = 1.75f;
     }
 
@@ -376,7 +379,7 @@ public class shopBillboard : MonoBehaviour
                     didEquip = true;
                 }
                 else {
-                    if(buyItem(pManager.bodyCosts[PlayerPrefs.GetInt("playerCarType", 0)][itemID].cost, pManager.bodyUnlocks[PlayerPrefs.GetInt("playerCarType", 0)], pManager.carNames[PlayerPrefs.GetInt("playerCarType", 0)] + pManager.bodyNames[PlayerPrefs.GetInt("playerCarType", 0)][itemID]))
+                    if(buyItem(pManager.carPartsData.carTypes[PlayerPrefs.GetInt("playerCarType", 0)].bodies[itemID].cost, pManager.bodyUnlocks[PlayerPrefs.GetInt("playerCarType", 0)], pManager.carNames[PlayerPrefs.GetInt("playerCarType", 0)] + pManager.bodyNames[PlayerPrefs.GetInt("playerCarType", 0)][itemID]))
                     {
                         PlayerPrefs.SetInt("playerBody", itemID); //saves the new high score
                         didEquip = true;
@@ -597,7 +600,7 @@ public class shopBillboard : MonoBehaviour
                 activateButtons(pManager.windowColors, pManager.windowNames, window, displayWindow, PlayerPrefs.GetInt("windowTint", 0), pManager.carPartsData.windowTints, pManager.windowUnlocks);
                 break;
             case 2:
-                activateButtons(pManager.bodies[PlayerPrefs.GetInt("playerCarType", 0)], pManager.bodyNames[PlayerPrefs.GetInt("playerCarType", 0)], displayBody, PlayerPrefs.GetInt("playerBody", 0), pManager.bodyCosts[PlayerPrefs.GetInt("playerCarType", 0)], pManager.bodyUnlocks[PlayerPrefs.GetInt("playerCarType", 0)]);
+                activateButtons(pManager.bodies[PlayerPrefs.GetInt("playerCarType", 0)], pManager.bodyNames[PlayerPrefs.GetInt("playerCarType", 0)], displayBody, PlayerPrefs.GetInt("playerBody", 0), pManager.carPartsData.carTypes[PlayerPrefs.GetInt("playerCarType", 0)].bodies, pManager.bodyUnlocks[PlayerPrefs.GetInt("playerCarType", 0)]);
                 break;
             case 3:
                 activateButtons(pManager.wheels, pManager.wheelNames, displayWheelF, displayWheelB, PlayerPrefs.GetInt("wheelBody", 0), pManager.carPartsData.wheelTypes, pManager.wheelUnlocks);
@@ -867,7 +870,7 @@ public class shopBillboard : MonoBehaviour
                         displayUpMPHBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
                     }
 
-                    if (playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)) < playerCar.moveTime)
+                    if (playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)) > playerCar.moveTime)
                     {
                         displayMoveTimeBar.transform.localScale = new Vector3(getValueScale(playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)), displayMoveTimeMin, displayMoveTimeMax, 0.5f), 0.5f, 0.5f);
                         displayMoveTimeBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
@@ -905,7 +908,7 @@ public class shopBillboard : MonoBehaviour
             case 3:
                 if (typeID != PlayerPrefs.GetInt("wheelBody", 0))
                 {
-                    if (playerCar.calcUpMPH(typeID, PlayerPrefs.GetInt("wheelBody", 0)) < playerCar.upMph)
+                    if (playerCar.calcUpMPH(PlayerPrefs.GetInt("playerCarType", 0), typeID) < playerCar.upMph)
                     {
                         displayUpMPHBar.transform.localScale = new Vector3(getValueScale(playerCar.calcUpMPH(PlayerPrefs.GetInt("playerCarType", 0), typeID), displayUpMPHMin, displayUpMPHMax, 0.5f), 0.5f, 0.5f);
                         displayUpMPHBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
@@ -916,7 +919,7 @@ public class shopBillboard : MonoBehaviour
                         displayUpMPHBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
                     }
 
-                    if (playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)) < playerCar.moveTime)
+                    if (playerCar.calcmoveTime(PlayerPrefs.GetInt("playerCarType", 0), typeID) > playerCar.moveTime)
                     {
                         displayMoveTimeBar.transform.localScale = new Vector3(getValueScale(playerCar.calcmoveTime(PlayerPrefs.GetInt("playerCarType", 0), typeID), displayMoveTimeMin, displayMoveTimeMax, 0.5f), 0.5f, 0.5f);
                         displayMoveTimeBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);

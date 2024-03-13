@@ -9,7 +9,36 @@
             "wheelF": 2.15,
             "wheelB": -2.05,
             "cost": 1000,
-            "paintCost": 1000
+            "bodies": [
+                {
+                    "bodyColor": "White",
+                    "cost": 0
+                },
+                {
+                    "bodyColor": "Orange",
+                    "cost": 300
+                },
+                {
+                    "bodyColor": "Purple",
+                    "cost": 300
+                },
+                {
+                    "bodyColor": "Red",
+                    "cost": 400
+                },
+                {
+                    "bodyColor": "Aqua",
+                    "cost": 400
+                },
+                {
+                    "bodyColor": "Green",
+                    "cost": 500
+                },
+                {
+                    "bodyColor": "Blue",
+                    "cost": 500
+                }
+            ]
         },
         {
             "typeName": "Retro",
@@ -20,7 +49,36 @@
             "wheelF": 1.9,
             "wheelB": -1.6,
             "cost": 1000,
-            "paintCost": 1000
+            "bodies": [
+                {
+                    "bodyColor": "Maroon",
+                    "cost": 0
+                },
+                {
+                    "bodyColor": "Sky",
+                    "cost": 300
+                },
+                {
+                    "bodyColor": "Marine",
+                    "cost": 300
+                },
+                {
+                    "bodyColor": "Pink",
+                    "cost": 400
+                },
+                {
+                    "bodyColor": "Violet",
+                    "cost": 400
+                },
+                {
+                    "bodyColor": "Navy",
+                    "cost": 500
+                },
+                {
+                    "bodyColor": "Watermellon",
+                    "cost": 500
+                }
+            ]
         }
     ],
     "wheelTypes": [

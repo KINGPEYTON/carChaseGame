@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class main : MonoBehaviour
 {
-    public profile prof;
-
     public bool playing;
     public bool isOver;
     public float mph; //controls the speed of the game
@@ -24,6 +22,10 @@ public class main : MonoBehaviour
 
     public bool inTutorial;
     public int tutorialSteps;
+    public GameObject tutorialHandOBJ;
+    public tutorialHand activeHand;
+    public GameObject[] tutorialTexts;
+    public GameObject activeText;
 
     public int coins; //amount of coins a player has collected in a game
     public int totalCoins; //amount of coins a player has in total
@@ -49,10 +51,8 @@ public class main : MonoBehaviour
     public playerCar playerCar;
     public AudioClip startEngine;
 
-    public GameObject divider1; //divider gameobject to spawn
-    public GameObject divider2; //divider gameobject to spawn
-    public GameObject divider3; //divider gameobject to spawn
-    public GameObject divider4; //divider gameobject to spawn
+    public GameObject divider; //divider gameobject to spawn
+    public GameObject dividerPart; //divider gameobject to spawn
     public float dividerTimer;
 
     public GameObject manhole;
@@ -75,15 +75,15 @@ public class main : MonoBehaviour
     public float billboardList;
     public float buildingTimer;
 
-    public GameObject building1; //building gameobject to spawn
-    public GameObject billboard1; //building gameobject to spawn
-    public GameObject bigBillboard1; //building gameobject to spawn
-    public List<Sprite> building1Skins;
-    public List<float> buildings1Odds;
-    public List<float> buildings1CurrOdds;
-    public float buildingList1;
-    public float billboardList1;
-    public float buildingTimer1;
+    public GameObject buildingFront; //building gameobject to spawn
+    public GameObject frontBillboard; //building gameobject to spawn
+    public GameObject bigFrontBillboard; //building gameobject to spawn
+    public List<Sprite> buildingFrontSkins;
+    public List<float> buildingsFrontOdds;
+    public List<float> buildingsFrontCurrOdds;
+    public float buildingFrontList;
+    public float frontBillboardList;
+    public float buildingFrontTimer;
 
     public GameObject skyline;
     public int skylineList;
@@ -159,8 +159,6 @@ public class main : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
-        //prof = GameObject.Find("profile").GetComponent<profile>();
-
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
         menuSound = GameObject.Find("ambience").GetComponent<AudioSource>();
 
@@ -168,6 +166,12 @@ public class main : MonoBehaviour
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
         musicVol = PlayerPrefs.GetFloat("musicVol", 1); //sets the music volume to the one it was last on
         radioVol = PlayerPrefs.GetFloat("radioVol", 1); //sets the radio volume to the one it was last on
+
+        tutorialSteps = PlayerPrefs.GetInt("tutorialStep", 0); //sets the tutorial to the last step
+        if(tutorialSteps < 5)
+        {
+            inTutorial = true;
+        }
 
         playing = false;
         isOver = false;
@@ -195,7 +199,12 @@ public class main : MonoBehaviour
         setCarOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList);
         setCarOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList);
         setBuildingOdds();
-        setBuilding1Odds();
+        setbuildingFrontOdds();
+
+        if(inTutorial && tutorialSteps == 0)
+        {
+            startTutorial();
+        }
     }
 
     // Update is called once per frame
@@ -231,16 +240,40 @@ public class main : MonoBehaviour
             spawnBigPlane();
 
             //make game element
-            spawnGameCar();
-            spawnCoin();
-            newTopLane();
+            if (!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3))
+            {
+                spawnCoin();
+                newTopLane();
+                spawnGameCar();
+            }
+            else
+            {
+                spawnTutorialCar();
+                swipeTutorial();
+            }
+            updateBillbord();
 
             //set blimp text
             blimpText();
+
+            if (inTutorial && tutorialSteps == 3)
+            {
+                swipeTutorial();
+                if (canSwipeTutorialTimer() && Input.touchCount > 0)
+                {
+                    nextTutorialStep();
+                }
+            }
         }
         else //if game isnt playing
         {
             spawnMenuCar();
+            if (bannedLanes.Count == 0 && inTutorial && tutorialSteps < 3)
+            {
+                bannedLanes.Add(1);
+                bannedLanes.Add(2);
+                bannedLanes.Add(3);
+            }
         }
 
         //updates the smoke effict on the players screen
@@ -270,16 +303,17 @@ public class main : MonoBehaviour
     void spawnDivider()
     {
         dividerTimer += Time.deltaTime * mph; //timer to spawn new lane divider
-        if (dividerTimer > 15)
+        if (dividerTimer > 12)
         {
             //spawns a new yellow lane divider for each lane
             if (topLane)
             {
-                Instantiate(divider1, new Vector3(12, 0.0f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                Instantiate(divider, new Vector3(12, -1.8f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
             }
-            Instantiate(divider2, new Vector3(12, -1.25f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-            Instantiate(divider3, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
-            Instantiate(divider4, new Vector3(12, -3.75f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+            else
+            {
+                Instantiate(dividerPart, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+            }
             dividerTimer = 0;
         }
     }
@@ -356,35 +390,35 @@ public class main : MonoBehaviour
 
     void spawnFrontBuilding()        //front buildings
     {
-        buildingTimer1 += Time.deltaTime * mph; //timer that spawns a new builing
-        if (buildingTimer1 > 30.5)
+        buildingFrontTimer += Time.deltaTime * mph; //timer that spawns a new builing
+        if (buildingFrontTimer > 34.5)
         {
-            if (buildingList1 < 4)
+            if (buildingFrontList < 3)
             {
-                buildings newBuilding1 = Instantiate(building1, new Vector3(12, 0.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); ; //spawns new backround building
-                newBuilding1.setSkin(getbuilding1FromOdds());
-                buildingList1++;
-                buildingTimer1 = 0;
+                buildings newbuildingFront = Instantiate(buildingFront, new Vector3(13, 0.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); ; //spawns new backround building
+                newbuildingFront.setSkin(getbuildingFrontFromOdds());
+                buildingFrontList++;
+                buildingFrontTimer = 0;
             }
             else
             {
-                if (billboardList1 < 3)
+                if (frontBillboardList < 3)
                 {
-                    GameObject bboard = Instantiate(billboard1, new Vector3(12, -2.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    GameObject bboard = Instantiate(frontBillboard, new Vector3(13, -2.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                     bboard.GetComponent<buildings>().isBillboard = true;
                     billboards.Add(bboard);
-                    buildingList1 = 0;
-                    buildingTimer1 = 0;
-                    billboardList1++;
+                    buildingFrontList = 0;
+                    buildingFrontTimer = 0;
+                    frontBillboardList++;
                 }
                 else
                 {
-                    GameObject bboard = Instantiate(bigBillboard1, new Vector3(13.125f, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    GameObject bboard = Instantiate(bigFrontBillboard, new Vector3(14.125f, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                     bboard.GetComponent<buildings>().isBigBillboard = true;
                     billboards.Add(bboard);
-                    buildingList1 = 0;
-                    buildingTimer1 = -18.5f;
-                    billboardList1 = 0;
+                    buildingFrontList = 0;
+                    buildingFrontTimer = -18.5f;
+                    frontBillboardList = 0;
                 }
             }
         }
@@ -404,20 +438,10 @@ public class main : MonoBehaviour
             }
             else
             {
-                if (billboardList < 3)
-                {
-                    buildings bboard = Instantiate(billboard, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
-                    bboard.isBillboard = true;
-                    buildingList = 0; buildingTimer = -25;
-                    billboardList++;
-                }
-                else
-                {
-                    buildings bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
-                    bboard.isBigBillboard = true;
-                    buildingList = 0; buildingTimer = -25;
-                    billboardList = 0;
-                }
+                buildings bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                bboard.isBigBillboard = true;
+                buildingList = 0; buildingTimer = -25;
+                billboardList = 0;
             }
         }
     }
@@ -567,7 +591,7 @@ public class main : MonoBehaviour
                 largeCarOdds += 0.1f;
                 specalCarOdds += 0.00175f;
             }
-            else if(specalCar > largeCarOdds)
+            else if (specalCar > largeCarOdds)
             {
                 spawnSpecalCar();
                 specalCarOdds = 0.01f;
@@ -581,10 +605,26 @@ public class main : MonoBehaviour
         }
     }
 
+    void spawnTutorialCar()
+    {
+        carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
+        if (carTimer > 100)
+        {
+            float newLane = (Random.Range(0, -2) * 5.0f) + 0.65f;
+            Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+            carTimer = 0;
+        }
+    }
+
     void spawnMenuCar()
     {
+        float carTime = 1.0f;
+        if(!inTutorial || tutorialSteps < 3)
+        {
+            carTime = 1.75f;
+        }
         carTimer += Time.deltaTime; //timer to spawn a new car after game is over
-        if (carTimer > 1.0f)
+        if (carTimer > carTime)
         {
             GameObject newCar = this.gameObject;
             if (!isOver)
@@ -651,7 +691,7 @@ public class main : MonoBehaviour
 
             newCar.GetComponent<cars>().setLane();
 
-            if (newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
+            if (!inTutorial && newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
             {
                 carsPast.Add(newCar.GetComponent<cars>().lane);
                 carsPast.Remove(carsPast[0]);
@@ -718,7 +758,10 @@ public class main : MonoBehaviour
             }
             coinTimer = 0;
         }
+    }
 
+    void updateBillbord()
+    {
         if (billboards.ToArray()[0].transform.position.x < -9.25f)
         {
             billboards.Remove(billboards.ToArray()[0]);
@@ -763,23 +806,23 @@ public class main : MonoBehaviour
         return buildingSkins[0];
     }
 
-    Sprite getbuilding1FromOdds()
+    Sprite getbuildingFrontFromOdds()
     {
-        float newBuilding1Odds = Random.Range(0.0f, 1.0f);
+        float newBuildingFrontOdds = Random.Range(0.0f, 1.0f);
         float oddsAccum = 0.0f;
 
-        for (int i = 0; i < buildings1Odds.Count; i++)
+        for (int i = 0; i < buildingsFrontOdds.Count; i++)
         {
-            oddsAccum += buildings1CurrOdds[i];
-            if (oddsAccum > newBuilding1Odds)
+            oddsAccum += buildingsFrontCurrOdds[i];
+            if (oddsAccum > newBuildingFrontOdds)
             {
-                changeOdds(i, buildings1Odds, buildings1CurrOdds);
-                return building1Skins[i];
+                changeOdds(i, buildingsFrontOdds, buildingsFrontCurrOdds);
+                return buildingFrontSkins[i];
             }
         }
 
-        changeOdds(0, buildings1Odds, buildings1CurrOdds);
-        return building1Skins[0];
+        changeOdds(0, buildingsFrontOdds, buildingsFrontCurrOdds);
+        return buildingFrontSkins[0];
     }
 
     void blimpText()
@@ -820,6 +863,10 @@ public class main : MonoBehaviour
 
     public void newGame()
     {
+        if (inTutorial)
+        {
+            nextTutorialStep();
+        }
         SceneManager.LoadScene("Game", LoadSceneMode.Single); //resets the game
     }
 
@@ -863,6 +910,11 @@ public class main : MonoBehaviour
         AudioSource.PlayClipAtPoint(startEngine, new Vector3(-0.5f, 0, -10), masterVol * sfxVol);
         menuSound.clip = gameAmbience;
         menuSound.Play();
+
+        if(inTutorial && tutorialSteps == 0)
+        {
+            nextTutorialStep();
+        }
     }
 
     public void updateBlimpX()
@@ -884,10 +936,30 @@ public class main : MonoBehaviour
         if (bboard.GetComponent<buildings>().isBigBillboard)
         {
             Instantiate(overBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
+            if (inTutorial)
+            {
+                activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.transform.position.x + 1.5f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+                activeHand.setBounce(0.45f, 0.25f, 30, 0.5f, 2);
+                activeText = Instantiate(tutorialTexts[4], new Vector3(3.8f, -0.8f, 0), Quaternion.identity);
+            }
         }
         else
         {
             Instantiate(overBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
+            if (inTutorial)
+            {
+                activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.transform.position.x + 2.7f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+                activeHand.setBounce(0.45f, 0.25f, 30, 0.5f, 2);
+                activeText = Instantiate(tutorialTexts[4], new Vector3(3.8f, -0.8f, 0), Quaternion.identity);
+            }
+        }
+
+        if (inTutorial)
+        {
+            if(tutorialSteps < 4)
+            {
+                tutorialSteps = 4;
+            }
         }
 
         Destroy(bboard);
@@ -934,6 +1006,8 @@ public class main : MonoBehaviour
         totalCoins += ammount;
         PlayerPrefs.SetInt("coins", totalCoins); //saves the total coins
     }
+
+    
 
     public void changeMasterVol(float newVol)
     {
@@ -982,7 +1056,7 @@ public class main : MonoBehaviour
 
     private void setBuildingOdds()
     {
-        float[] buildingOddsNew = { 0.25f, 0.3f, 0.45f };
+        float[] buildingOddsNew = { 0.175f, 0.125f, 0.225f, 0.125f, 0.875f, 0.875f, 0.875f, 0.875f };
         for (int i = 0; i < buildingSkins.Count; i++)
         {
             buildingsOdds.Add(buildingOddsNew[i]);
@@ -990,13 +1064,13 @@ public class main : MonoBehaviour
         }
     }
 
-    private void setBuilding1Odds()
+    private void setbuildingFrontOdds()
     {
-        float[] building1OddsNew = {1.0f};
-        for (int i = 0; i < building1Skins.Count; i++)
+        float[] buildingFrontOddsNew = { 0.3f, 0.3f, 0.4f};
+        for (int i = 0; i < buildingFrontSkins.Count; i++)
         {
-            buildings1Odds.Add(building1OddsNew[i]);
-            buildings1CurrOdds.Add(building1OddsNew[i]);
+            buildingsFrontOdds.Add(buildingFrontOddsNew[i]);
+            buildingsFrontCurrOdds.Add(buildingFrontOddsNew[i]);
         }
     }
 
@@ -1008,5 +1082,67 @@ public class main : MonoBehaviour
         }
 
         currentList[index] = setList[index] / 2;
+    }
+
+    public void nextTutorialStep()
+    {
+        tutorialSteps++;
+        Destroy(activeHand.gameObject);
+        Destroy(activeText.gameObject);
+
+        if (tutorialSteps >= 5)
+        {
+            inTutorial = false;
+        }
+
+        PlayerPrefs.SetInt("tutorialStep", tutorialSteps);
+    }
+
+    public void startTutorial()
+    {
+        activeHand = Instantiate(tutorialHandOBJ, new Vector3(1.2f, -2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+        activeHand.setBounce(0.45f, 0.25f, 30, 0.5f, 2);
+        activeText = Instantiate(tutorialTexts[0], new Vector3(3.8f, -0.8f, 0), Quaternion.identity);
+    }
+
+    private float swipeTutorialTimer = 0;
+    private void swipeTutorial()
+    {
+        if (canSwipeTutorialTimer() && activeHand == null)
+        {
+            if (tutorialSteps == 1)
+            {
+                activeHand = Instantiate(tutorialHandOBJ, new Vector3(0.0f, -1.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+                activeHand.setBounce(0.0f, 0.55f, 0, 0, 0.5f);
+                activeText = Instantiate(tutorialTexts[1], new Vector3(2.2f, -1.8f, 0), Quaternion.identity);
+            }
+            else if (tutorialSteps == 2)
+            {
+                activeHand = Instantiate(tutorialHandOBJ, new Vector3(0.0f, -0.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+                activeHand.setBounce(0.0f, 0.55f, 0, 0, 2);
+                activeText = Instantiate(tutorialTexts[2], new Vector3(2.2f, -1.8f, 0), Quaternion.identity);
+            }
+            else if (tutorialSteps == 3)
+            {
+                activeHand = Instantiate(tutorialHandOBJ, new Vector3(100.0f, -0.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+                activeText = Instantiate(tutorialTexts[3], new Vector3(2.2f, -1.8f, 0), Quaternion.identity);
+            }
+        }
+        else
+        {
+            swipeTutorialTimer += Time.deltaTime;
+        }
+
+    }
+
+    public bool canSwipeTutorialTimer()
+    {
+        return swipeTutorialTimer > 4;
+    }
+
+    public void resetSwipeTutorialTimer(float swipeTime)
+    {
+        swipeTutorialTimer = swipeTime;
+        nextTutorialStep();
     }
 }

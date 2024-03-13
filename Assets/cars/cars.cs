@@ -226,7 +226,7 @@ public class cars : MonoBehaviour
     void switchLane(int blinkOdds)
     {
         int switchOdds = Random.Range(0, blinkOdds);
-        if (switchOdds == 0)
+        if (!controller.inTutorial && switchOdds == 0)
         {
             switchTimer = Random.Range(30 / controller.mph, 120 / controller.mph);
         }

@@ -16,7 +16,6 @@ public class playerManager : MonoBehaviour
     public List<List<string>> bodyNames = new List<List<string>>();
     public List<List<Sprite>> bodies = new List<List<Sprite>>();
     public List<List<Sprite>> crashes = new List<List<Sprite>>();
-    public List<carPart[]> bodyCosts = new List<carPart[]>();
 
     public List<Sprite> windows;
     public List<string> windowNames;
@@ -89,22 +88,8 @@ public class playerManager : MonoBehaviour
             newBodyUnlock.Add(PlayerPrefs.GetInt(carNames[ind] + newBodyNames[i], 0) != 0);
         }
 
-        bodies.Add(newBodySprites);
-        bodyNames.Add(newBodyNames);
-        bodyUnlocks.Add(newBodyUnlock);
-
-        List<string> newCrashNames = new List<string>();
-        List<Sprite> newCrashSprites = new List<Sprite>();
-        getCarStuff(newCrashSprites, newCrashNames, path + "/crashed");
-
-        crashes.Add(newCrashSprites);
-
-        carPart[] bodyCostsArr = new carPart[newBodySprites.Count];
-        for(int i = 0; i < newBodySprites.Count; i++)
-        {
-            bodyCostsArr[i] = new carPart(carPartsData.carTypes[ind].cost / 4);
-        }
-        bodyCosts.Add(bodyCostsArr);
+        getCarAssets(bodies[ind], bodyNames[ind], " " + name, path + "/body");
+        getCarAssets(crashes[ind], bodyNames[ind], " Crashed " + name, path + "/crashed");
     }
 
     private void getCarStuff(List<Sprite> carParts, List<string> carPartNames, string path)
@@ -142,6 +127,20 @@ public class playerManager : MonoBehaviour
             carTypeUnlocks.Add(PlayerPrefs.GetInt(carType.typeName + "Type", 0) != 0);
         }
         carTypeUnlocks[0] = true;
+
+        for (int i = 0; i < carNames.Count; i++)
+        {
+            bodies.Add(new List<Sprite>());
+            crashes.Add(new List<Sprite>());
+            bodyNames.Add(new List<string>());
+            bodyUnlocks.Add(new List<bool>());
+            foreach (carBodyReader bodySkin in carDataInJson.carTypes[i].bodies)
+            {
+                bodyNames[i].Add(bodySkin.bodyColor);
+                bodyUnlocks[i].Add(PlayerPrefs.GetInt(carNames[i] + bodySkin.bodyColor + "Body", 0) != 0);
+            }
+            bodyUnlocks[i][0] = true;
+        }
 
         foreach (carWheelReader wheelType in carDataInJson.wheelTypes)
         {
@@ -242,6 +241,13 @@ public class carTypesReader : carPart
     public float wheelHight;
     public float wheelF;
     public float wheelB;
+    public carBodyReader[] bodies;
+}
+
+[System.Serializable]
+public class carBodyReader : carPart
+{
+    public string bodyColor;
 }
 
 [System.Serializable]

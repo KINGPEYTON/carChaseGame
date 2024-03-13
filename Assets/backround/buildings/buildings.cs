@@ -8,7 +8,6 @@ public class buildings : MonoBehaviour
 
     public bool isBillboard;
     public bool isBigBillboard;
-    public Sprite[] skins; //array of building skins
 
     public float speed;
 
@@ -16,7 +15,6 @@ public class buildings : MonoBehaviour
     public virtual void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
-        //setSkin(skins[Random.Range(0, skins.Length)]); //set the skin to a random one at spawn
     }
 
     // Update is called once per frame

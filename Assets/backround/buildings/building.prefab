@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3819261689786134155}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3819261689786134152
 SpriteRenderer:
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -24
-  m_Sprite: {fileID: 21300000, guid: bc2f1057a4d3c4af2a6d7493f3315a46, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 288cb3098fd4348159baaf2bfdffbbaf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,9 +101,9 @@ MonoBehaviour:
   isBillboard: 0
   isBigBillboard: 0
   skins:
-  - {fileID: 21300000, guid: b26aab4f7eced4a1eac79e5317317dcf, type: 3}
-  - {fileID: 21300000, guid: bc2f1057a4d3c4af2a6d7493f3315a46, type: 3}
-  - {fileID: 21300000, guid: 294f79c2fa07b49afb8f9fa329612457, type: 3}
-  - {fileID: 21300000, guid: b26aab4f7eced4a1eac79e5317317dcf, type: 3}
+  - {fileID: 21300000, guid: 25fcebdf564de4915bee5d415d38c67a, type: 3}
+  - {fileID: 21300000, guid: f994ebf9bb73f4f8da2f34b7dba613a1, type: 3}
+  - {fileID: 21300000, guid: 288cb3098fd4348159baaf2bfdffbbaf, type: 3}
+  - {fileID: 21300000, guid: 774affb7a4ea6484cbf2f12b06078f61, type: 3}
   - {fileID: 21300000, guid: 294f79c2fa07b49afb8f9fa329612457, type: 3}
   speed: 12

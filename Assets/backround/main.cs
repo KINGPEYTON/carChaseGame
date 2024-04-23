@@ -145,6 +145,10 @@ public class main : MonoBehaviour
     public GameObject topSide;
     public GameObject topCurrBar;
     public GameObject topBar;
+    public GameObject topCurrSide2;
+    public GameObject topSide2;
+    public GameObject topCurrBar2;
+    public GameObject topBar2;
     public GameObject topCurrRoad;
     public GameObject topRoad;
 
@@ -155,6 +159,29 @@ public class main : MonoBehaviour
     public GameObject topLaneLineR;
     public float topLaneLineTimer;
     public GameObject yelloBarrel;
+
+    public byte areaEvent;
+    public float areaTime;
+    public float areaTimer;
+
+    public bool startBridge;
+
+    public GameObject bridgeBar;
+    public GameObject bridgeBar2;
+    public GameObject bridgeStart;
+    public GameObject bridgeEnd;
+    public GameObject bridgeStartConnector;
+    public GameObject bridgeEndConnector;
+    public GameObject bridgePillar;
+    public GameObject bridgeSupport;
+    public GameObject backroundPort;
+    public float bridgeLineTimer;
+
+    public GameObject bridgeBillboard;
+    public GameObject bridgeBigBillboard;
+    public GameObject bridgeOverBoard;
+    public GameObject bridgeOverBigBoard;
+
 
     // Start is called before the first frame update
     void OnEnable()
@@ -189,6 +216,7 @@ public class main : MonoBehaviour
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
 
         topLaneTimer = Random.Range(500, 3000);
+        areaTimer = Random.Range(500, 2000);
 
         bigPlaneTimer = Random.Range(15, 65);
 
@@ -226,11 +254,19 @@ public class main : MonoBehaviour
             //make road elements
             spawnDivider();
             spawnGuard();
-            spawnManhole();
 
             //make backround elements
-            spawnFrontBuilding();
-            spawnBackBuilding();
+            if (areaEvent == 0)
+            {
+                spawnFrontBuilding();
+                spawnBackBuilding();
+                spawnManhole();
+            }
+            else if (areaEvent == 1)
+            {
+                spawnBridgeSupport();
+                spawnBridgePillar();
+            }
             spawnCrain();
             spawnSkyline();
             spawnCloud();
@@ -244,6 +280,7 @@ public class main : MonoBehaviour
             {
                 spawnCoin();
                 newTopLane();
+                changeArea();
                 spawnGameCar();
             }
             else
@@ -321,26 +358,39 @@ public class main : MonoBehaviour
     void spawnGuard()
     {
         guardTimer += Time.deltaTime * mph; //timer to spawn new road guard 
-        if (guardTimer > 2)
+        if (areaEvent == 0)
         {
-            //spawns a new rail guard for the edge of the road
-            if (topLane)
+            if (guardTimer > 2)
             {
-                Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-            }
-            else
-            {
-                if (topLaneTime >= 0)
+                //spawns a new rail guard for the edge of the road
+                if (topLane)
                 {
                     Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
                 }
                 else
                 {
-                    Instantiate(guard2, new Vector3(12, 0.55f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    if (topLaneTime >= 0)
+                    {
+                        Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    }
+                    else
+                    {
+                        Instantiate(guard2, new Vector3(12, 0.55f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    }
                 }
+                Instantiate(guard, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                guardTimer = 0;
             }
-            Instantiate(guard, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-            guardTimer = 0;
+        }
+        else if (areaEvent == 1)
+        {
+            if (guardTimer > 15)
+            {
+                //spawns a new rail guard for the edge of the road
+                Instantiate(bridgeBar, new Vector3(12, 1.3f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                Instantiate(bridgeBar2, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                guardTimer = 0;
+            }
         }
     }
 
@@ -479,7 +529,7 @@ public class main : MonoBehaviour
 
     void newTopLane()
     {
-        topLaneTimer -= Time.deltaTime * mph;
+        if (areaEvent == 0) { topLaneTimer -= Time.deltaTime * mph; }
         if (topLaneTimer <= 0 && topLaneTime <= 0)
         {
             topLane = !topLane;
@@ -549,6 +599,123 @@ public class main : MonoBehaviour
                 }
 
             }
+        }
+    }
+
+    void changeArea()
+    {
+        if (!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3)) { areaTimer -= Time.deltaTime * mph; }
+        if (areaTimer <= 0 && buildingFrontList == 1)
+        {
+            if (areaEvent == 0) { areaEvent = 1; } else { areaEvent = 0;  }
+        }
+        if (areaEvent == 1 && (topLane && topLaneTime <= 0))
+        {
+            if (!startBridge)
+            {
+                topCurrBar.GetComponent<sideBar>().movingOut = true;
+                topCurrSide.GetComponent<sideBar>().movingOut = true;
+                topCurrBar2.GetComponent<sideBar>().movingOut = true;
+                topCurrSide2.GetComponent<sideBar>().movingOut = true;
+                Instantiate(bridgeStart, new Vector3(14.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                Instantiate(bridgeStartConnector, new Vector3(11.5f, -4.8f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                guardTimer = 5;
+                buildingTimer = -34;
+                buildingFrontTimer = -10;
+                buildingFrontList = 2;
+                frontBillboardList = 1;
+                areaTimer = Random.Range(600, 900);
+                startBridge = true;
+            }
+            else
+            {
+                if (bridgeLineTimer > 12)
+                {
+                    //Instantiate(topLaneLineL, new Vector3(12, 0.6f, 0), Quaternion.identity);
+                    bridgeLineTimer = 0;
+                }
+                bridgeLineTimer += Time.deltaTime * mph;
+            }
+
+        }
+        else
+        {
+            if (areaEvent == 0)
+            {
+                if (startBridge)
+                {
+                    topCurrSide = Instantiate(topSide, new Vector3(29.5f, 1.14f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    topCurrBar = Instantiate(topBar, new Vector3(29.5f, 1.61f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    topCurrSide2 = Instantiate(topSide2, new Vector3(29.5f, -5.07f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                    topCurrBar2 = Instantiate(topBar2, new Vector3(29.5f, -4.6f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                    Instantiate(bridgeEnd, new Vector3(14.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    Instantiate(bridgeEndConnector, new Vector3(18.5f, -4.8f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                    Instantiate(bridgeBar, new Vector3(12.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    Instantiate(bridgeBar, new Vector3(15.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    Instantiate(bridgeBar2, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                    Instantiate(bridgeBar2, new Vector3(15, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                    Instantiate(bridgeBar2, new Vector3(16.5f, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
+                    guardTimer = -35;
+                    buildingFrontList = 2;
+                    startBridge = false;
+                    areaTimer = Random.Range(2000, 4000);
+                }
+                if (bridgeLineTimer > 12)
+                {
+                    //Instantiate(topLaneLineR, new Vector3(12, 0.6f, 0), Quaternion.identity);
+                    bridgeLineTimer = 0;
+                }
+                bridgeLineTimer += Time.deltaTime * mph;
+            }
+        }
+    }
+
+    void spawnBridgePillar()
+    {
+        buildingFrontTimer += Time.deltaTime * mph; //timer that spawns a new builing
+        if (buildingFrontTimer > 50)
+        {
+            if (buildingFrontList < 1)
+            {
+                if (areaTimer > 10)
+                {
+                    Instantiate(bridgePillar, new Vector3(13, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                }
+                buildingFrontList++;
+                buildingFrontTimer = 0;
+            }
+            else
+            {
+                if (frontBillboardList < 2)
+                {
+                    GameObject bboard = Instantiate(bridgeBillboard, new Vector3(13, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    bboard.GetComponent<buildings>().isBillboard = true;
+                    billboards.Add(bboard);
+                    buildingFrontList = 0;
+                    buildingFrontTimer = -10;
+                    frontBillboardList++;
+                }
+                else
+                {
+                    GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(14.125f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    bboard.GetComponent<buildings>().isBigBillboard = true;
+                    billboards.Add(bboard);
+                    buildingFrontList = 0;
+                    buildingFrontTimer = -10;
+                    frontBillboardList = 0;
+                }
+            }
+        }
+    }
+
+    void spawnBridgeSupport()
+    {
+        buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
+        if (buildingTimer > 7)
+        {
+            Instantiate(bridgeSupport, new Vector3(12, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+            buildingList++;
+            buildingTimer = 0;
         }
     }
 
@@ -935,7 +1102,13 @@ public class main : MonoBehaviour
 
         if (bboard.GetComponent<buildings>().isBigBillboard)
         {
-            Instantiate(overBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
+            if (areaEvent == 0)
+            {
+                Instantiate(overBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
+            } else if(areaEvent == 1)
+            {
+                Instantiate(bridgeOverBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
+            }
             if (inTutorial)
             {
                 activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.transform.position.x + 1.5f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
@@ -945,7 +1118,14 @@ public class main : MonoBehaviour
         }
         else
         {
-            Instantiate(overBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
+            if (areaEvent == 0)
+            {
+                Instantiate(overBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
+            }
+            else if (areaEvent == 1)
+            {
+                Instantiate(bridgeOverBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
+            }
             if (inTutorial)
             {
                 activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.transform.position.x + 2.7f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();

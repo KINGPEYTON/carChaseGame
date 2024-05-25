@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -45,15 +46,14 @@ public class main : MonoBehaviour
     public int textNum;
     public bool scoreShowing;
 
-    public GameObject overBoard;
-    public GameObject overBigBoard;
-
     public playerCar playerCar;
     public AudioClip startEngine;
 
-    public GameObject divider; //divider gameobject to spawn
-    public GameObject dividerPart; //divider gameobject to spawn
-    public float dividerTimer;
+    public GameObject road; //road gameobject to spawn
+    public GameObject roadPart; //road gameobject to spawn
+    public Sprite roadSkins;
+    public Transform roadLast;
+    public float roadDist = 2.0f;
 
     public GameObject manhole;
     public float manholeTimer;
@@ -66,31 +66,46 @@ public class main : MonoBehaviour
     public float bigPlaneTimer;
 
     public GameObject building; //building gameobject to spawn
-    public GameObject billboard; //building gameobject to spawn
-    public GameObject bigBillboard; //building gameobject to spawn
     public List<Sprite> buildingSkins;
     public List<float> buildingsOdds;
+    public GameObject backBillboard; //building gameobject to spawn
+    public List<Sprite> backBillboardSkins;
     public List<float> buildingsCurrOdds;
     public float buildingList;
-    public float billboardList;
-    public float buildingTimer;
+
+    public float buildingDist = 2.95f;
+    public Transform buildingLast;
 
     public GameObject buildingFront; //building gameobject to spawn
-    public GameObject frontBillboard; //building gameobject to spawn
-    public GameObject bigFrontBillboard; //building gameobject to spawn
     public List<Sprite> buildingFrontSkins;
     public List<float> buildingsFrontOdds;
     public List<float> buildingsFrontCurrOdds;
+
+    public GameObject frontBillboard; //building gameobject to spawn
+    public GameObject bigFrontBillboard; //building gameobject to spawn
+    public List<Sprite> frontBillboardSkins;
+    public List<Sprite> frontBigBillboardSkins;
+    public List<float> frontBillboardOdds;
+    public List<float> frontBillboardCurrOdds;
     public float buildingFrontList;
     public float frontBillboardList;
-    public float buildingFrontTimer;
+
+    public float frontBuildingDist = 2.0f;
+    public Transform frontBuildingLast;
 
     public GameObject skyline;
-    public int skylineList;
-    public float skylineTimer;
+    public List<Sprite> skylineSkins;
+    public List<float> skylineOdds;
+    public List<float> skylineCurrOdds;
+    public Transform skylineLast;
+    public float skylineDist = 4.5f;
 
-    public GameObject crain;
-    public float crainTimer;
+    public GameObject farBuilding;
+    public List<Sprite> farBuildingSkins;
+    public List<float> farBuildingsOdds;
+    public List<float> farBuildingsCurrOdds;
+    public float farBuildingDist = 3.25f;
+    public Transform farBuildingLast;
 
     public GameObject cloud;
     public float cloudTimer;
@@ -99,7 +114,8 @@ public class main : MonoBehaviour
 
     public GameObject guard; //rail guard gameobject to spawn
     public GameObject guard2; //rail guard gameobject to spawn
-    public float guardTimer;
+    public Transform guardLast;
+    public float guardDist = 3.25f;
 
     public GameObject[] milestoneSigns;
     public GameObject milestoneBigSign;
@@ -141,23 +157,19 @@ public class main : MonoBehaviour
     public float topLaneTime;
     public float topLaneTimer;
 
-    public GameObject topCurrSide;
-    public GameObject topSide;
-    public GameObject topCurrBar;
-    public GameObject topBar;
-    public GameObject topCurrSide2;
-    public GameObject topSide2;
-    public GameObject topCurrBar2;
-    public GameObject topBar2;
     public GameObject topCurrRoad;
     public GameObject topRoad;
 
-    public GameObject topLaneRoadL;
-    public GameObject topLaneRoadR;
-    public GameObject topLaneCurrRoad;
-    public GameObject topLaneLineL;
-    public GameObject topLaneLineR;
-    public float topLaneLineTimer;
+    public GameObject exitLine;
+    public GameObject mergeLine;
+    public GameObject topLaneWhiteLine;
+    public Transform topLaneLineLast;
+    public float topLaneLineDist = 3.25f;
+
+    public GameObject exitText;
+    public GameObject mergeText;
+    public int exitCount;
+
     public GameObject yelloBarrel;
 
     public byte areaEvent;
@@ -178,10 +190,9 @@ public class main : MonoBehaviour
     public float bridgeLineTimer;
 
     public GameObject bridgeBillboard;
+    public Sprite bridgeBillboardSkin;
     public GameObject bridgeBigBillboard;
-    public GameObject bridgeOverBoard;
-    public GameObject bridgeOverBigBoard;
-
+    public Sprite bridgeBigBillboardSkin;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -215,7 +226,7 @@ public class main : MonoBehaviour
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
 
-        topLaneTimer = Random.Range(500, 3000);
+        //topLaneTimer = Random.Range(500, 3000);
         areaTimer = Random.Range(500, 2000);
 
         bigPlaneTimer = Random.Range(15, 65);
@@ -226,10 +237,12 @@ public class main : MonoBehaviour
         setCarOdds(carsOdds, carsCurrOdds, carsList);
         setCarOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList);
         setCarOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList);
-        setBuildingOdds();
-        setbuildingFrontOdds();
+        setBackBuildingOdds();
+        setFrontBuildingOdds();
+        setFarBuildingOdds();
+        setSkylineOdds();
 
-        if(inTutorial && tutorialSteps == 0)
+        if (inTutorial && tutorialSteps == 0)
         {
             startTutorial();
         }
@@ -252,7 +265,7 @@ public class main : MonoBehaviour
             score += (mph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
 
             //make road elements
-            spawnDivider();
+            spawnroad();
             spawnGuard();
 
             //make backround elements
@@ -267,7 +280,7 @@ public class main : MonoBehaviour
                 spawnBridgeSupport();
                 spawnBridgePillar();
             }
-            spawnCrain();
+            spawnFarBuilding();
             spawnSkyline();
             spawnCloud();
 
@@ -337,59 +350,105 @@ public class main : MonoBehaviour
         menuSound.volume = masterVol;
     }
 
-    void spawnDivider()
+    void spawnroad()
     {
-        dividerTimer += Time.deltaTime * mph; //timer to spawn new lane divider
-        if (dividerTimer > 12)
+        try
         {
-            //spawns a new yellow lane divider for each lane
+            if (roadLast.position.x < 11)
+            {
+                //spawns a new yellow lane road for each lane
+                Transform newRoad;
+                if (topLane && topLaneTime <=0)
+                {
+                    newRoad = Instantiate(road, new Vector3(roadLast.position.x + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).transform;
+                }
+                else
+                {
+                    newRoad = Instantiate(roadPart, new Vector3(roadLast.position.x + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).transform;
+                }
+                roadLast = newRoad;
+            }
+        }
+        catch {
+            Transform newRoad;
             if (topLane)
             {
-                Instantiate(divider, new Vector3(12, -1.8f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                newRoad = Instantiate(road, new Vector3(12+ roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).transform;
             }
             else
             {
-                Instantiate(dividerPart, new Vector3(12, -2.5f, 0), Quaternion.identity, GameObject.Find("dividers").transform);
+                newRoad = Instantiate(roadPart, new Vector3(12 + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).transform;
             }
-            dividerTimer = 0;
+            roadLast = newRoad;
         }
     }
 
     void spawnGuard()
     {
-        guardTimer += Time.deltaTime * mph; //timer to spawn new road guard 
         if (areaEvent == 0)
         {
-            if (guardTimer > 2)
+            try
             {
-                //spawns a new rail guard for the edge of the road
+                if (guardLast.position.x < 10)
+                {
+                    //spawns a new rail guard for the edge of the road
+                    if (topLane)
+                    {
+                        Instantiate(guard2, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    }
+                    else
+                    {
+                        if (topLaneTime >= 0)
+                        {
+                            Instantiate(guard2, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                        }
+                        else
+                        {
+                            Instantiate(guard2, new Vector3(guardLast.position.x + guardDist, 0.25f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                        }
+                    }
+                    Transform newGuard = Instantiate(guard, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    guardLast = newGuard;
+                }
+            }
+            catch
+            {
                 if (topLane)
                 {
-                    Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    Instantiate(guard2, new Vector3(12 + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                 }
                 else
                 {
                     if (topLaneTime >= 0)
                     {
-                        Instantiate(guard2, new Vector3(12, 1.36f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                        Instantiate(guard2, new Vector3(12 + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     }
                     else
                     {
-                        Instantiate(guard2, new Vector3(12, 0.55f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                        Instantiate(guard2, new Vector3(12 + guardDist, 0.25f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     }
                 }
-                Instantiate(guard, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                guardTimer = 0;
+                Transform newGuard = Instantiate(guard, new Vector3(12 + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                guardLast = newGuard;
             }
         }
         else if (areaEvent == 1)
         {
-            if (guardTimer > 15)
+            try
             {
-                //spawns a new rail guard for the edge of the road
-                Instantiate(bridgeBar, new Vector3(12, 1.3f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                Instantiate(bridgeBar2, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                guardTimer = 0;
+                if (guardLast.position.x < 12)
+                {
+                    //spawns a new rail guard for the edge of the road
+                    Instantiate(bridgeBar, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    guardLast = newBar;
+                }
+            }
+            catch
+            {
+                Instantiate(bridgeBar, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                guardLast = newBar;
             }
         }
     }
@@ -410,7 +469,7 @@ public class main : MonoBehaviour
             }
             GameObject newManhole = Instantiate(manhole, new Vector3(12, (manholeLayer * -1.25f) + 0.55f, 0), Quaternion.identity, GameObject.Find("misc backround").transform);
             newManhole.gameObject.GetComponentInChildren<ParticleSystem>(false).GetComponent<Renderer>().sortingOrder = 2 + manholeLayer;
-            newManhole.transform.localScale = new Vector3((0.4f + (0.05f * manholeLayer)), (0.4f + (0.05f * manholeLayer)), 1);
+            //newManhole.transform.localScale = new Vector3((0.4f + (0.05f * manholeLayer)), (0.4f + (0.05f * manholeLayer)), 1);
             manholeTimer = 0;
             manholeSpawn = Random.Range(100, 350);
         }
@@ -440,79 +499,115 @@ public class main : MonoBehaviour
 
     void spawnFrontBuilding()        //front buildings
     {
-        buildingFrontTimer += Time.deltaTime * mph; //timer that spawns a new builing
-        if (buildingFrontTimer > 34.5)
+        try
         {
-            if (buildingFrontList < 3)
+            if (frontBuildingLast.position.x < 10)
             {
-                buildings newbuildingFront = Instantiate(buildingFront, new Vector3(13, 0.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); ; //spawns new backround building
-                newbuildingFront.setSkin(getbuildingFrontFromOdds());
-                buildingFrontList++;
-                buildingFrontTimer = 0;
-            }
-            else
-            {
-                if (frontBillboardList < 3)
+                if (buildingFrontList < 4)
                 {
-                    GameObject bboard = Instantiate(frontBillboard, new Vector3(13, -2.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                    bboard.GetComponent<buildings>().isBillboard = true;
-                    billboards.Add(bboard);
-                    buildingFrontList = 0;
-                    buildingFrontTimer = 0;
-                    frontBillboardList++;
+                    buildings newbuildingFront = Instantiate(buildingFront, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.12f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); ; //spawns new backround building
+                    newbuildingFront.setSkin(getbuildingFromOdds(buildingsFrontOdds, buildingsFrontCurrOdds, buildingFrontSkins));
+                    frontBuildingLast = newbuildingFront.gameObject.transform;
+                    buildingFrontList++;
+                    frontBuildingDist = 2.95f;
                 }
                 else
                 {
-                    GameObject bboard = Instantiate(bigFrontBillboard, new Vector3(14.125f, -1.64f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                    bboard.GetComponent<buildings>().isBigBillboard = true;
-                    billboards.Add(bboard);
-                    buildingFrontList = 0;
-                    buildingFrontTimer = -18.5f;
-                    frontBillboardList = 0;
+                    if (frontBillboardList < 3)
+                    {
+                        GameObject bboard = Instantiate(frontBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 0.5f, -0.72f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        bboard.GetComponent<buildings>().setSkin(getbuildingFromOdds(frontBillboardOdds, frontBillboardCurrOdds, frontBillboardSkins));
+                        billboards.Add(bboard);
+                        frontBuildingLast = bboard.gameObject.transform;
+                        buildingFrontList = 0;
+                        frontBillboardList++;
+                        frontBuildingDist = 3.5f;
+                    }
+                    else
+                    {
+                        GameObject bboard = Instantiate(bigFrontBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 2.0f, -1.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        bboard.GetComponent<billboard>().isBigBillboard = true;
+                        bboard.GetComponent<buildings>().setSkin(getbuildingFromOdds(frontBigBillboardSkins));
+                        billboards.Add(bboard);
+                        frontBuildingLast = bboard.gameObject.transform;
+                        buildingFrontList = 0;
+                        frontBillboardList = 0;
+                        frontBuildingDist = 5.0f;
+                    }
                 }
             }
+        }
+        catch
+        {
+            buildings newbuildingFront = Instantiate(buildingFront, new Vector3(13, 0.12f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); ; //spawns new backround building
+            newbuildingFront.setSkin(getbuildingFromOdds(buildingsFrontOdds, buildingsFrontCurrOdds, buildingFrontSkins));
+            frontBuildingLast = newbuildingFront.gameObject.transform;
+            buildingFrontList++;
+            frontBuildingDist = 2.75f;
         }
     }
 
     void spawnBackBuilding()        //backround buildings
     {
-        buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
-        if (buildingTimer > 25.5)
+        try
         {
-            if (buildingList < 6)
+            if (buildingLast.position.x < 10)
             {
-                buildings newBuilding = Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
-                newBuilding.setSkin(getbuildingFromOdds());
-                buildingList++;
-                buildingTimer = 0;
+                if (buildingList < 6)
+                {
+                    buildings newBuilding = Instantiate(building, new Vector3(buildingLast.position.x + buildingDist, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                    newBuilding.setSkin(getbuildingFromOdds(buildingsOdds, buildingsCurrOdds, buildingSkins));
+                    buildingLast = newBuilding.gameObject.transform;
+                    buildingList++;
+                      buildingDist = 2.95f;
+                }
+                else
+                {
+                    billboard bboard = Instantiate(backBillboard, new Vector3(buildingLast.position.x + buildingDist + 0.35f, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<billboard>(); //spawns new backround building
+                    bboard.isBigBillboard = true;
+                    bboard.GetComponent<buildings>().setSkin(getbuildingFromOdds(backBillboardSkins));
+                    buildingLast = bboard.gameObject.transform;
+                    buildingList = 0;
+                    buildingDist = 3.05f;
+                }
             }
-            else
-            {
-                buildings bboard = Instantiate(bigBillboard, new Vector3(13, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
-                bboard.isBigBillboard = true;
-                buildingList = 0; buildingTimer = -25;
-                billboardList = 0;
-            }
+        }
+        catch
+        {
+            buildings newBuilding = Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+            newBuilding.setSkin(getbuildingFromOdds(buildingsOdds, buildingsCurrOdds, buildingSkins));
+            buildingLast = newBuilding.gameObject.transform;
+            buildingList++;
+            buildingDist = 2.95f;
         }
     }
 
-    void spawnCrain()        //skyline buildings
+    void spawnFarBuilding()        //far buildings
     {
-        crainTimer -= Time.deltaTime * mph; //timer that spawns a new builing
-        if (crainTimer < 0)
+        try
         {
-            Instantiate(crain, new Vector3(13.5f, 2.5f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-            crainTimer = Random.Range(250, 825);
+            if (farBuildingLast.position.x < 10)
+            {
+                buildings newBuilding = Instantiate(farBuilding, new Vector3(farBuildingLast.position.x + farBuildingDist, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                newBuilding.setSkin(getbuildingFromOdds(farBuildingsOdds, farBuildingsCurrOdds, farBuildingSkins));
+                farBuildingLast = newBuilding.gameObject.transform;
+            }
+        }
+        catch
+        {
+            buildings newBuilding = Instantiate(farBuilding, new Vector3(13, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+            newBuilding.setSkin(getbuildingFromOdds(farBuildingsOdds, farBuildingsCurrOdds, farBuildingSkins));
+            farBuildingLast = newBuilding.gameObject.transform;
         }
     }
 
     void spawnSkyline()        //skyline buildings
     {
-        skylineTimer += Time.deltaTime * mph; //timer that spawns a new builing
-        if (skylineTimer > 150)
+        if (skylineLast.position.x < 10)
         {
-            Instantiate(skyline, new Vector3(13.5f, 2.5f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-            skylineTimer = 0;
+            buildings newSkyline = Instantiate(skyline, new Vector3(skylineLast.position.x + skylineDist, 2.5f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+            newSkyline.setSkin(getbuildingFromOdds(skylineOdds, skylineCurrOdds, skylineSkins));
+            skylineLast = newSkyline.gameObject.transform;
         }
     }
 
@@ -522,7 +617,7 @@ public class main : MonoBehaviour
         cloudTimer += Time.deltaTime * mph; //timer that spawns a new builing
         if (cloudTimer > 925)
         {
-            Instantiate(cloud, new Vector3(13.5f, Random.Range(2.5f, 5.8f), 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+            Instantiate(cloud, new Vector3(13.5f, Random.Range(3.25f, 5.8f), 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
             cloudTimer = 0;
         }
     }
@@ -539,31 +634,46 @@ public class main : MonoBehaviour
         {
             if (topLaneTime > 0)
             {
-                if (topLaneCurrRoad == null)
-                {
-                    topLaneCurrRoad = Instantiate(topLaneRoadL, new Vector3(24.5f, 0, 0), Quaternion.identity);
-                    Instantiate(topLaneLineL, new Vector3(12, 0.6f, 0), Quaternion.identity);
-                }
                 topLaneTime -= Time.deltaTime * mph;
                 if (topLaneTime <= 0)
                 {
-                    topCurrBar.GetComponent<sideBar>().movingOut = true;
-                    topCurrSide.GetComponent<sideBar>().movingOut = true;
+                    Instantiate(exitLine, new Vector3(guardLast.position.x + 8.85f, 0.225f, 0), Quaternion.identity, GameObject.Find("roads").transform);
+                    Instantiate(mergeText, new Vector3(guardLast.position.x + 4.0f, 0.55f, 0), Quaternion.identity, GameObject.Find("roads").transform);
+                    Instantiate(guard2, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard2, new Vector3(guardLast.position.x + guardDist + 3.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard, new Vector3(guardLast.position.x + guardDist + 3.25f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard2, new Vector3(guardLast.position.x + guardDist + 6.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard, new Vector3(guardLast.position.x + guardDist + 6.5f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard2, new Vector3(guardLast.position.x + guardDist + 9.75f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard, new Vector3(guardLast.position.x + guardDist + 9.75f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard2, new Vector3(guardLast.position.x + guardDist + 13.0f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(guard, new Vector3(guardLast.position.x + guardDist + 13.0f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Transform lastGuard = Instantiate(guard2, new Vector3(guardLast.position.x + guardDist + 16.25f, 0.25f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    Transform newGuard = Instantiate(guard, new Vector3(guardLast.position.x + guardDist + 16.25f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    guardLast = newGuard;
                     topCurrRoad.GetComponent<sideBar>().movingOut = true;
-                    topLaneCurrRoad.GetComponent<sideBar>().movingOut = true;
-                    topCurrSide = Instantiate(topSide, new Vector3(24.5f, 0.33f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    topCurrBar = Instantiate(topBar, new Vector3(24.5f, 0.80f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    Instantiate(yelloBarrel, new Vector3(12f, 0.50f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    topCurrRoad.GetComponent<sideBar>().lastGuard = lastGuard;
+                    Instantiate(yelloBarrel, new Vector3(guardLast.position.x - 1.85f, 0.4f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     topLaneTimer = Random.Range(250, 750);
                 }
                 else
                 {
-                    if (topLaneLineTimer > 12)
+                    try
                     {
-                        Instantiate(topLaneLineL, new Vector3(12, 0.6f, 0), Quaternion.identity);
-                        topLaneLineTimer = 0;
+                        if (topLaneLineLast.position.x < 10)
+                        {
+                            Transform newLine = Instantiate(topLaneWhiteLine, new Vector3(topLaneLineLast.position.x + topLaneLineDist, 0, 0), Quaternion.identity).transform;
+                            topLaneLineLast = newLine;
+                            increseExitCount(exitText, 1);
+                        }
                     }
-                    topLaneLineTimer += Time.deltaTime * mph;
+                    catch
+                    {
+                        Transform newLine = Instantiate(topLaneWhiteLine, new Vector3(guardLast.position.x + 1.7f, 0, 0), Quaternion.identity).transform;
+                        topLaneLineLast = newLine;
+                        increseExitCount(exitText, 0);
+                    }
                 }
 
             }
@@ -572,69 +682,86 @@ public class main : MonoBehaviour
         {
             if (topLaneTime > 0)
             {
-                if (topLaneCurrRoad == null)
+                if (topCurrRoad == null)
                 {
-                    topLaneCurrRoad = Instantiate(topLaneRoadR, new Vector3(24.5f, 0, 0), Quaternion.identity);
-                    topCurrRoad = Instantiate(topRoad, new Vector3(24, -2, 0), Quaternion.identity);
-                    topCurrBar.GetComponent<sideBar>().movingOut = true;
-                    topCurrSide.GetComponent<sideBar>().movingOut = true;
-                    topCurrSide = Instantiate(topSide, new Vector3(24.5f, 1.14f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    topCurrBar = Instantiate(topBar, new Vector3(24.5f, 1.61f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    Instantiate(yelloBarrel, new Vector3(12f, 0.50f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
+                    topCurrRoad = Instantiate(topRoad, new Vector3(guardLast.position.x + 15.75f, -2.02f, 0), Quaternion.identity);
+                    Transform lastGuard = Instantiate(guard2, new Vector3(guardLast.position.x + guardDist, 0.25f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    Transform newGuard = Instantiate(guard, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    guardLast = newGuard;
+
+                    Instantiate(mergeLine, new Vector3(lastGuard.position.x + 10.35f, 0.225f, 0), Quaternion.identity, GameObject.Find("roads").transform);
+                    Instantiate(yelloBarrel, new Vector3(lastGuard.position.x + 1.7f, 0.4f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(mergeText, new Vector3(lastGuard.position.x + 16.25f, 0.55f, 0), Quaternion.identity, GameObject.Find("roads").transform);
+                    Transform newLine = Instantiate(topLaneWhiteLine, new Vector3(lastGuard.position.x + 15.85f, 0, 0), Quaternion.identity).transform;
+                    topLaneLineLast = newLine;
+                    exitCount = 0;
                 }
                 topLaneTime -= Time.deltaTime * mph;
                 if (topLaneTime <= 0)
                 {
-                    topLaneCurrRoad.GetComponent<sideBar>().movingOut = true;
                     topLaneTimer = Random.Range(750, 2500);
                 }
                 else
                 {
-                    if (topLaneLineTimer > 12)
+                    try
                     {
-                        Instantiate(topLaneLineR, new Vector3(12, 0.6f, 0), Quaternion.identity);
-                        topLaneLineTimer = 0;
+                        if (topLaneLineLast.position.x < 10)
+                        {
+                            Transform newLine = Instantiate(topLaneWhiteLine, new Vector3(topLaneLineLast.position.x + topLaneLineDist, 0, 0), Quaternion.identity).transform;
+                            topLaneLineLast = newLine;
+                            increseExitCount(mergeText, 1);
+                        }
                     }
-                    topLaneLineTimer += Time.deltaTime * mph;
+                    catch
+                    {
+                        Transform newLine = Instantiate(topLaneWhiteLine, new Vector3(guardLast.position.x + 1.7f, 0, 0), Quaternion.identity).transform;
+                        topLaneLineLast = newLine;
+                        increseExitCount(mergeText, 0);
+                    }
                 }
 
             }
         }
     }
 
+    void increseExitCount(GameObject exitThingm, int count)
+    {
+        if (exitCount >= count)
+        {
+            Instantiate(exitThingm, new Vector3(topLaneLineLast.position.x, 0.55f, 0), Quaternion.identity);
+            exitCount = 0;
+        }
+        else
+        {
+            exitCount++;
+        }
+    }
+
     void changeArea()
     {
-        if (!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3)) { areaTimer -= Time.deltaTime * mph; }
-        if (areaTimer <= 0 && buildingFrontList == 1)
+
+        if (!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3) && topLane) { areaTimer -= Time.deltaTime * mph; }
+        if (areaTimer <= 0  && (topLane && topLaneTime <= 0))
         {
-            if (areaEvent == 0) { areaEvent = 1; } else { areaEvent = 0;  }
+            if (areaEvent == 0 && buildingFrontList == 1) { areaEvent = 1; } else if (areaEvent == 1 && buildingFrontList == 0) { areaEvent = 0;  }
         }
-        if (areaEvent == 1 && (topLane && topLaneTime <= 0))
+        if (areaEvent == 1)
         {
             if (!startBridge)
             {
-                topCurrBar.GetComponent<sideBar>().movingOut = true;
-                topCurrSide.GetComponent<sideBar>().movingOut = true;
-                topCurrBar2.GetComponent<sideBar>().movingOut = true;
-                topCurrSide2.GetComponent<sideBar>().movingOut = true;
-                Instantiate(bridgeStart, new Vector3(14.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                Instantiate(bridgeStartConnector, new Vector3(11.5f, -4.8f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                guardTimer = 5;
-                buildingTimer = -34;
-                buildingFrontTimer = -10;
-                buildingFrontList = 2;
+                Transform bridgeStarting = Instantiate(bridgeStart, new Vector3(guardLast.position.x + 2, 0.95f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                Instantiate(bridgeBar, new Vector3(guardLast.position.x + 1.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                frontBuildingLast = bridgeStarting;
+                frontBuildingDist = 10;
+                buildingDist = 10;
+                Instantiate(bridgeStartConnector, new Vector3(guardLast.position.x -1, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + 2, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                guardLast = newBar;
+                guardDist = 4.3665f;
+                buildingFrontList = 3;
                 frontBillboardList = 1;
                 areaTimer = Random.Range(600, 900);
                 startBridge = true;
-            }
-            else
-            {
-                if (bridgeLineTimer > 12)
-                {
-                    //Instantiate(topLaneLineL, new Vector3(12, 0.6f, 0), Quaternion.identity);
-                    bridgeLineTimer = 0;
-                }
-                bridgeLineTimer += Time.deltaTime * mph;
             }
 
         }
@@ -644,64 +771,63 @@ public class main : MonoBehaviour
             {
                 if (startBridge)
                 {
-                    topCurrSide = Instantiate(topSide, new Vector3(29.5f, 1.14f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    topCurrBar = Instantiate(topBar, new Vector3(29.5f, 1.61f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    topCurrSide2 = Instantiate(topSide2, new Vector3(29.5f, -5.07f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                    topCurrBar2 = Instantiate(topBar2, new Vector3(29.5f, -4.6f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                    Instantiate(bridgeEnd, new Vector3(14.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    Instantiate(bridgeEndConnector, new Vector3(18.5f, -4.8f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                    Instantiate(bridgeBar, new Vector3(12.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    Instantiate(bridgeBar, new Vector3(15.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("top guards").transform);
-                    Instantiate(bridgeBar2, new Vector3(12, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                    Instantiate(bridgeBar2, new Vector3(15, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                    Instantiate(bridgeBar2, new Vector3(16.5f, -4.85f, 0), Quaternion.identity, GameObject.Find("bottom guards").transform);
-                    guardTimer = -35;
-                    buildingFrontList = 2;
+                    Transform bridgeEnding = Instantiate(bridgeEnd, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.95f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x - 2.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x + 2, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x + 6.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x + 10.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgeSupport, new Vector3(frontBuildingLast.position.x + 4, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
+                    Instantiate(bridgeSupport, new Vector3(frontBuildingLast.position.x + -0.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
+                    Instantiate(bridgeSupport, new Vector3(frontBuildingLast.position.x + 0.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
+                    frontBuildingLast = bridgeEnding.transform;
+                    frontBuildingDist = 1.75f;
+                    Transform bridgeEndConn = Instantiate(bridgeEndConnector, new Vector3(frontBuildingLast.position.x + 4.25f, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    guardLast = bridgeEndConn;
+                    guardDist = 3.25f;
+                    Instantiate(bridgeBar2, new Vector3(frontBuildingLast.position.x - 7.75f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgeBar2, new Vector3(frontBuildingLast.position.x - 4.5f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgeBar2, new Vector3(frontBuildingLast.position.x - 1.25f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgeBar2, new Vector3(frontBuildingLast.position.x + 2, - 4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    buildingFrontList = 3;
                     startBridge = false;
                     areaTimer = Random.Range(2000, 4000);
                 }
-                if (bridgeLineTimer > 12)
-                {
-                    //Instantiate(topLaneLineR, new Vector3(12, 0.6f, 0), Quaternion.identity);
-                    bridgeLineTimer = 0;
-                }
-                bridgeLineTimer += Time.deltaTime * mph;
             }
         }
     }
 
     void spawnBridgePillar()
     {
-        buildingFrontTimer += Time.deltaTime * mph; //timer that spawns a new builing
-        if (buildingFrontTimer > 50)
+        if (frontBuildingLast.position.x < 5)
         {
             if (buildingFrontList < 1)
             {
-                if (areaTimer > 10)
-                {
-                    Instantiate(bridgePillar, new Vector3(13, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                }
+                GameObject newBuilding = Instantiate(bridgePillar, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                frontBuildingLast = newBuilding.transform;
+                frontBuildingDist = 7.5f;
                 buildingFrontList++;
-                buildingFrontTimer = 0;
             }
             else
             {
                 if (frontBillboardList < 2)
                 {
-                    GameObject bboard = Instantiate(bridgeBillboard, new Vector3(13, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                    bboard.GetComponent<buildings>().isBillboard = true;
+                    GameObject bboard = Instantiate(bridgeBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    bboard.GetComponent<billboard>().setSkin(bridgeBillboardSkin);
+                    frontBuildingLast = bboard.transform;
+                    frontBuildingDist = 9.5f;
                     billboards.Add(bboard);
                     buildingFrontList = 0;
-                    buildingFrontTimer = -10;
                     frontBillboardList++;
                 }
                 else
                 {
-                    GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(14.125f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
-                    bboard.GetComponent<buildings>().isBigBillboard = true;
+                    GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    bboard.GetComponent<billboard>().setSkin(bridgeBigBillboardSkin);
+                    frontBuildingLast = bboard.transform;
+                    frontBuildingDist = 9.5f;
+                    bboard.GetComponent<billboard>().isBigBillboard = true;
                     billboards.Add(bboard);
                     buildingFrontList = 0;
-                    buildingFrontTimer = -10;
                     frontBillboardList = 0;
                 }
             }
@@ -710,12 +836,12 @@ public class main : MonoBehaviour
 
     void spawnBridgeSupport()
     {
-        buildingTimer += Time.deltaTime * mph; //timer that spawns a new builing
-        if (buildingTimer > 7)
+        if (buildingLast.position.x < 11)
         {
-            Instantiate(bridgeSupport, new Vector3(12, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+            Transform newSupport = Instantiate(bridgeSupport, new Vector3(buildingLast.position.x + buildingDist, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform; //spawns new backround building
+            buildingLast = newSupport;
+            buildingDist = 1.5f;
             buildingList++;
-            buildingTimer = 0;
         }
     }
 
@@ -954,42 +1080,41 @@ public class main : MonoBehaviour
         return carList[0];
     }
 
-    Sprite getbuildingFromOdds()
+    Sprite getbuildingFromOdds(List<float> buildingsOddsList, List<float> buildingsCurrOddsList, List<Sprite> buildingSkinsList)
     {
         float newBuildingOdds = Random.Range(0.0f, 1.0f);
         float oddsAccum = 0.0f;
 
-        for (int i = 0; i < buildingsOdds.Count; i++)
+        for (int i = 0; i < buildingsOddsList.Count; i++)
         {
-            oddsAccum += buildingsCurrOdds[i];
+            oddsAccum += buildingsCurrOddsList[i];
             if (oddsAccum > newBuildingOdds)
             {
-                changeOdds(i, buildingsOdds, buildingsCurrOdds);
-                return buildingSkins[i];
+                changeOdds(i, buildingsOddsList, buildingsCurrOddsList);
+                return buildingSkinsList[i];
             }
         }
 
-        changeOdds(0, buildingsOdds, buildingsCurrOdds);
-        return buildingSkins[0];
+        changeOdds(0, buildingsOddsList, buildingsCurrOddsList);
+        return buildingSkinsList[0];
     }
 
-    Sprite getbuildingFrontFromOdds()
+    Sprite getbuildingFromOdds(List<Sprite> buildingSkinsList)
     {
-        float newBuildingFrontOdds = Random.Range(0.0f, 1.0f);
+        float newBuildingOdds = Random.Range(0.0f, 1.0f);
         float oddsAccum = 0.0f;
+        float evenOdds = 1.0f / buildingSkinsList.Count;
 
-        for (int i = 0; i < buildingsFrontOdds.Count; i++)
+        for (int i = 0; i < buildingSkinsList.Count; i++)
         {
-            oddsAccum += buildingsFrontCurrOdds[i];
-            if (oddsAccum > newBuildingFrontOdds)
+            oddsAccum += evenOdds;
+            if (oddsAccum > newBuildingOdds)
             {
-                changeOdds(i, buildingsFrontOdds, buildingsFrontCurrOdds);
-                return buildingFrontSkins[i];
+                return buildingSkinsList[i];
             }
         }
 
-        changeOdds(0, buildingsFrontOdds, buildingsFrontCurrOdds);
-        return buildingFrontSkins[0];
+        return buildingSkinsList[0];
     }
 
     void blimpText()
@@ -1098,51 +1223,17 @@ public class main : MonoBehaviour
 
     public void gameGameOverButton()
     {
-        GameObject bboard = billboards.ToArray()[0];
-
-        if (bboard.GetComponent<buildings>().isBigBillboard)
-        {
-            if (areaEvent == 0)
-            {
-                Instantiate(overBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
-            } else if(areaEvent == 1)
-            {
-                Instantiate(bridgeOverBigBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
-            }
-            if (inTutorial)
-            {
-                activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.transform.position.x + 1.5f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
-                activeHand.setBounce(0.45f, 0.25f, 30, 0.5f, 2);
-                activeText = Instantiate(tutorialTexts[4], new Vector3(3.8f, -0.8f, 0), Quaternion.identity);
-            }
-        }
-        else
-        {
-            if (areaEvent == 0)
-            {
-                Instantiate(overBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
-            }
-            else if (areaEvent == 1)
-            {
-                Instantiate(bridgeOverBoard, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform);
-            }
-            if (inTutorial)
-            {
-                activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.transform.position.x + 2.7f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
-                activeHand.setBounce(0.45f, 0.25f, 30, 0.5f, 2);
-                activeText = Instantiate(tutorialTexts[4], new Vector3(3.8f, -0.8f, 0), Quaternion.identity);
-            }
-        }
-
+        billboard bboard = billboards.ToArray()[0].GetComponent<billboard>();
+        Image overButton = Instantiate(bboard.gameOverOBJ, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform).GetComponent<Image>();
+        overButton.sprite = bboard.skinCurr;
         if (inTutorial)
         {
-            if(tutorialSteps < 4)
-            {
-                tutorialSteps = 4;
-            }
+            activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.gameObject.transform.position.x + 1.5f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+            activeHand.setBounce(0.45f, 0.25f, 30, 0.5f, 2);
+            activeText = Instantiate(tutorialTexts[4], new Vector3(3.8f, -0.8f, 0), Quaternion.identity);
         }
 
-        Destroy(bboard);
+        Destroy(bboard.gameObject);
 
         menuSound.clip = menuAmbience;
         menuSound.Play();
@@ -1198,20 +1289,20 @@ public class main : MonoBehaviour
     public void changeSfxVol(float newVol)
     {
         sfxVol = newVol;
-        PlayerPrefs.SetFloat("sfxVol", sfxVol); //saves the master volume level
+        PlayerPrefs.SetFloat("sfxVol", sfxVol); //saves the SFX volume level
     }
 
     public void changeMusicVol(float newVol)
     {
         musicVol = newVol;
-        PlayerPrefs.SetFloat("musicVol", musicVol); //saves the master volume level
+        PlayerPrefs.SetFloat("musicVol", musicVol); //saves the music volume level
     }
 
 
     public void changeRadioVol(float newVol)
     {
         radioVol = newVol;
-        PlayerPrefs.SetFloat("radioVol", radioVol); //saves the master volume level
+        PlayerPrefs.SetFloat("radioVol", radioVol); //saves the radio volume level
     }
 
     private void setCarOdds(List<float> oddsList, List<float> currOddsList, List<GameObject> carList)
@@ -1234,9 +1325,9 @@ public class main : MonoBehaviour
         }
     }
 
-    private void setBuildingOdds()
+    private void setBackBuildingOdds()
     {
-        float[] buildingOddsNew = { 0.175f, 0.125f, 0.225f, 0.125f, 0.875f, 0.875f, 0.875f, 0.875f };
+        float[] buildingOddsNew = { 0.025f, 0.025f, 0.045f, 0.045f, 0.06f, 0.06f, 0.05f, 0.05f, 0.09f, 0.09f, 0.1f, 0.1f, 0.055f, 0.055f, 0.0375f, 0.0375f, 0.0375f, 0.0375f };
         for (int i = 0; i < buildingSkins.Count; i++)
         {
             buildingsOdds.Add(buildingOddsNew[i]);
@@ -1244,21 +1335,50 @@ public class main : MonoBehaviour
         }
     }
 
-    private void setbuildingFrontOdds()
+    private void setFrontBuildingOdds()
     {
-        float[] buildingFrontOddsNew = { 0.3f, 0.3f, 0.4f};
+        float[] buildingFrontOddsNew = { 0.0875f, 0.0875f, 0.0875f, 0.0875f, 0.15f, 0.15f, 0.05f, 0.05f, 0.05f, 0.075f, 0.075f, 0.025f, 0.025f };
         for (int i = 0; i < buildingFrontSkins.Count; i++)
         {
             buildingsFrontOdds.Add(buildingFrontOddsNew[i]);
             buildingsFrontCurrOdds.Add(buildingFrontOddsNew[i]);
         }
+
+        float[] billboardFrontOddsNew = { 0.3f, 0.4f, 0.3f };
+        for (int i = 0; i < frontBillboardSkins.Count; i++)
+        {
+            frontBillboardOdds.Add(billboardFrontOddsNew[i]);
+            frontBillboardCurrOdds.Add(billboardFrontOddsNew[i]);
+        }
+    }
+
+    private void setFarBuildingOdds()
+    {
+        float[] farBuildingOddsNew = { 0.2f, 0.2f, 0.2f, 0.1f, 0.1f, 0.025f, 0.025f, 0.025f, 0.025f, 0.05f, 0.05f };
+        for (int i = 0; i < farBuildingSkins.Count; i++)
+        {
+            farBuildingsOdds.Add(farBuildingOddsNew[i]);
+            farBuildingsCurrOdds.Add(farBuildingOddsNew[i]);
+        }
+    }
+
+    private void setSkylineOdds()
+    {
+        float[] skylineOddsNew = { 0.35f, 0.3f, 0.35f };
+        for (int i = 0; i < skylineSkins.Count; i++)
+        {
+            skylineOdds.Add(skylineOddsNew[i]);
+            skylineCurrOdds.Add(skylineOddsNew[i]);
+        }
     }
 
     private void changeOdds(int index, List<float> setList, List<float> currentList)
     {
-        for(int i = 0; i < setList.Count; i++)
+        float diff = currentList[index] - (setList[index]/2);
+        float listDiff = (diff * setList[index]) / (setList.Count - 1.0f);
+        for (int i = 0; i < setList.Count; i++)
         {
-            currentList[i] += setList[i] / 3;
+            currentList[i] += (diff * setList[i]) + listDiff; //this took me way to fucking long to figue out
         }
 
         currentList[index] = setList[index] / 2;

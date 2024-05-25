@@ -9,6 +9,6 @@ public class pickup_car : cars
         blinkTime = 8;
         speedMin = 9;
         speedMax = 12;
-        odds = 0.10f;
+        odds = 0.15f;
     }
 }

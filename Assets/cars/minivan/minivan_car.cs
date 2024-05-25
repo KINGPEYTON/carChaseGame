@@ -9,6 +9,6 @@ public class minivan_car : cars
         blinkTime = 20;
         speedMin = 10;
         speedMax = 14;
-        odds = 0.15f;
+        odds = 0.2f;
     }
 }

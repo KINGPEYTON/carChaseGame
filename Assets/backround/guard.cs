@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class guard : MonoBehaviour
 {
@@ -12,6 +11,7 @@ public class guard : MonoBehaviour
     void Start()
     {
         controller = GameObject.Find("contoller");
+        Update();
     }
 
     // Update is called once per frame

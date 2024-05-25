@@ -8,6 +8,8 @@ public class sideBar : MonoBehaviour
     public float speed;
     public bool movingOut;
 
+    public Transform lastGuard;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +24,17 @@ public class sideBar : MonoBehaviour
             transform.position = transform.position - new Vector3(Time.deltaTime / speed * controller.GetComponent<main>().mph, 0, 0); //moves guard across the screen
         } else if (movingOut)
         {
-            transform.position = transform.position - new Vector3(Time.deltaTime / speed * controller.GetComponent<main>().mph, 0, 0); //moves guard across the screen
+            try
+            {
+                if (lastGuard.position.x < 12)
+                {
+                    transform.position = new Vector3(lastGuard.position.x - 13.75f, transform.position.y, 0); //moves guard across the screen
+                }
+            }
+            catch
+            {
+                transform.position = transform.position - new Vector3(Time.deltaTime / speed * controller.GetComponent<main>().mph, 0, 0); //moves guard across the screen
+            }
             if (transform.position.x <= -33) //checks if its offscreen
             {
                 Destroy(gameObject);

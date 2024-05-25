@@ -9,6 +9,6 @@ public class suv_car : cars
         blinkTime = 15;
         speedMin = 11;
         speedMax = 16;
-        odds = 0.2f;
+        odds = 0.25f;
     }
 }

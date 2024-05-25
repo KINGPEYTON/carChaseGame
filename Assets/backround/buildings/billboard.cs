@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class billboard : buildings
 {
+    public bool isBigBillboard;
+    public GameObject gameOverOBJ;
 
     public Sprite ad;
     public float adTimer;
@@ -15,22 +17,20 @@ public class billboard : buildings
     public float staticTimer;
     public AudioClip staticSound;
 
+    public Sprite skinCurr;
+
     // Start is called before the first frame update
 
-    public override void Start()
+    public override void moreStart()
     {
-        base.Start();
-
         setAd();
         adTimer = Random.Range(2, 28);
 
         staticTimer = 0f;
     }
 
-    public override void Update()
+    public override void moreUpdate()
     {
-        base.Update();
-
         adTimer -= Time.deltaTime;
         staticTimer -= Time.deltaTime;
 
@@ -50,6 +50,12 @@ public class billboard : buildings
         {
             adOBJ.GetComponent<SpriteRenderer>().sprite = ad;
         }
+    }
+
+    public override void setSkin(Sprite skin)
+    {
+        base.setSkin(skin);
+        skinCurr = skin;
     }
 
     void setAd()

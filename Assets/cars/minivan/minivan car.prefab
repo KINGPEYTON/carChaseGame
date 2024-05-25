@@ -124,7 +124,7 @@ MonoBehaviour:
   blinkTime: 0
   speedMin: 0
   speedMax: 0
-  odds: 0.15
+  odds: 0.2
   horn: {fileID: 8300000, guid: 41aa6e7c505cf4878856b364c1e705c3, type: 3}
 --- !u!61 &4097127957120550973
 BoxCollider2D:

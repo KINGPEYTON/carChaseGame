@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 6661285107212592466}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9, y: 1.36, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.11, y: 0.11, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -74,12 +74,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -22
-  m_Sprite: {fileID: 21300000, guid: d9730677c25cb43bea5eead19a6e7a90, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 672dd0bcda4094d12b6a761af6483e2e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3.12, y: 6.5}
+  m_Size: {x: 24.49, y: 36.690212}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -98,10 +98,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
-  isBillboard: 0
-  isBigBillboard: 0
-  skins:
-  - {fileID: 21300000, guid: d9730677c25cb43bea5eead19a6e7a90, type: 3}
-  - {fileID: 21300000, guid: 8713c3bdcdbc044ad9159d23733943e1, type: 3}
-  - {fileID: 21300000, guid: 0d26f7c165797424e96397ba544e9716, type: 3}
   speed: 8

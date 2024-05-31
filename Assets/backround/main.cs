@@ -51,7 +51,10 @@ public class main : MonoBehaviour
 
     public GameObject road; //road gameobject to spawn
     public GameObject roadPart; //road gameobject to spawn
-    public Sprite roadSkins;
+    public List<Sprite> roadSkins;
+    public List<Sprite> roadPartSkins;
+    public List<float> roadOdds;
+    public List<float> roadOddsCurr;
     public Transform roadLast;
     public float roadDist = 2.0f;
 
@@ -226,7 +229,7 @@ public class main : MonoBehaviour
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
 
-        //topLaneTimer = Random.Range(500, 3000);
+        topLaneTimer = Random.Range(500, 3000);
         areaTimer = Random.Range(500, 2000);
 
         bigPlaneTimer = Random.Range(15, 65);
@@ -234,6 +237,7 @@ public class main : MonoBehaviour
         menuSound.clip = menuAmbience;
         menuSound.Play();
 
+        setRoadOdds();
         setCarOdds(carsOdds, carsCurrOdds, carsList);
         setCarOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList);
         setCarOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList);
@@ -263,10 +267,6 @@ public class main : MonoBehaviour
             }
 
             score += (mph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
-
-            //make road elements
-            spawnroad();
-            spawnGuard();
 
             //make backround elements
             if (areaEvent == 0)
@@ -302,6 +302,10 @@ public class main : MonoBehaviour
                 swipeTutorial();
             }
             updateBillbord();
+
+            //make road elements
+            spawnroad();
+            spawnGuard();
 
             //set blimp text
             blimpText();
@@ -357,29 +361,33 @@ public class main : MonoBehaviour
             if (roadLast.position.x < 11)
             {
                 //spawns a new yellow lane road for each lane
-                Transform newRoad;
-                if (topLane && topLaneTime <=0)
+                buildings newRoad;
+                if (topLane && topLaneTime <= 0)
                 {
-                    newRoad = Instantiate(road, new Vector3(roadLast.position.x + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).transform;
+                    newRoad = Instantiate(road, new Vector3(roadLast.position.x + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).GetComponent<buildings>();
+                    newRoad.setSkin(getbuildingFromOdds(roadOdds, roadOddsCurr, roadSkins));
                 }
                 else
                 {
-                    newRoad = Instantiate(roadPart, new Vector3(roadLast.position.x + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).transform;
+                    newRoad = Instantiate(roadPart, new Vector3(roadLast.position.x + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).GetComponent<buildings>();
+                    newRoad.setSkin(getbuildingFromOdds(roadOdds, roadOddsCurr, roadPartSkins));
                 }
-                roadLast = newRoad;
+                roadLast = newRoad.gameObject.transform;
             }
         }
         catch {
-            Transform newRoad;
+            buildings newRoad;
             if (topLane)
             {
-                newRoad = Instantiate(road, new Vector3(12+ roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).transform;
+                newRoad = Instantiate(road, new Vector3(12+ roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).GetComponent<buildings>();
+                newRoad.setSkin(getbuildingFromOdds(roadOdds, roadOddsCurr, roadSkins));
             }
             else
             {
-                newRoad = Instantiate(roadPart, new Vector3(12 + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).transform;
+                newRoad = Instantiate(roadPart, new Vector3(12 + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).GetComponent<buildings>();
+                newRoad.setSkin(getbuildingFromOdds(roadOdds, roadOddsCurr, roadPartSkins));
             }
-            roadLast = newRoad;
+            roadLast = newRoad.gameObject.transform;
         }
     }
 
@@ -638,7 +646,7 @@ public class main : MonoBehaviour
                 if (topLaneTime <= 0)
                 {
                     Instantiate(exitLine, new Vector3(guardLast.position.x + 8.85f, 0.225f, 0), Quaternion.identity, GameObject.Find("roads").transform);
-                    Instantiate(mergeText, new Vector3(guardLast.position.x + 4.0f, 0.55f, 0), Quaternion.identity, GameObject.Find("roads").transform);
+                    Instantiate(exitText, new Vector3(guardLast.position.x + 4.0f, 0.55f, 0), Quaternion.identity, GameObject.Find("roads").transform);
                     Instantiate(guard2, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(guard, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(guard2, new Vector3(guardLast.position.x + guardDist + 3.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
@@ -692,6 +700,9 @@ public class main : MonoBehaviour
                     Instantiate(mergeLine, new Vector3(lastGuard.position.x + 10.35f, 0.225f, 0), Quaternion.identity, GameObject.Find("roads").transform);
                     Instantiate(yelloBarrel, new Vector3(lastGuard.position.x + 1.7f, 0.4f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(mergeText, new Vector3(lastGuard.position.x + 16.25f, 0.55f, 0), Quaternion.identity, GameObject.Find("roads").transform);
+                    buildings newRoad = Instantiate(roadPart, new Vector3(roadLast.position.x + roadDist, -4.35f, 0), Quaternion.identity, GameObject.Find("roads").transform).GetComponent<buildings>();
+                    newRoad.setSkin(getbuildingFromOdds(roadOdds, roadOddsCurr, roadPartSkins));
+                    roadLast = newRoad.gameObject.transform;
                     Transform newLine = Instantiate(topLaneWhiteLine, new Vector3(lastGuard.position.x + 15.85f, 0, 0), Quaternion.identity).transform;
                     topLaneLineLast = newLine;
                     exitCount = 0;
@@ -740,7 +751,7 @@ public class main : MonoBehaviour
     void changeArea()
     {
 
-        if (!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3) && topLane) { areaTimer -= Time.deltaTime * mph; }
+        if ((!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3)) && topLane) { areaTimer -= Time.deltaTime * mph; }
         if (areaTimer <= 0  && (topLane && topLaneTime <= 0))
         {
             if (areaEvent == 0 && buildingFrontList == 1) { areaEvent = 1; } else if (areaEvent == 1 && buildingFrontList == 0) { areaEvent = 0;  }
@@ -1369,6 +1380,16 @@ public class main : MonoBehaviour
         {
             skylineOdds.Add(skylineOddsNew[i]);
             skylineCurrOdds.Add(skylineOddsNew[i]);
+        }
+    }
+
+    private void setRoadOdds()
+    {
+        float[] roadOddsNew = { 0.25f, 0.3f, 0.25f, 0.2f};
+        for (int i = 0; i < roadSkins.Count; i++)
+        {
+            roadOdds.Add(roadOddsNew[i]);
+            roadOddsCurr.Add(roadOddsNew[i]);
         }
     }
 

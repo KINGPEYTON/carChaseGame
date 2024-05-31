@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4375731346093529532}
   - component: {fileID: 4498668074172425153}
-  - component: {fileID: 392667412359390829}
+  - component: {fileID: 4703873317813250227}
   m_Layer: 0
   m_Name: road
   m_TagString: Untagged
@@ -74,18 +74,18 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -9
-  m_Sprite: {fileID: 21300000, guid: 41032220916e64710ad8ae5b5168cdc3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fb39ac2a21b7441d1ab01fcacacefbc1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 9.38, y: 18.71}
+  m_Size: {x: 7.56, y: 18.7}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &392667412359390829
+--- !u!114 &4703873317813250227
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2489115830525154670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8fa1efa0917548c09ecb9a6d3a2b8a6, type: 3}
+  m_Script: {fileID: 11500000, guid: a27640818470c4daaafe0cbf0c4eccc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}

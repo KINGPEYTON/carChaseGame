@@ -19,14 +19,15 @@ public class manhole : MonoBehaviour
 
         if (manholeVal == 0)
         {
-            smoke.emissionRate = Random.Range(5, 40);
-            smoke.startLifetime = Random.Range(0.15f, 0.55f);
+            smoke.emissionRate = Random.Range(20, 60);
+            smoke.startLifetime = Random.Range(0.35f, 0.85f);
             smoke.startSpeed = Random.Range(2, 6);
+            smoke.gameObject.transform.localPosition += new Vector3(0, 1.4f, 0);
         }
         else
         {
-            smoke.emissionRate = Random.Range(30, 80);
-            smoke.startLifetime = Random.Range(0.45f, 0.75f);
+            smoke.emissionRate = Random.Range(50, 100);
+            smoke.startLifetime = Random.Range(0.75f, 1.15f);
             smoke.startSpeed = Random.Range(5, 10);
         }
     }

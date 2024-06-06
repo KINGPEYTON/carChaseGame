@@ -64,7 +64,7 @@ public class tutorialHand : MonoBehaviour
         bounceX = x;
         bounceY = y;
         transform.eulerAngles = new Vector3(0, 0, rotation);
-        speedX = 2;
-        speedY = 2;
+        speedX = sX;
+        speedY = sY;
     }
 }

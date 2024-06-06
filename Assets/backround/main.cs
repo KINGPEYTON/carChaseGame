@@ -1289,7 +1289,10 @@ public class main : MonoBehaviour
         PlayerPrefs.SetInt("coins", totalCoins); //saves the total coins
     }
 
-    
+    public void collectPowerUp(int id)
+    {
+
+    }
 
     public void changeMasterVol(float newVol)
     {

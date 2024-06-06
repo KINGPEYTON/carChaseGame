@@ -353,49 +353,79 @@ public class playerCar : MonoBehaviour
     {
         if (controller.playing)
         {
-            if (collision.tag == "car")
+            switch (collision.tag)
             {
-                collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
-                controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
-                if (collision.transform.position.y < transform.position.y)
-                {
-                    changeOrder(-1);
-                    controller.bannedLanes.Add(collision.GetComponent<cars>().lane-1);
-                    AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
-                }
-                else if (collision.transform.position.y > transform.position.y)
-                {
-                    changeOrder(1);
-                    controller.bannedLanes.Add(collision.GetComponent<cars>().lane+1);
-                    AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
-                }
-                crash(); //what happens when the player crashes
+                case "car":
+                    hitCar(collision);
+                    break;
+                case "barrier":
+                    hitBarrier(collision);
+                    break;
+                case "coin":
+                    hitCoin(collision);
+                    break;
+                case "smoke":
+                    hitSmoke(collision);
+                    break;
+                case "power-up":
+                    hitPowerUp(collision);
+                    break;
             }
-            else if (collision.tag == "barrier")
-            {
-                laneDown(1);
-            }
-            else if (collision.tag == "coin")
-            {
-                if (!collision.GetComponent<coins>().collected)
-                {
-                    collision.GetComponent<coins>().pickup();
-                }
-            }
-            else if (collision.tag == "smoke")
-            {
-                float smokeLevel = collision.GetComponent<manhole>().getSmokeValue() * smokeMulitplyer;
-                if (smokeLevel > 500)
-                {
-                    smokeLevel = 500;
-                }
+        }
+    }
 
-                if (controller.screenDistortTarget < smokeLevel/500)
-                {
-                    
-                    controller.screenDistortTarget = smokeLevel / 500;
-                }
-            }
+    void hitCar(Collider2D collision)
+    {
+        collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
+        controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
+        if (collision.transform.position.y < transform.position.y)
+        {
+            changeOrder(-1);
+            controller.bannedLanes.Add(collision.GetComponent<cars>().lane - 1);
+            AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        }
+        else if (collision.transform.position.y > transform.position.y)
+        {
+            changeOrder(1);
+            controller.bannedLanes.Add(collision.GetComponent<cars>().lane + 1);
+            AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        }
+        crash(); //what happens when the player crashes
+    }
+
+    void hitBarrier(Collider2D collision)
+    {
+        laneDown(1);
+    }
+
+    void hitCoin(Collider2D collision)
+    {
+        if (!collision.GetComponent<coins>().collected)
+        {
+            collision.GetComponent<coins>().pickup();
+        }
+    }
+
+    void hitSmoke(Collider2D collision)
+    {
+        float smokeLevel = collision.GetComponent<manhole>().getSmokeValue() * smokeMulitplyer;
+        if (smokeLevel > 500)
+        {
+            smokeLevel = 500;
+        }
+
+        if (controller.screenDistortTarget < smokeLevel / 500)
+        {
+
+            controller.screenDistortTarget = smokeLevel / 500;
+        }
+    }
+
+    void hitPowerUp(Collider2D collision)
+    {
+        if (!collision.GetComponent<powerUp>().popped)
+        {
+            collision.GetComponent<powerUp>().collect();
         }
     }
 

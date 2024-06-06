@@ -20,6 +20,7 @@ public class shopBillboard : MonoBehaviour
     public GameObject areYouSureToCreate;
     public Transform sideTransform;
     public GameObject signs;
+    public GameObject speedUI;
     public GameObject playerDisplay;
 
     public float targetZoom;
@@ -262,6 +263,12 @@ public class shopBillboard : MonoBehaviour
         }
     }
 
+    void setMenuUI(bool val)
+    {
+        signs.SetActive(val);
+        speedUI.SetActive(val);
+    }
+
     public void shopButtonFunc(float speed)
     {
         if (!controller.playing)
@@ -277,9 +284,8 @@ public class shopBillboard : MonoBehaviour
             targetZoom = 1.55f;
             zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
             buttonCoverImage.SetActive(true);
-            signs.SetActive(false);
             playerDisplay.SetActive(false);
-
+            setMenuUI(false);
             statics.SetActive(true);
             staticTimer = 1f;
             inStatic = true;
@@ -305,7 +311,7 @@ public class shopBillboard : MonoBehaviour
         targetZoom = 5;
         zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
         buttonCoverImage.SetActive(false);
-        signs.SetActive(true);
+        setMenuUI(true);
         playerDisplay.SetActive(false);
 
         statics.SetActive(true);

@@ -8,6 +8,7 @@ TagManager:
   - coin
   - barrier
   - smoke
+  - power-up
   layers:
   - Default
   - TransparentFX

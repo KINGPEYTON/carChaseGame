@@ -419,13 +419,15 @@ MonoBehaviour:
   blinkTime: 0
   speedMin: 0
   speedMax: 0
-  odds: 0
+  odds: 0.7
   horn: {fileID: 0}
   playerCarOBJ: {fileID: 0}
   chasingPlayer: 0
   crashed: 0
   crash: {fileID: 8300000, guid: 7beda4447c72246df995b524a1358bb4, type: 3}
   siren: {fileID: 5335798434806762981}
+  chasingVan: 0
+  vanOBJ: {fileID: 0}
 --- !u!61 &5060727178146619802
 BoxCollider2D:
   m_ObjectHideFlags: 0

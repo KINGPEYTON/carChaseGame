@@ -14,6 +14,9 @@ public class powerUpIcon : MonoBehaviour
     public float targetTime;
     public float targetSize;
 
+    public int id;
+    public powerUpManager pwManage;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +25,7 @@ public class powerUpIcon : MonoBehaviour
         targetTime = 1.25f;
         targetSize = 0.35f;
         speedometer = GameObject.Find("Speedometer").transform;
+        pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
     }
 
     // Update is called once per frame
@@ -31,9 +35,7 @@ public class powerUpIcon : MonoBehaviour
 
         if (!sizeU)
         {
-            Vector3 size = new Vector3(targetSize - startSize.x, targetSize - startSize.y, 1);
-            transform.localScale = calcPos(size, startSize) ;
-            if (targetTimer > targetTime) { startSize = transform.localScale; sizeU = true; targetTimer = 0; }
+            bigIcon();
         }
         else
         {
@@ -48,6 +50,19 @@ public class powerUpIcon : MonoBehaviour
         Vector3 size = new Vector3(startSize.x / 1.5f, startSize.y / 1.5f, 1);
         transform.localScale = new Vector3(startSize.x, startSize.y, 1) - calcPos(size, new Vector3(0, 0, 0));
         if (targetTimer > targetTime) { Destroy(gameObject); }
+    }
+
+    void bigIcon()
+    {
+        Vector3 size = new Vector3(targetSize - startSize.x, targetSize - startSize.y, 1);
+        transform.localScale = calcPos(size, startSize);
+        if (targetTimer > targetTime)
+        {
+            startSize = transform.localScale;
+            sizeU = true; 
+            targetTimer = 0;
+            pwManage.collectPowerUp(id);
+        }
     }
 
     Vector3 calcPos(Vector3 dis, Vector3 startScale)

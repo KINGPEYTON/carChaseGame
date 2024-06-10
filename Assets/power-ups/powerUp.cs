@@ -78,9 +78,9 @@ public class powerUp : MonoBehaviour
     public void collect()
     {
         popped = true;
-        SpriteRenderer iconThing = Instantiate(iconOBJ, transform.position, Quaternion.identity).GetComponent<SpriteRenderer>();
-        iconThing.sprite = icon[tier];
-        controller.collectPowerUp(powerUpId);
+        GameObject iconThing = Instantiate(iconOBJ, transform.position, Quaternion.identity);
+        iconThing.GetComponent<powerUpIcon>().id = powerUpId;
+        iconThing.GetComponent<SpriteRenderer>().sprite = icon[tier];
         setPopAnimation();
     }
 

@@ -2100,6 +2100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tiers: 
+  magneticField: {fileID: 407850121985573135, guid: d6809b1a1826a7c4a82d6c9c65c6a4a3, type: 3}
+  ram: {fileID: 0}
 --- !u!4 &339186484
 Transform:
   m_ObjectHideFlags: 0

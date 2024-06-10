@@ -11,7 +11,15 @@ public class coins : MonoBehaviour
 
     public bool collected;
     public Vector3 collectedpos;
+
+    public Vector3 collectedStartSize;
+    public float collectedSize;
     public float collectedTimer;
+    public float collectedTime;
+
+    public Transform attractTarget;
+    public Vector3 attractStart;
+    public float attractTime;
 
     public AudioClip[] pickupsSFX;
     public AudioClip[] collectsSFX;
@@ -23,6 +31,9 @@ public class coins : MonoBehaviour
         speedometer = GameObject.Find("Speedometer").transform;
 
         setLane();
+        collectedTime = 1.25f;
+        collectedSize = 0.35f;
+        attractTime = 0.75f;
     }
 
     // Update is called once per frame
@@ -30,7 +41,14 @@ public class coins : MonoBehaviour
     {
         if (!collected)
         {
-            transform.position = transform.position - new Vector3(Time.deltaTime / 6 * controller.GetComponent<main>().mph, 0, 0); //moves coin across the screen
+            if (attractTarget == null)
+            {
+                transform.position = transform.position - new Vector3(Time.deltaTime / 6 * controller.GetComponent<main>().mph, 0, 0); //moves coin across the screen
+            }
+            else
+            {
+                getAttracted();
+            }
             if (transform.position.x <= -12) //checks if its offscreen
             {
                 Destroy(gameObject);
@@ -38,15 +56,14 @@ public class coins : MonoBehaviour
         }
         else
         {
-            if (collectedTimer > 1)
+            if (collectedTimer > collectedTime)
             {
                 collect();
             }
             else
             {
-                transform.position = calcCollectPos();
-                transform.localScale = calcCollectScale();
-                collectedTimer += Time.unscaledDeltaTime;
+
+                getCollected();
             }
         }
     }
@@ -57,6 +74,22 @@ public class coins : MonoBehaviour
         GetComponent<SpriteRenderer>().sortingOrder = 2 + lane;
     }
 
+    void getAttracted()
+    {
+        Vector3 dis = new Vector3(attractTarget.position.x - attractStart.x, attractTarget.position.y - attractStart.y, 0);
+        transform.position = calcPos(dis, attractStart, collectedTimer, attractTime);
+        collectedTimer += Time.deltaTime;
+    }
+
+    void getCollected()
+    {
+        Vector3 dis = new Vector3(speedometer.position.x - collectedpos.x, speedometer.position.y - collectedpos.y, 0);
+        transform.position = calcPos(dis, collectedpos, collectedTimer, collectedTime);
+        Vector3 size = new Vector3(collectedSize - collectedStartSize.x, collectedSize - collectedStartSize.y, 1);
+        transform.localScale = calcPos(size, collectedStartSize, collectedTimer, collectedTime);
+        collectedTimer += Time.deltaTime;
+    }
+
     void collect()
     {
         controller.collectCoin(value);
@@ -64,21 +97,39 @@ public class coins : MonoBehaviour
         Destroy(gameObject);
     }
 
-    Vector3 calcCollectPos()
+    Vector3 calcPos(Vector3 dis, Vector3 startScale, float targetTimer, float targetTime)
     {
-        return new Vector3(speedometer.position.x + ((collectedpos.x - speedometer.position.x) * (1 - collectedTimer)), speedometer.position.y + ((collectedpos.y - speedometer.position.y) * (1 - collectedTimer)), 0);
+        float scaledTimer = getValueRanged(targetTimer, 0, targetTime);
+        float xVal = getValueScale(targetTimer, 0, targetTime, dis.x);
+        float yVal = getValueScale(targetTimer, 0, targetTime, dis.y);
+        return new Vector3(xVal, yVal, 0) + startScale;
     }
 
-    Vector3 calcCollectScale()
+    float getValueScale(float val, float min, float max, float scale)
     {
-        return new Vector3((1.5f - (collectedTimer * 1.5f)) + 0.5f, (1.5f - (collectedTimer * 1.5f)) + 0.5f, 0);
+        return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
+    }
+
+    float getValueRanged(float val, float min, float max)
+    {
+        float newVal = val;
+        if (newVal > max) { newVal = max; } else if (val < min) { newVal = min; }
+        return newVal;
     }
 
     public void pickup()
     {
         collected = true;
         collectedpos = transform.position;
+        collectedStartSize = transform.localScale;
+        collectedTimer = 0;
         AudioSource.PlayClipAtPoint(pickupsSFX[Random.Range(0, pickupsSFX.Length - 1)], new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         GetComponent<SpriteRenderer>().sortingOrder = 55;
+    }
+
+    public void attract(Transform attTarget)
+    {
+        attractTarget = attTarget;
+        attractStart = transform.position;
     }
 }

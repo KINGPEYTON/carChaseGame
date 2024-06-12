@@ -6,8 +6,10 @@ public class coins : MonoBehaviour
 {
     public main controller;
     public Transform speedometer;
+    public Animator ani;
 
     public int value;
+    public bool isHolo;
 
     public bool collected;
     public Vector3 collectedpos;
@@ -21,6 +23,13 @@ public class coins : MonoBehaviour
     public Vector3 attractStart;
     public float attractTime;
 
+
+    public bool makingHolo;
+    public bool makingNormal;
+    public float transitionTimer;
+    public float startSize;
+    public float targetBigSize;
+
     public AudioClip[] pickupsSFX;
     public AudioClip[] collectsSFX;
 
@@ -29,11 +38,24 @@ public class coins : MonoBehaviour
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
         speedometer = GameObject.Find("Speedometer").transform;
+        ani = GetComponent<Animator>();
 
+        controller.coinList.Add(gameObject);
         setLane();
         collectedTime = 1.25f;
         collectedSize = 0.35f;
         attractTime = 0.75f;
+
+        startSize = 2;
+        targetBigSize = 3.25f;
+
+        if (isHolo)
+        {
+            ani.Play("holoCoin");
+        } else if (controller.isBigCoinhuna)
+        {
+            makeHolo();
+        }
     }
 
     // Update is called once per frame
@@ -51,8 +73,11 @@ public class coins : MonoBehaviour
             }
             if (transform.position.x <= -12) //checks if its offscreen
             {
+                controller.coinList.Remove(gameObject);
                 Destroy(gameObject);
             }
+
+            if(makingHolo || makingNormal) { transitionAnimation(); }
         }
         else
         {
@@ -94,6 +119,7 @@ public class coins : MonoBehaviour
     {
         controller.collectCoin(value);
         AudioSource.PlayClipAtPoint(collectsSFX[Random.Range(0, collectsSFX.Length - 1)], new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        controller.coinList.Remove(gameObject);
         Destroy(gameObject);
     }
 
@@ -131,5 +157,50 @@ public class coins : MonoBehaviour
     {
         attractTarget = attTarget;
         attractStart = transform.position;
+    }
+
+    public void makeHolo()
+    {
+        ani.Play("holoCoin", 0, ani.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        value = 2;
+
+    }
+
+    public void makeNormal()
+    {
+        ani.Play("coin", 0, ani.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        value = 1;
+    }
+
+    void transitionAnimation() {
+        if (transitionTimer < 0.35f)
+        {
+            Vector3 size = new Vector3(targetBigSize - startSize, targetBigSize - startSize, 1);
+            transform.localScale = calcPos(size, new Vector3(startSize, startSize, 1), transitionTimer, 1);
+            transitionTimer += Time.deltaTime;
+            if(transitionTimer > 0.35f)
+            {
+                if (makingHolo)
+                {
+                    makeHolo();
+                }
+                else
+                {
+                    makeNormal();
+                }
+            }
+        }
+        else
+        {
+            Vector3 size = new Vector3(startSize - targetBigSize, startSize - targetBigSize, 1);
+            transform.localScale = calcPos(size, new Vector3(targetBigSize, targetBigSize, 1), transitionTimer, 1);
+            transitionTimer += Time.deltaTime;
+            if(transitionTimer > 0.7f)
+            {
+                transform.localScale = new Vector3(startSize, startSize, 1);
+                makingHolo = false;
+                makingNormal = false;
+            }
+        }
     }
 }

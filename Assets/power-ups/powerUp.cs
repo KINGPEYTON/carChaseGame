@@ -8,6 +8,7 @@ public class powerUp : MonoBehaviour
     public int typeID;
 
     public main controller;
+    public powerUpManager pwManager;
     public Animator popAni;
     public float speed;
 
@@ -28,9 +29,11 @@ public class powerUp : MonoBehaviour
     {
         startPoint = transform.position.y;
         controller = GameObject.Find("contoller").GetComponent<main>();
+        pwManager = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
         popAni = GetComponent<Animator>();
         popAni.enabled = false;
         speed = 7.5f;
+        GetComponent<SpriteRenderer>().sprite = tierSkins[tier];
     }
 
     // Update is called once per frame
@@ -82,6 +85,11 @@ public class powerUp : MonoBehaviour
         iconThing.GetComponent<powerUpIcon>().id = powerUpId;
         iconThing.GetComponent<SpriteRenderer>().sprite = icon[tier];
         setPopAnimation();
+    }
+
+    public void setID(int id)
+    {
+
     }
 
     void setPopAnimation()

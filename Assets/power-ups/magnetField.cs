@@ -7,6 +7,7 @@ public class magnetField : MonoBehaviour
     public float lifetime;
     public Transform carPoint;
     public float sizeScale;
+    public bool getHolo;
 
     public Transform tr;
     public float rayTimer;
@@ -31,7 +32,7 @@ public class magnetField : MonoBehaviour
         rayTimer += Time.deltaTime;
         if(rayTimer > rayTime && lifetime > rayTime)
         {
-            magnetRay newRay = Instantiate(ray, carPoint.position, Quaternion.identity, transform).GetComponent<magnetRay>();
+            magnetRay newRay = Instantiate(ray, carPoint.position, Quaternion.identity, carPoint).GetComponent<magnetRay>();
             newRay.sizeScale = tr.localScale.x;
             rayTimer = 0;
         }
@@ -47,7 +48,10 @@ public class magnetField : MonoBehaviour
         if (collision.tag == "coin")
         {
             coins hitCoin = collision.GetComponent<coins>();
-            hitCoin.attract(carPoint);
+            if (getHolo || !hitCoin.isHolo)
+            {
+                hitCoin.attract(carPoint);
+            }
         }
     }
 }

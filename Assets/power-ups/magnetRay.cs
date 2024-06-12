@@ -19,7 +19,7 @@ public class magnetRay : MonoBehaviour
     {
         sr = GetComponent<SpriteRenderer>();
         tr = gameObject.transform;
-        grayColor = 210;
+        grayColor = 180;
         lifetime = 2.5f;
 
         tr.localScale = new Vector3(sizeScale, sizeScale, 1);

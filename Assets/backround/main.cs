@@ -34,6 +34,10 @@ public class main : MonoBehaviour
     public GameObject[] coin; //coin gameobject to 
     public GameObject[] coin2; //coin gameobject to spawn
     public float coinTimer; //
+    public List<GameObject> coinList;
+
+    public float coinSpawnMultiplier;
+    public bool isBigCoinhuna;
 
     public GameObject pauseMenu;
 
@@ -1049,7 +1053,7 @@ public class main : MonoBehaviour
 
     void spawnCoin()
     {
-        coinTimer += Time.deltaTime * mph;
+        coinTimer += Time.deltaTime * coinSpawnMultiplier * mph;
         if (coinTimer > 350)
         {
             if (topLane)
@@ -1287,6 +1291,28 @@ public class main : MonoBehaviour
         coins += ammount;
         totalCoins += ammount;
         PlayerPrefs.SetInt("coins", totalCoins); //saves the total coins
+    }
+
+    public void makeCoinsHolo()
+    {
+        foreach (GameObject c in coinList)
+        {
+            c.GetComponent<coins>().makingHolo = true;
+        }
+    }
+
+    public void endCoinhuna()
+    {
+        isBigCoinhuna = false;
+        foreach (GameObject co in coinList)
+        {
+            coins c = co.GetComponent<coins>();
+            if (!c.isHolo)
+            {
+                c.makingNormal = true;
+            }
+        }
+        coinSpawnMultiplier = 1;
     }
 
     public void changeMasterVol(float newVol)

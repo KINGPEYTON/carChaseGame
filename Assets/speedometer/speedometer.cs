@@ -24,6 +24,16 @@ public class speedometer : MonoBehaviour
     public TextMeshProUGUI speed6;
     public TextMeshProUGUI speed7;
 
+    public Image powerUpIcon;
+    public TextMeshProUGUI powerUpUseText;
+    public int powerUpStartUses;
+    public int powerUpUses;
+
+    public bool powerupActive;
+    public bool powerupIsTimed;
+    public float powerUpTimer;
+    public float iconHueTimer;
+
     public float endTextTimer;
 
     public float coinTextTimer;
@@ -46,21 +56,7 @@ public class speedometer : MonoBehaviour
     {
         if (controller.playing)
         {
-            if (controller.mph < maxSpeed)
-            {
-                speedMeter.fillAmount = 0.11f + ((controller.mph/maxSpeed) * 0.78f);
-                speedText.text = ((int)controller.mph).ToString();
-            }
-            else if (controller.mph < maxSpeed + 127)
-            {
-                speedMeter.fillAmount = 1;
-                speedMeter.color = new Color32((byte)(255 - (controller.mph - maxSpeed)*2), 0, 0, 200);
-                speedText.text = ((int)controller.mph).ToString();
-            }
-            else
-            {
-                speedText.text = "WTF";
-            }
+            mphText();
 
             if (coinTextTimer < 1.5)
             {
@@ -74,20 +70,68 @@ public class speedometer : MonoBehaviour
         }
         else if (controller.isOver)
         {
-            if (endTextTimer > 0.25f)
-            {
-                speedText.text = randomChar();
-                endTextTimer = 0;
-            }
-            endTextTimer += Time.deltaTime;
-            coinText.text = controller.coins.ToString();
-            smoke.enableEmission = true;
+            endSmoke();
         }
         else
         {
             speedText.text = "---";
             coinText.text = controller.totalCoins.ToString();
         }
+        setSpeedText();
+
+        if (powerupActive)
+        {
+            startFade();
+            if (powerupIsTimed)
+            {
+                powerUpTimer -= Time.deltaTime;
+                if ((int)powerUpTimer + 1 < powerUpUses)
+                {
+                    usePowerUp(1);
+                }
+            }
+        }
+        else if (iconHueTimer < 1)
+        {
+            if (powerUpIcon.color.a > getValueScale(1 - iconHueTimer, 0, 1, 200))
+            {
+                fadePowerUp(getValueScale(1 - iconHueTimer, 0, 1, 200));
+            }
+            powerUpUseText.color = new Color32(32, 217, 255, (byte)getValueScale(1 - iconHueTimer, 0, 1, 200));
+
+            iconHueTimer += Time.deltaTime;
+            if (iconHueTimer > 1)
+            {
+                fadePowerUp(0);
+                powerUpUseText.color = new Color32(32, 217, 255, 0);
+            }
+        }
+    }
+
+    public void startPowerup(float uses, Sprite icon, bool isTimed)
+    {
+        powerUpIcon.sprite = icon;
+        powerupIsTimed = isTimed;
+        powerUpTimer = uses;
+        powerUpUses = (int)uses;
+        powerUpStartUses = (int)uses;
+        iconHueTimer = 0;
+        powerupActive = true;
+    }
+
+    public void usePowerUp(int uses)
+    {
+        powerUpUses -= uses;
+        if(powerUpUses < 0) { powerUpUses = 0; }
+        powerUpUseText.text = powerUpUses.ToString();
+        if (powerUpUses == 0)
+        {
+            finishPowerup();
+        }
+    }
+
+    void setSpeedText()
+    {
         speed1.text = (Mathf.Round(((int)((maxSpeed / 7) * 0.5f)) / 5) * 5).ToString();
         speed2.text = (Mathf.Round(((int)((maxSpeed / 7) * 1.5f)) / 5) * 5).ToString();
         speed3.text = (Mathf.Round(((int)((maxSpeed / 7) * 2.5f)) / 5) * 5).ToString();
@@ -97,11 +141,83 @@ public class speedometer : MonoBehaviour
         speed7.text = (Mathf.Round(((int)((maxSpeed / 7) * 6.5f)) / 5) * 5).ToString();
     }
 
+    void endSmoke()
+    {
+        if (endTextTimer > 0.25f)
+        {
+            speedText.text = randomChar();
+            endTextTimer = 0;
+        }
+        endTextTimer += Time.deltaTime;
+        coinText.text = controller.coins.ToString();
+        smoke.enableEmission = true;
+    }
+
+    void mphText()
+    {
+        if (controller.mph < maxSpeed)
+        {
+            speedMeter.fillAmount = 0.11f + ((controller.mph / maxSpeed) * 0.78f);
+            speedText.text = ((int)controller.mph).ToString();
+        }
+        else if (controller.mph < maxSpeed * 2)
+        {
+            speedMeter.fillAmount = 1;
+            speedMeter.color = new Color32((byte)(255 - (controller.mph - maxSpeed) * 2), 0, 0, 200);
+            speedText.text = ((int)controller.mph).ToString();
+        }
+        else
+        {
+            speedText.text = "WTF";
+        }
+    }
+
+    void fadePowerUp(float value)
+    {
+        powerUpIcon.color = new Color32(255, 255, 255, (byte)value);
+    }
+
+    void startFade()
+    {
+        if (powerUpUses * 1.0f / powerUpStartUses < 0.28f || powerUpUses == 1)
+        {
+            iconHueTimer += Time.deltaTime;
+            fadePowerUp(getValueScale(Mathf.Abs((iconHueTimer % 2) - 1), 0, 1, 200));
+        }
+        else
+        {
+            if (iconHueTimer < 2)
+            {
+                fadePowerUp(getValueScale(iconHueTimer, 0, 2, 200));
+                powerUpUseText.color = new Color32(32, 217, 255, (byte)getValueScale(iconHueTimer, 0, 2, 200));
+                iconHueTimer += Time.deltaTime;
+                if(iconHueTimer > 2)
+                {
+                    fadePowerUp(200);
+                    powerUpUseText.color = new Color32(32, 217, 255, 200);
+                }
+            }
+        }
+        
+    }
+
     string randomChar()
     {
         char one = (char)Random.Range(33, 64);
         char two = (char)Random.Range(33, 64);
         char three = (char)Random.Range(33, 64);
         return one + "" + two + "" + three;
+    }
+
+    float getValueScale(float val, float min, float max, float scale)
+    {
+        return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
+    }
+
+    void finishPowerup()
+    {
+        powerupActive = false;
+        iconHueTimer = 0;
+        powerUpTimer = 0;
     }
 }

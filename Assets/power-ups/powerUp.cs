@@ -33,6 +33,8 @@ public class powerUp : MonoBehaviour
         popAni = GetComponent<Animator>();
         popAni.enabled = false;
         speed = 7.5f;
+
+        //tier = pwManager.tiers[powerUpId];
         GetComponent<SpriteRenderer>().sprite = tierSkins[tier];
     }
 
@@ -85,11 +87,6 @@ public class powerUp : MonoBehaviour
         iconThing.GetComponent<powerUpIcon>().id = powerUpId;
         iconThing.GetComponent<SpriteRenderer>().sprite = icon[tier];
         setPopAnimation();
-    }
-
-    public void setID(int id)
-    {
-
     }
 
     void setPopAnimation()

@@ -122,6 +122,12 @@ MonoBehaviour:
   speedMax: 0
   odds: 0.1
   horn: {fileID: 0}
+  isDestroyed: 0
+  destroyedTimer: 0
+  destroyedTime: 0
+  destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
+  carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
+  isDisabled: 0
 --- !u!61 &3019806461260716443
 BoxCollider2D:
   m_ObjectHideFlags: 0

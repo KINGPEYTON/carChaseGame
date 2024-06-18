@@ -10,6 +10,8 @@ public class main : MonoBehaviour
     public bool playing;
     public bool isOver;
     public float mph; //controls the speed of the game
+    public float scoremph; //controls the speed of the scoreIncrese
+    public bool inStartup;
     public float score;
     public float highScore;
 
@@ -133,6 +135,8 @@ public class main : MonoBehaviour
     public List<float> carsCurrOdds;
     public int carList; //how many cars have spawned since the last bus
     public float carTimer;
+    public float carTimerMultiplyer;
+    public bool isSlowdown;
     public float largeCarOdds;
     public float specalCarOdds;
 
@@ -222,10 +226,14 @@ public class main : MonoBehaviour
         isOver = false;
         scoreShowing = false;
         mph = 0; //sets inital mph
+        inStartup = true;
 
         coins = 0;
         highScore = PlayerPrefs.GetInt("highscore", 0); //sets high score to the one saved
         totalCoins = PlayerPrefs.GetInt("coins", 0); //sets high score to the one saved
+
+        carTimerMultiplyer = 1;
+        coinSpawnMultiplier = 1;
 
         largeCarOdds = 0.05f;
         specalCarOdds = 0.01f;
@@ -261,16 +269,28 @@ public class main : MonoBehaviour
     {
         if (playing) //if in a game 
         {
-            if (mph < playerCar.startMph) //checks if the game is in its starting animation
+            if (inStartup) //checks if the game is in its starting animation
             {
                 mph += (mph/2 + 15.0f) * Time.deltaTime;
+                if(mph > playerCar.startMph)
+                {
+                    inStartup = false;
+                }
             }
             else
             {
-                mph += playerCar.upMph * Time.deltaTime; //graudully increeses the mph (+1 every 2 sec)
+                if (!isSlowdown)
+                {
+                    mph += playerCar.upMph * Time.deltaTime; //graudully increeses the mph (+1 every 2 sec)
+                }
+                else
+                {
+                    mph += playerCar.upMph * Time.deltaTime * 2.5f;
+                }
+                if (mph > scoremph) { scoremph = mph; }
             }
 
-            score += (mph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
+            score += (scoremph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
 
             //make backround elements
             if (areaEvent == 0)
@@ -889,7 +909,7 @@ public class main : MonoBehaviour
 
     void spawnGameCar()
     {
-        carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
+        carTimer += (Time.deltaTime * mph) * carTimerMultiplyer; // time that spawns a new car that speeds up depending on the speed of the game (mph)
         if (carTimer > 80)
         {
             float specalCar = Random.Range(0.0f, 1.0f);

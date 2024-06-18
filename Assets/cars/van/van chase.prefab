@@ -426,6 +426,12 @@ MonoBehaviour:
   speedMax: 0
   odds: 0.05
   horn: {fileID: 8300000, guid: cc80427c3be2544579d737c7f853e313, type: 3}
+  isDestroyed: 0
+  destroyedTimer: 0
+  destroyedTime: 0
+  destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
+  carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
+  isDisabled: 0
   currSpeed: 0
   startSpeed: 0
   turningSpeed: 0
@@ -900,6 +906,12 @@ MonoBehaviour:
   speedMax: 0
   odds: 0
   horn: {fileID: 0}
+  isDestroyed: 0
+  destroyedTimer: 0
+  destroyedTime: 0
+  destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
+  carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
+  isDisabled: 0
   playerCarOBJ: {fileID: 0}
   chasingPlayer: 0
   crashed: 0

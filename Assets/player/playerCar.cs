@@ -49,6 +49,21 @@ public class playerCar : MonoBehaviour
     public AudioClip crash1;
     public AudioClip crash2;
 
+    public speedometer speedo;
+
+    public bool inTeleport;
+    public bool beginTeleport;
+    public float teleTimer;
+    public float teleTime;
+    public float teleTime2;
+    public int teleLocation;
+    public int newLane;
+    public float teleportTimer;
+    public int teleportCharges;
+    public bool affectCharge;
+    public bool destroyObstacle;
+    public GameObject teleportEffect;
+
     void OnEnable()
     {
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
@@ -60,6 +75,7 @@ public class playerCar : MonoBehaviour
     void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
+        speedo = GameObject.Find("Speedometer").GetComponent<speedometer>();
 
         startPos = -7f;
         swipeDistToDetect = 0.25f;
@@ -72,103 +88,13 @@ public class playerCar : MonoBehaviour
         if (controller.playing)
         {
             if (startPos == transform.position.x && controller.scoreShowing && controller.textNum >= 10) {
-                if (Input.touchCount > 0 && Time.timeScale > 0) // if the user touches the phone screen
+                if (inTeleport)
                 {
-                    Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
-                    if (tapped)
-                    {
-                        if (firstTapPoint < 3.0f)
-                        {
-                            if ((tapPoint.y - firstTapPoint) > swipeDistToDetect) //if the tap if above the player car
-                            {
-                                laneUp(1);
-                            }
-                            else if ((tapPoint.y - firstTapPoint) < -swipeDistToDetect) //if the tap is below the player car
-                            {
-                                laneDown(1);
-                            }/*
-                            else if (tapPoint.x < -5)
-                            {
-                                if ((Mathf.Abs(tapPoint.y - transform.position.y) > 0.25 && Mathf.Abs(tapPoint.y - transform.position.y) < 1.1) && !sliding && inPos)
-                                {
-                                    if (tapPoint.y > transform.position.y)
-                                    {
-                                        slideUp();
-                                    }
-                                    if (tapPoint.y < transform.position.y)
-                                    {
-                                        slideDown();
-                                    }
-                                }
-                            }*/
-                        }
-                        newTap = false;
-                    }
-                    else if (newTap)
-                    {
-                        tapped = true;
-                        firstTapPoint = tapPoint.y;
-                    }
-                    //Debug.Log(tapPoint.y - firstTapPoint);
-                }
-                else if (Input.touchCount == 0)
-                {
-                    tapped = false;
-                    newTap = true;
-                    if (sliding)
-                    {
-                        if(targetPos.y < firstTapPoint)
-                        {
-                            laneUp(4);
-                        } else if (targetPos.y > firstTapPoint)
-                        {
-                            laneDown(4);
-                        }
-                    }
-                }
-
-                if (sliding)
-                {
-                    slideTimer -= Time.deltaTime;
-                    if (transform.position.y != slidePos) //if player car isnt where its supose to be
-                    {
-                        transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the player towards where they need to be
-                        overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
-                        if (overshoot < 0) //checks if its past if target
-                        {
-                            transform.position = new Vector3(transform.position.x, slidePos, 0); //places player car where it should be
-                            overshoot = 0; //resets overshoot
-                        }
-                    }
-                    else
-                    {
-                        if (slideTimer < 0)
-                        {
-                            if (targetPos.y < firstTapPoint)
-                            {
-                                laneUp(3);
-                            }
-                            else if (targetPos.y > firstTapPoint)
-                            {
-                                laneDown(3);
-                            }
-                            slideTimer = 0;
-                        }
-                    }
+                    teleport();
                 }
                 else
                 {
-                    if (transform.position != targetPos) //if player car isnt where its supose to be
-                    {
-                        transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the player towards where they need to be
-                        overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
-                        if (overshoot < 0) //checks if its past if target
-                        {
-                            transform.position = targetPos; //places player car where it should be
-                            inPos = true;
-                            overshoot = 0; //resets overshoot
-                        }
-                    }
+                    slideLanes();
                 }
             } else {
                 transform.position += new Vector3(3*(moveTime) * Time.deltaTime, 0, 0);
@@ -185,6 +111,240 @@ public class playerCar : MonoBehaviour
         wheelF.transform.Rotate(0.0f, 0.0f, -Time.deltaTime * controller.mph * 10, Space.Self);
     }
 
+    void slideLanes()
+    {
+        if (Input.touchCount > 0 && Time.timeScale > 0) // if the user touches the phone screen
+        {
+            Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
+            if (tapped)
+            {
+                if (firstTapPoint < 3.0f)
+                {
+                    if ((tapPoint.y - firstTapPoint) > swipeDistToDetect) //if the tap if above the player car
+                    {
+                        laneUp(1);
+                    }
+                    else if ((tapPoint.y - firstTapPoint) < -swipeDistToDetect) //if the tap is below the player car
+                    {
+                        laneDown(1);
+                    }/*
+                            else if (tapPoint.x < -5)
+                            {
+                                if ((Mathf.Abs(tapPoint.y - transform.position.y) > 0.25 && Mathf.Abs(tapPoint.y - transform.position.y) < 1.1) && !sliding && inPos)
+                                {
+                                    if (tapPoint.y > transform.position.y)
+                                    {
+                                        slideUp();
+                                    }
+                                    if (tapPoint.y < transform.position.y)
+                                    {
+                                        slideDown();
+                                    }
+                                }
+                            }*/
+                }
+                newTap = false;
+            }
+            else if (newTap)
+            {
+                tapped = true;
+                firstTapPoint = tapPoint.y;
+            }
+            //Debug.Log(tapPoint.y - firstTapPoint);
+        }
+        else if (Input.touchCount == 0)
+        {
+            tapped = false;
+            newTap = true;
+            if (sliding)
+            {
+                if (targetPos.y < firstTapPoint)
+                {
+                    laneUp(4);
+                }
+                else if (targetPos.y > firstTapPoint)
+                {
+                    laneDown(4);
+                }
+            }
+        }
+
+        if (sliding)
+        {
+            slideTimer -= Time.deltaTime;
+            if (transform.position.y != slidePos) //if player car isnt where its supose to be
+            {
+                transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the player towards where they need to be
+                overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
+                if (overshoot < 0) //checks if its past if target
+                {
+                    transform.position = new Vector3(transform.position.x, slidePos, 0); //places player car where it should be
+                    overshoot = 0; //resets overshoot
+                }
+            }
+            else
+            {
+                if (slideTimer < 0)
+                {
+                    if (targetPos.y < firstTapPoint)
+                    {
+                        laneUp(3);
+                    }
+                    else if (targetPos.y > firstTapPoint)
+                    {
+                        laneDown(3);
+                    }
+                    slideTimer = 0;
+                }
+            }
+        }
+        else
+        {
+            if (transform.position != targetPos) //if player car isnt where its supose to be
+            {
+                transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the player towards where they need to be
+                overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
+                if (overshoot < 0) //checks if its past if target
+                {
+                    transform.position = targetPos; //places player car where it should be
+                    inPos = true;
+                    overshoot = 0; //resets overshoot
+                }
+            }
+        }
+        if (beginTeleport && inPos)
+        {
+            readyTeleport();
+        }
+    }
+
+    void teleport()
+    {
+        if (Input.touchCount > 0 && Time.timeScale > 0)
+        {
+            if (tapped)
+            {
+                if (newTap)
+                {
+                    Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
+                    if (tapPoint.x < 0 && tapPoint.y < 2)
+                    {
+                        setTeleport(findTapLane(tapPoint.y));
+                    }
+                }
+            }
+        }
+        else
+        {
+            newTap = true;
+        }
+        if (!tapped)
+        {
+            doTeleport();
+        }
+        teleportTimer += Time.deltaTime;
+        if (teleportTimer > 1)
+        {
+            useCharge();
+            teleportTimer--;
+        }
+        if(teleportCharges <= 0)
+        {
+            endTeleport();
+        }
+    }
+
+    int findTapLane(float yTap)
+    {
+        if (yTap < -3.65f)
+        {
+            return 4;
+        }
+        else if (yTap < -2.4f)
+        {
+            return 3;
+        }
+        else if (yTap < -1.15f)
+        {
+            return 2;
+        }
+        else if (yTap < 0.1)
+        {
+            return 1;
+        }
+        else 
+        {
+            return 0;
+        }
+    }
+
+    void setTeleport(int teleLane)
+    {
+        if (newLane != teleLane)
+        {
+            tapped = false;
+            newTap = false;
+            teleTimer = 0;
+            teleLocation = teleLane;
+            if (affectCharge)
+            {
+                useCharge();
+            }
+        }
+    }
+
+    void doTeleport()
+    {
+        teleTimer += Time.deltaTime;
+        if(teleTimer > teleTime && newLane != teleLocation)
+        {
+            teleportLane(teleLocation);
+        } else if (teleTimer > teleTime2)
+        {
+            tapped = true;
+        }
+    }
+
+    void endTeleport()
+    {
+        inTeleport = false;
+        beginTeleport = false;
+        tapped = true;
+    }
+
+    public void enterTeleport(int uses, bool destr, bool affect)
+    {
+        teleportCharges = uses;
+        affectCharge = affect;
+        beginTeleport = true;
+        destroyObstacle = destr;
+        teleTime = 0.15f;
+        teleTime2 = 0.25f;
+    }
+
+    void readyTeleport()
+    {
+        inTeleport = true;
+        tapped = true;
+        newLane = -(int)((transform.position.y - 0.65f) / 1.25f);
+    }
+
+    void useCharge()
+    {
+        teleportCharges--;
+        speedo.usePowerUp(1);
+    }
+
+    void teleportLane(int lane)
+    {
+        transform.position = new Vector3(startPos, (-lane * 1.25f) + 0.65f, 0);
+        body.sortingOrder = 2 + lane;
+        window.sortingOrder = 2 + lane;
+        wheelF.sortingOrder = 2 + lane;
+        wheelB.sortingOrder = 2 + lane;
+        livery.sortingOrder = 3 + lane;
+        newLane = lane;
+    }
     public void laneUp(int multiplier) //if tap is above player car
     {
         float maxLane = 0;
@@ -376,21 +536,33 @@ public class playerCar : MonoBehaviour
 
     void hitCar(Collider2D collision)
     {
-        collision.GetComponent<cars>().speed = 0; //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
-        controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
-        if (collision.transform.position.y < transform.position.y)
+        if (!inTeleport || tapped)
         {
-            changeOrder(-1);
-            controller.bannedLanes.Add(collision.GetComponent<cars>().lane - 1);
-            AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            collision.GetComponent<cars>().makeDisabled(); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
+            controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
+            if (collision.transform.position.y < transform.position.y)
+            {
+                changeOrder(-1);
+                controller.bannedLanes.Add(collision.GetComponent<cars>().lane - 1);
+                AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            }
+            else if (collision.transform.position.y > transform.position.y)
+            {
+                changeOrder(1);
+                controller.bannedLanes.Add(collision.GetComponent<cars>().lane + 1);
+                AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            }
+            crash(); //what happens when the player crashes
         }
-        else if (collision.transform.position.y > transform.position.y)
+        else
         {
-            changeOrder(1);
-            controller.bannedLanes.Add(collision.GetComponent<cars>().lane + 1);
-            AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            collision.GetComponent<cars>().makeDestroyed();
+            if (!destroyObstacle)
+            {
+                crash();
+                controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
+            }
         }
-        crash(); //what happens when the player crashes
     }
 
     void hitBarrier(Collider2D collision)
@@ -516,32 +688,42 @@ public class playerCar : MonoBehaviour
     private void playHorn()
     {
         Transform closestCar = findClosestCar();
-        float closestDist = transform.position.x - closestCar.position.x;
-        //Debug.Log(closestDist + " : "+ closestCar.position.x);
-        if ((closestDist < 2.75f && closestDist > 1) && closestCar.position.y == targetPos.y)
+        if (closestCar != null)
         {
-            AudioSource.PlayClipAtPoint(closestCar.GetComponent<cars>().horn, new Vector3(0, 0, -9), controller.masterVol * controller.sfxVol);
+            float closestDist = transform.position.x - closestCar.position.x;
+            //Debug.Log(closestDist + " : "+ closestCar.position.x);
+            if ((closestDist < 2.75f && closestDist > 1) && closestCar.position.y == targetPos.y)
+            {
+                AudioSource.PlayClipAtPoint(closestCar.GetComponent<cars>().horn, new Vector3(0, 0, -9), controller.masterVol * controller.sfxVol);
+            }
         }
     }
 
     private Transform findClosestCar()
     {
         Transform carsOBJ = GameObject.Find("cars").transform;
-        Transform closest = carsOBJ.GetChild(0);
-        for (int i = 1; i < carsOBJ.childCount; i++)
+        try
         {
-            Transform currCar = carsOBJ.GetChild(i).transform;
-            if(currCar.position.y == targetPos.y)
+            Transform closest = carsOBJ.GetChild(0);
+            for (int i = 1; i < carsOBJ.childCount; i++)
             {
-                if (currCar.position.x < targetPos.x)
+                Transform currCar = carsOBJ.GetChild(i).transform;
+                if (currCar.position.y == targetPos.y)
                 {
-                    if (currCar.position.x < closest.position.x)
+                    if (currCar.position.x < targetPos.x)
                     {
-                        closest = currCar;
+                        if (currCar.position.x < closest.position.x)
+                        {
+                            closest = currCar;
+                        }
                     }
                 }
             }
+            return closest;
         }
-        return closest;
+        catch
+        {
+            return null;
+        }
     }
 }

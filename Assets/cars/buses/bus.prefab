@@ -292,6 +292,12 @@ MonoBehaviour:
   speedMax: 0
   odds: 0
   horn: {fileID: 8300000, guid: 7d2b90e45a7b242f5b48edd526d08fd2, type: 3}
+  isDestroyed: 0
+  destroyedTimer: 0
+  destroyedTime: 0
+  destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
+  carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
+  isDisabled: 0
   adOBJ: {fileID: 254978129}
   ads:
   - {fileID: 21300000, guid: 5d1c3373255d3430a94395543c22375f, type: 3}

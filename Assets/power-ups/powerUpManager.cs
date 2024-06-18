@@ -13,6 +13,7 @@ public class powerUpManager : MonoBehaviour
     public GameObject magneticField;
     public GameObject ram;
     public GameObject bigCoinhuna;
+    public GameObject slowdown;
 
     void Awake()
     {
@@ -90,10 +91,32 @@ public class powerUpManager : MonoBehaviour
                 activateTinyCars(15);
                 break;
             case 9:
-                activateSlowdown(15, 6);
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateSlowdown(20, 0.85f, true);
+                        break;
+                    case 1:
+                        activateSlowdown(20, 0.65f, true);
+                        break;
+                    case 2:
+                        activateSlowdown(20, 0.75f, false);
+                        break;
+                }
                 break;
             case 10:
-                activateTeleport(15);
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateTeleport(20, false, true);
+                        break;
+                    case 1:
+                        activateTeleport(20, true, true);
+                        break;
+                    case 2:
+                        activateTeleport(20, true, false);
+                        break;
+                }
                 break;
         }
     }
@@ -150,13 +173,16 @@ public class powerUpManager : MonoBehaviour
 
     }
 
-    public void activateSlowdown(int effect, int spawns)
+    public void activateSlowdown(int time, float spawns, bool affectScore)
     {
-
+        incognito inco = Instantiate(slowdown, GameObject.Find("contoller").transform).GetComponent<incognito>();
+        inco.setSlowdown(time, spawns, affectScore);
+        speedmer.startPowerup(time, icons[9], true);
     }
 
-    public void activateTeleport(int uses)
+    public void activateTeleport(int uses, bool destroyObjs, bool affectCharge)
     {
-
+        pCar.gameObject.GetComponent<playerCar>().enterTeleport(uses, destroyObjs, affectCharge);
+        speedmer.startPowerup(uses, icons[10], false);
     }
 }

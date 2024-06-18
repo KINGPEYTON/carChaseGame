@@ -32,6 +32,13 @@ public class cars : MonoBehaviour
 
     public AudioClip horn;
 
+    public bool isDestroyed;
+    public float destroyedTimer;
+    public float destroyedTime;
+    public GameObject destroyedCar;
+    public GameObject carDebris;
+    public bool isDisabled;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +50,8 @@ public class cars : MonoBehaviour
 
         turnTime = 3.5f;
         switchLane(blinkTime);
+
+        destroyedTime = 0.35f;
     }
 
     // Update is called once per frame
@@ -52,8 +61,14 @@ public class cars : MonoBehaviour
         {
             if (controller.mph > controller.playerCar.startMph) // checks if its not in the game start animation
             {
-                transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0); //move fowards in game
-
+                if (speed > 0)
+                {
+                    transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0); //move fowards in game
+                }
+                else
+                {
+                    transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
+                }
                 switchTimer -= Time.deltaTime;
                 if (switchTimer < 0) //checks if its time to switch lanes
                 {
@@ -83,7 +98,14 @@ public class cars : MonoBehaviour
             }
             else
             {
-                transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / speed), 0, 0); //car movment in the start up animation
+                if (speed > 0)
+                {
+                    transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / speed), 0, 0); //car movment in the start up animation
+                }
+                else
+                {
+                    transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / 3.5f), 0, 0); //car movment in the start up animation
+                }
             }
 
             if (blinkTime > -1) // checks if its a car that can turn
@@ -127,15 +149,6 @@ public class cars : MonoBehaviour
                     newCarLane();
                 }
             }
-            else //sets hazards off if it crashes
-            {
-                if (turnDown != null && turnUp != null)
-                {
-                    turningTimer += Time.deltaTime;
-                    turnDown.SetActive(turningTimer % 1 < 0.5f); //turns the down blinker on if it should
-                    turnUp.SetActive(turningTimer % 1 < 0.5f); //turns the up blinker on if it should
-                }
-            }
         }
 
         if (transform.position.x <= -15 || transform.position.x >= 15) // checks if the car is on screen
@@ -143,6 +156,48 @@ public class cars : MonoBehaviour
             Destroy(gameObject); // destroys it otherwise
         }
 
+        if (isDisabled)
+        {
+            amDisabled();
+        }
+        if (isDestroyed)
+        {
+            amDestroyed();
+        }
+
+    }
+
+    void amDisabled()
+    {
+        if (turnDown != null && turnUp != null)
+        {
+            turningTimer += Time.deltaTime;
+            turnDown.SetActive(turningTimer % 1 < 0.5f); //turns the down blinker on if it should
+            turnUp.SetActive(turningTimer % 1 < 0.5f); //turns the up blinker on if it should
+        }
+    }
+
+    void amDestroyed()
+    {
+        destroyedTimer += Time.deltaTime;
+        if(destroyedTimer > destroyedTime)
+        {
+            Instantiate(carDebris, transform.position, Quaternion.identity, transform.parent);
+            Destroy(gameObject);
+        }
+    }
+
+    public void makeDisabled()
+    {
+        isDisabled = true;
+        speed = 0;
+    }
+
+    public void makeDestroyed()
+    {
+        isDestroyed = true;
+        speed = 0;
+        Instantiate(destroyedCar, transform.position, Quaternion.identity, transform.parent);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

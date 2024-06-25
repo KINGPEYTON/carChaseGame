@@ -10,5 +10,7 @@ public class regular_car : cars
         speedMin = 12;
         speedMax = 18;
         odds = 0.35f;
+        forceMass = 0.75f;
+        isCar = true;
     }
 }

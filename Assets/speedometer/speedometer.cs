@@ -115,6 +115,7 @@ public class speedometer : MonoBehaviour
         powerUpTimer = uses;
         powerUpUses = (int)uses;
         powerUpStartUses = (int)uses;
+        powerUpUseText.text = powerUpUses.ToString();
         iconHueTimer = 0;
         powerupActive = true;
     }
@@ -179,7 +180,7 @@ public class speedometer : MonoBehaviour
 
     void startFade()
     {
-        if (powerUpUses * 1.0f / powerUpStartUses < 0.28f || powerUpUses == 1)
+        if (powerUpUses * 1.0f / powerUpStartUses < 0.28f || (powerUpUses == 1 && powerUpStartUses > 1))
         {
             iconHueTimer += Time.deltaTime;
             fadePowerUp(getValueScale(Mathf.Abs((iconHueTimer % 2) - 1), 0, 1, 200));
@@ -214,10 +215,11 @@ public class speedometer : MonoBehaviour
         return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
     }
 
-    void finishPowerup()
+    public void finishPowerup()
     {
         powerupActive = false;
         iconHueTimer = 0;
         powerUpTimer = 0;
+        powerUpUses = 0;
     }
 }

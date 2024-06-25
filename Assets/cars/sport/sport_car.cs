@@ -10,5 +10,7 @@ public class sport_car : cars
         speedMin = 18;
         speedMax = 23;
         odds = 0.05f;
+        forceMass = 0.7f;
+        isCar = true;
     }
 }

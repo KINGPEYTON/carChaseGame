@@ -10,6 +10,7 @@ public class cars : MonoBehaviour
 
     public float speed; //speed of thr car
     public int lane; //lane of car
+    public bool isCar;
 
     public bool switchUp;
     public bool switchDown;
@@ -38,6 +39,11 @@ public class cars : MonoBehaviour
     public GameObject destroyedCar;
     public GameObject carDebris;
     public bool isDisabled;
+
+    public float xForce;
+    public float yForce;
+    public float forceMass;
+    public bool isHit;
 
     // Start is called before the first frame update
     void Start()
@@ -117,22 +123,25 @@ public class cars : MonoBehaviour
                     turningTimer += Time.deltaTime;
                 }
 
-                if (turningTimer > 1.5f) //if its time to turn
+                if (!isDisabled)
                 {
-                    if (transform.position.y != targPos) //checks to see if its not in its target pos
+                    if (turningTimer > 1.5f) //if its time to turn
                     {
-                        transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the car towards where they need to be
-
-                        overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
-                        if (overshoot < 0) //checks if its past if target
+                        if (transform.position.y != targPos) //checks to see if its not in its target pos
                         {
-                            transform.position = new Vector3(transform.position.x, targPos, 0); //places car where it should be
-                            overshoot = 0; //resets overshoot
-                            turningTimer = 0;
-                            switchDown = false; //turns down blinker off
-                            switchUp = false; //turns up blinker off
-                            setLane(); //update so the car knows what lane its in
-                            switchLane(blinkTime * 2); //sees if it wants to switch lanes again
+                            transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the car towards where they need to be
+
+                            overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
+                            if (overshoot < 0) //checks if its past if target
+                            {
+                                transform.position = new Vector3(transform.position.x, targPos, 0); //places car where it should be
+                                overshoot = 0; //resets overshoot
+                                turningTimer = 0;
+                                switchDown = false; //turns down blinker off
+                                switchUp = false; //turns up blinker off
+                                setLane(); //update so the car knows what lane its in
+                                switchLane(blinkTime * 2); //sees if it wants to switch lanes again
+                            }
                         }
                     }
                 }
@@ -164,20 +173,19 @@ public class cars : MonoBehaviour
         {
             amDestroyed();
         }
-
     }
 
-    void amDisabled()
+    public void amDisabled()
     {
-        if (turnDown != null && turnUp != null)
-        {
-            turningTimer += Time.deltaTime;
-            turnDown.SetActive(turningTimer % 1 < 0.5f); //turns the down blinker on if it should
-            turnUp.SetActive(turningTimer % 1 < 0.5f); //turns the up blinker on if it should
-        }
+
+        turningTimer += Time.deltaTime;
+        turnDown.SetActive(turningTimer % 1 < 0.5f); //turns the down blinker on if it should
+        turnUp.SetActive(turningTimer % 1 < 0.5f); //turns the up blinker on if it should
+
+        applyForce();
     }
 
-    void amDestroyed()
+    public void amDestroyed()
     {
         destroyedTimer += Time.deltaTime;
         if(destroyedTimer > destroyedTime)
@@ -187,24 +195,132 @@ public class cars : MonoBehaviour
         }
     }
 
-    public void makeDisabled()
+    public void makeDisabled(float xF, float yF)
     {
         isDisabled = true;
         speed = 0;
+        xForce = xF;
+        yForce = yF;
     }
 
     public void makeDestroyed()
     {
         isDestroyed = true;
         speed = 0;
+        destroyedTimer = 0;
         Instantiate(destroyedCar, transform.position, Quaternion.identity, transform.parent);
+    }
+
+    void applyForce()
+    {
+        if (xForce > 0)
+        {
+            xForce -= Time.deltaTime;
+            if (controller.playing) { xForce -= Time.deltaTime * 2; }
+            if (xForce < 0)
+            {
+                xForce = 0;
+            }
+        }
+        else if (xForce < 0)
+        {
+            xForce += Time.deltaTime;
+            if (xForce > 0)
+            {
+                xForce = 0;
+            }
+        }
+
+        if (yForce > 0)
+        {
+            yForce -= Time.deltaTime;
+            if (yForce < 0)
+            {
+                yForce = 0;
+            }
+        }
+        else if (yForce < 0)
+        {
+            yForce += Time.deltaTime;
+            if (yForce > 0)
+            {
+                yForce = 0;
+            }
+        }
+        transform.position += new Vector3(xForce * Time.deltaTime / forceMass, yForce * Time.deltaTime / forceMass, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "car") //if a car hits another car
         {
-            if(transform.position.y > collision.transform.position.y)
+            hitCar(collision);
+        }
+        else if (collision.tag == "barrier")
+        {
+            hitBarrier();
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "car") //if a car hits another car
+        {
+            stayCar(collision);
+        }
+        else if (collision.tag == "Player" && isDisabled) //if a car hits another car
+        {
+            doIKMS();
+        }
+    }
+
+    void hitBarrier()
+    {
+        if (isDisabled)
+        {
+            if(!isHit)
+            yForce *= -1;
+            isHit = true;
+        }
+        else
+        {
+
+        }
+    }
+
+    void hitCar(Collider2D collision)
+    {
+        cars daCarhit = collision.GetComponent<cars>();
+        if (isDisabled)
+        {
+            if (daCarhit.isDisabled)
+            {
+                if (xForce > daCarhit.xForce)
+                {
+                    daCarhit.xForce = xForce * Random.Range(0.65f, 0.85f);
+                }
+                if(yForce > daCarhit.yForce)
+                {
+                    daCarhit.yForce = yForce * Random.Range(0.65f, 0.85f);
+                }
+            }
+            else
+            {
+                float xF = xForce; float yF = yForce;
+                if (xF == 0) { xF = -1.5f; } //if(yF == 0) { yF = -0.5f; }
+                daCarhit.makeDisabled(xF * 0.55f, yF * 0.55f);
+                if (controller.isOver)
+                {
+                    controller.bannedLanes.Add(daCarhit.lane);
+                }
+            }
+
+            xForce *= Random.Range(-0.9f, -0.65f);
+            yForce *= -Random.Range(-0.9f, -0.65f);
+        }
+        else if (!isDestroyed && !daCarhit.isDestroyed && !daCarhit.isDisabled)
+        {
+            if (transform.position.y > collision.transform.position.y)
             {
                 if (disMove < 0)
                 {
@@ -214,7 +330,7 @@ public class cars : MonoBehaviour
                 switchUp = false;
                 overshoot = Mathf.Abs(targPos - transform.position.y); //calculates overshoot to where it needs to go
             }
-            else if(transform.position.y < collision.transform.position.y)
+            else if (transform.position.y < collision.transform.position.y)
             {
                 if (disMove > 0)
                 {
@@ -226,20 +342,37 @@ public class cars : MonoBehaviour
             }
             else if (transform.position.x < collision.transform.position.x)
             {
-                speed = collision.GetComponent<cars>().speed - 1; //changes the speed so cars won't go through eachother
+                if (speed > 8)
+                {
+                    speed = daCarhit.speed - 1; //changes the speed so cars won't go through eachother
+                }
+                else { daCarhit.speed = speed + 1; }
             }
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    void stayCar(Collider2D collision)
     {
-        if (collision.tag == "car") //if a car hits another car
+        if (isDisabled)
+        {
+            doIKMS();
+        }
+        else
         {
             if (transform.position.y == collision.transform.position.y && transform.position.x < collision.transform.position.x)
             {
                 speed -= Time.deltaTime * 3;
                 collision.GetComponent<cars>().speed += Time.deltaTime * 4; //changes the speed so cars won't go through eachother
             }
+        }
+    }
+
+    void doIKMS()
+    {
+        destroyedTimer += Time.deltaTime;
+        if(destroyedTimer > 0.5f)
+        {
+            //makeDestroyed();
         }
     }
 
@@ -289,5 +422,10 @@ public class cars : MonoBehaviour
         {
             switchTimer = 1000;
         }
+    }
+
+    public virtual void nearCrash()
+    {
+        AudioSource.PlayClipAtPoint(horn, new Vector3(0, 0, -9), controller.masterVol * controller.sfxVol);
     }
 }

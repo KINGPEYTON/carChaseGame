@@ -13,6 +13,7 @@ public class flatbed_truck : cars
         speedMin = 12;
         speedMax = 17;
         odds = 0.15f;
+        forceMass = 1.25f;
 
         sr.sprite = backCars[Random.Range(0, backCars.Length)];
     }

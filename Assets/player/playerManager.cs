@@ -241,6 +241,8 @@ public class carTypesReader : carPart
     public float wheelHight;
     public float wheelF;
     public float wheelB;
+    public float ramX;
+    public float ramY;
     public carBodyReader[] bodies;
 }
 

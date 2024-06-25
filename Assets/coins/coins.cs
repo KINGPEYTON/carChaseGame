@@ -87,7 +87,6 @@ public class coins : MonoBehaviour
             }
             else
             {
-
                 getCollected();
             }
         }
@@ -180,14 +179,7 @@ public class coins : MonoBehaviour
             transitionTimer += Time.deltaTime;
             if(transitionTimer > 0.35f)
             {
-                if (makingHolo)
-                {
-                    makeHolo();
-                }
-                else
-                {
-                    makeNormal();
-                }
+                if (makingHolo) { makeHolo(); } else { makeNormal(); }
             }
         }
         else

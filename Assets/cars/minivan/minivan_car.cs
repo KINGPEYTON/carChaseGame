@@ -10,5 +10,7 @@ public class minivan_car : cars
         speedMin = 10;
         speedMax = 14;
         odds = 0.2f;
+        forceMass = 0.65f;
+        isCar = true;
     }
 }

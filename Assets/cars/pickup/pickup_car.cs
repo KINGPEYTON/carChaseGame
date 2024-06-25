@@ -10,5 +10,7 @@ public class pickup_car : cars
         speedMin = 9;
         speedMax = 12;
         odds = 0.15f;
+        forceMass = 0.85f;
+        isCar = true;
     }
 }

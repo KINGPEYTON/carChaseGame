@@ -10,5 +10,6 @@ public class semi_truck : cars
         speedMin = 10;
         speedMax = 16;
         odds = 0.2f;
+        forceMass = 1.85f;
     }
 }

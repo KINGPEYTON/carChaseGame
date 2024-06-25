@@ -25,6 +25,7 @@ public class maniac_van : cars
     {
         speedMin = 15;
         speedMax = 23;
+        forceMass = 0.95f;
 
         startSpeed = Random.Range(speedMin, speedMax);
         controller = GameObject.Find("contoller").GetComponent<main>();
@@ -37,6 +38,7 @@ public class maniac_van : cars
         partyBeatTime = 0.422f;
         party.sprite = partySkins[Random.Range(0, partySkins.Length)];
         musicPlayer.volume = controller.musicVol * controller.masterVol * 0.85f;
+        isCar = true;
     }
 
     // Update is called once per frame
@@ -80,6 +82,16 @@ public class maniac_van : cars
         changeSkin();
 
         musicPlayer.volume = controller.musicVol * controller.masterVol * 0.85f;
+
+        if (isDisabled)
+        {
+            amDisabled();
+        }
+        if (isDestroyed)
+        {
+            amDestroyed();
+        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

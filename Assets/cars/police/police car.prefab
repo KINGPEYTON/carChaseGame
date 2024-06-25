@@ -326,7 +326,7 @@ Transform:
   m_GameObject: {fileID: 9034021018002404895}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12, y: 0.85, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.45, y: 0.45, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -427,9 +427,12 @@ MonoBehaviour:
   destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
   carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
   isDisabled: 0
+  xForce: 0
+  yForce: 0
+  forceMass: 0
+  isHit: 0
   playerCarOBJ: {fileID: 0}
   chasingPlayer: 0
-  crashed: 0
   crash: {fileID: 8300000, guid: 7beda4447c72246df995b524a1358bb4, type: 3}
   siren: {fileID: 5335798434806762981}
   chasingVan: 0

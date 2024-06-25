@@ -10,5 +10,7 @@ public class suv_car : cars
         speedMin = 11;
         speedMax = 16;
         odds = 0.25f;
+        forceMass = 0.8f;
+        isCar = true;
     }
 }

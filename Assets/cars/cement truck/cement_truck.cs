@@ -10,5 +10,6 @@ public class cement_truck : cars
         speedMin = 8;
         speedMax = 13;
         odds = 0.1f;
+        forceMass = 1.4f;
     }
 }

@@ -10,5 +10,6 @@ public class dump_truck : cars
         speedMin = 11;
         speedMax = 12;
         odds = 0.10f;
+        forceMass = 1.15f;
     }
 }

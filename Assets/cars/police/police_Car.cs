@@ -7,7 +7,6 @@ public class police_Car : cars
     public playerCar playerCarOBJ;
 
     public bool chasingPlayer;
-    public bool crashed;
     public AudioClip crash;
     public AudioSource siren;
 
@@ -23,6 +22,7 @@ public class police_Car : cars
         }
         speedMin = 14;
         speedMax = 27;
+        forceMass = 0.75f;
 
         speed = Random.Range(speedMin, speedMax);
         controller = GameObject.Find("contoller").GetComponent<main>();
@@ -31,6 +31,7 @@ public class police_Car : cars
         targPos = transform.position.y;
 
         turnTime = 1.5f;
+        isCar = false;
     }
 
     // Update is called once per frame
@@ -46,7 +47,7 @@ public class police_Car : cars
             siren.volume = controller.sfxVol * controller.masterVol;
         }
 
-        if (chasingVan && vanOBJ == null && !crashed)
+        if (chasingVan && vanOBJ == null && !isDisabled)
         {
             Destroy(gameObject);
         }
@@ -57,9 +58,9 @@ public class police_Car : cars
             {
                 if (chasingPlayer)
                 {
-                    if (crashed)
+                    if (isDisabled)
                     {
-                        transform.position = transform.position - new Vector3(Time.deltaTime / 6 * controller.GetComponent<main>().mph, 0, 0); //move fowards in game
+                        transform.position -= new Vector3((Time.deltaTime / 6) * controller.GetComponent<main>().mph, 0, 0); //move fowards in game
                     }
                     else
                     {
@@ -103,7 +104,14 @@ public class police_Car : cars
                     }
                     else
                     {
-                        transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0); //move fowards in game
+                        if (isDisabled)
+                        {
+                            transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
+                        }
+                        else
+                        {
+                            transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0); //move fowards in game
+                        }
                     }
                     if(transform.position.x < -16 && controller.mph > 70)
                     {
@@ -120,7 +128,7 @@ public class police_Car : cars
                 transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / speed), 0, 0); //car movment in the start up animation
             }
 
-            if (transform.position.y != targPos && !crashed) //checks to see if its not in its target pos
+            if (transform.position.y != targPos && !isDisabled) //checks to see if its not in its target pos
             {
                 transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the car towards where they need to be
 
@@ -136,7 +144,7 @@ public class police_Car : cars
         {
             if (chasingPlayer)
             {
-                if (!crashed)
+                if (!isDisabled)
                 {
                     transform.position = transform.position + new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
                 }
@@ -146,34 +154,87 @@ public class police_Car : cars
             }
         }
 
-        if (transform.position.x <= -30 || transform.position.x >= 30) // checks if the car is on screen
+            if (transform.position.x <= -30 || transform.position.x >= 30) // checks if the car is on screen
         {
             Destroy(gameObject); // destroys it otherwise
         }
+
+        if (isDisabled)
+        {
+            amDisabled();
+        }
+        if (isDestroyed)
+        {
+            amDestroyed();
+        }
     }
-
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!crashed)
+        if (collision.tag == "car") //if a car hits another car
         {
-            if (collision.tag == "car") //if a car hits another car
+            hitCar(collision);
+        }
+        else if (collision.tag == "barrier")
+        {
+            hitBarrier();
+        }
+    }
+
+    void hitBarrier()
+    {
+        if (isDisabled)
+        {
+            if (!isHit)
+                yForce *= -1;
+            isHit = true;
+        }
+    }
+
+    void hitCar(Collider2D collision)
+    {
+        cars daCarhit = collision.GetComponent<cars>();
+        if (isDisabled)
+        {
+            if (daCarhit.isDisabled)
             {
-                if (chasingPlayer && transform.position.x > -12.5f)
+                if (xForce > daCarhit.xForce)
                 {
-                    crashed = true; //changes the speed so the cars crash
-                    collision.GetComponent<cars>().speed = 6;
-                    AudioSource.PlayClipAtPoint(crash, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+                    daCarhit.xForce = xForce * Random.Range(0.65f, 0.85f);
                 }
-                else if (transform.position.x < collision.transform.position.x)
+                if (yForce > daCarhit.yForce)
                 {
-                    speed = collision.GetComponent<cars>().speed - 1; //changes the speed so cars won't go through eachother
+                    daCarhit.yForce = yForce * Random.Range(0.65f, 0.85f);
                 }
             }
-            else if (collision.tag == "Player")
+            else
             {
-                crashed = true;
+                float xF = xForce; float yF = yForce;
+                if (xF == 0) { xF = -1.5f; } //if(yF == 0) { yF = -0.5f; }
+                daCarhit.makeDisabled(xF * 0.55f, yF * 0.55f);
+                if (controller.isOver)
+                {
+                    controller.bannedLanes.Add(daCarhit.lane);
+                }
+            }
+
+            xForce *= Random.Range(-0.9f, -0.65f);
+            yForce *= -Random.Range(-0.9f, -0.65f);
+        }
+        else if (!isDestroyed && !daCarhit.isDestroyed && !daCarhit.isDisabled)
+        {
+            if (chasingPlayer && transform.position.x > -12.5f)
+            {
+                makeDisabled(-0.4f, 0); //changes the speed so the cars crash
+                AudioSource.PlayClipAtPoint(crash, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            }
+            else if (transform.position.x < collision.transform.position.x)
+            {
+                if (speed > 8)
+                {
+                    speed = daCarhit.speed - 1; //changes the speed so cars won't go through eachother
+                }
+                else { daCarhit.speed = speed + 1; }
             }
         }
     }

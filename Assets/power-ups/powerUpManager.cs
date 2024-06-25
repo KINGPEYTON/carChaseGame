@@ -53,7 +53,21 @@ public class powerUpManager : MonoBehaviour
                 }
                 break;
             case 1:
-                activateRam(1);
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateRam(1, true, true);
+                        break;
+                    case 1:
+                        activateRam(1, true, false);
+                        break;
+                    case 2:
+                        activateRam(1, false, false);
+                        break;
+                    case 3:
+                        activateRam(2, false, false);
+                        break;
+                }
                 break;
             case 2:
                 activateBoost(15, 2);
@@ -85,7 +99,18 @@ public class powerUpManager : MonoBehaviour
                 activateRocket(15);
                 break;
             case 7:
-                activateShield(15);
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateShield(10, true);
+                        break;
+                    case 1:
+                        activateShield(15, true);
+                        break;
+                    case 2:
+                        activateShield(15, false);
+                        break;
+                }
                 break;
             case 8:
                 activateTinyCars(15);
@@ -100,7 +125,7 @@ public class powerUpManager : MonoBehaviour
                         activateSlowdown(20, 0.65f, true);
                         break;
                     case 2:
-                        activateSlowdown(20, 0.75f, false);
+                        activateSlowdown(20, 0.65f, false);
                         break;
                 }
                 break;
@@ -131,9 +156,11 @@ public class powerUpManager : MonoBehaviour
         speedmer.startPowerup(time, icons[0], true);
     }
 
-    public void activateRam(int hits)
+    public void activateRam(int hits, bool justCars, bool headOn)
     {
 
+        pCar.gameObject.GetComponent<playerCar>().startRam(hits, justCars, headOn);
+        speedmer.startPowerup(hits, icons[1], false);
     }
 
     public void activateBoost(int uses, float power)
@@ -158,9 +185,10 @@ public class powerUpManager : MonoBehaviour
 
     }
 
-    public void activateShield(int time)
+    public void activateShield(int time, bool autoStart)
     {
-
+        pCar.gameObject.GetComponent<playerCar>().startShield(time, autoStart);
+        speedmer.startPowerup(time, icons[6], autoStart);
     }
 
     public void activateRocket(int time)

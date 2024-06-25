@@ -4,7 +4,7 @@
             "typeName": "Cool Sport",
             "startMPH": 30,
             "speedUp": 0.5,
-            "moveTime": 1,
+            "moveTime": 0.85,
             "wheelHight": -0.5,
             "wheelF": 2.15,
             "wheelB": -2.05,
@@ -38,7 +38,9 @@
                     "bodyColor": "Blue",
                     "cost": 500
                 }
-            ]
+            ],
+            "ramX": 4,
+            "ramY": -0.3
         },
         {
             "typeName": "Retro",
@@ -78,7 +80,9 @@
                     "bodyColor": "Watermellon",
                     "cost": 500
                 }
-            ]
+            ],
+            "ramX": 4,
+            "ramY": -0.3
         }
     ],
     "wheelTypes": [

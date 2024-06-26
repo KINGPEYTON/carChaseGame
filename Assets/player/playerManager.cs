@@ -243,6 +243,8 @@ public class carTypesReader : carPart
     public float wheelB;
     public float ramX;
     public float ramY;
+    public float boostX;
+    public float boostY;
     public carBodyReader[] bodies;
 }
 

@@ -30,14 +30,10 @@ public class playerCar : MonoBehaviour
 
     public bool tapped;
     public float firstTapPoint;
-    public bool sliding;
-    public float slidePos;
     public bool inPos;
     public bool newTap;
-    public float slideTimer;
 
     public float swipeDistToDetect;
-    public float slideTimeMax;
 
     public Vector3 targetPos; //where the player car has to go
     public Vector3 turnPos; //where the player car has to go
@@ -76,6 +72,13 @@ public class playerCar : MonoBehaviour
     public GameObject ramOBJ;
     public carRam ram;
 
+    public bool inBoost;
+    public bool boosting;
+    public float boostLeft;
+    public float tempMPH;
+    public GameObject boostOBJ;
+    public carBoost boost;
+
     void OnEnable()
     {
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
@@ -91,7 +94,6 @@ public class playerCar : MonoBehaviour
 
         startPos = -7f;
         swipeDistToDetect = 0.25f;
-        slideTimeMax = 0.55f;
 
         crashForce = 1.25f;
     }
@@ -127,6 +129,11 @@ public class playerCar : MonoBehaviour
                 {
                     endShield();
                 }
+            }
+
+            if (boosting)
+            {
+                doBoost();
             }
 
             checkPowerUp();
@@ -165,6 +172,9 @@ public class playerCar : MonoBehaviour
         if(shieldReady && !inShield)
         {
             activateShield();
+        } else if(inBoost && !boosting)
+        {
+            boost.useBoost();
         }
     }
 
@@ -407,6 +417,52 @@ public class playerCar : MonoBehaviour
         ram.headOn = headOn;
     }
 
+    public void startBoost(int uses, float power, bool hitProt)
+    {
+        boost = Instantiate(boostOBJ, transform.position, Quaternion.identity, transform).GetComponent<carBoost>();
+        int carTypeSave = PlayerPrefs.GetInt("playerCarType", 0); //grabes the id of the car type the player last used
+        boost.setTargetPos(pManager.carPartsData.carTypes[carTypeSave].boostX, pManager.carPartsData.carTypes[carTypeSave].boostY);
+        boost.uses = uses;
+        boost.power = power;
+        boost.hitProt = hitProt;
+    }
+
+    void doBoost()
+    {
+        float startTime = 0.35f;
+        float endTime = 0.75f;
+        if (boost.power - boostLeft < startTime)
+        {
+            tempMPH = boost.prevMPH + getValueScale(boost.power - boostLeft, 0, startTime, boost.targetMPH - boost.prevMPH);
+            controller.updateTint(new Color32(255, 0, 0, (byte)getValueScale(boost.power - boostLeft, 0, startTime, 200)));
+        }
+        else if(boostLeft < endTime)
+        {
+            tempMPH = boost.prevMPH + getValueScale(boostLeft, 0, endTime, boost.targetMPH - boost.prevMPH);
+            controller.updateTint(new Color32(255, 0, 0, (byte)getValueScale(boostLeft, 0, endTime, 200)));
+            if (tempMPH < boost.prevScoreMPH)
+            {
+                controller.scoremph = boost.prevScoreMPH;
+            }
+            else
+            {
+                controller.scoremph = tempMPH;
+            }
+        }
+        else
+        {
+            tempMPH = boost.targetMPH;
+            controller.updateTint(new Color32(255, 0, 0, 200));
+        }
+        controller.mph = tempMPH;
+        boostLeft -= Time.deltaTime;
+        if(boostLeft < 0)
+        {
+            boost.finishBoost();
+        }
+        
+    }
+
     public void laneUp(int multiplier) //if tap is above player car
     {
         float maxLane = 0;
@@ -474,60 +530,6 @@ public class playerCar : MonoBehaviour
             tapped = false;
 
             playHorn();
-        }
-    }
-
-    public void slideUp() //if tap is above player car
-    {
-        float maxLane = 0;
-        if (controller.topLane)
-        {
-            if (controller.topLaneTime < 130)
-            {
-                maxLane = 0.65f;
-            }
-            else
-            {
-                maxLane = -0.6f;
-            }
-        }
-        else
-        {
-            if (controller.topLaneTime < 10)
-            {
-                maxLane = -0.6f;
-            }
-            else
-            {
-                maxLane = 0.65f;
-            }
-        }
-        slidePos = transform.position.y + 0.625f;
-        if (slidePos < maxLane && Mathf.Abs(transform.position.y - slidePos) > 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
-        {
-            disMove = (slidePos - transform.position.y) * (moveTime); //calculates the speed the player car needs to go to switch lanes
-            overshoot = Mathf.Abs(slidePos - transform.position.y); //calculates overshoot to where it needs to go
-            sliding = true;
-            tapped = false;
-            slideTimer = slideTimeMax;
-
-            //AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol * controller.sfxVol);
-
-        }
-    }
-
-    public void slideDown()
-    {
-        slidePos = transform.position.y - 0.625f;
-        if (slidePos > -4.35f && Mathf.Abs(transform.position.y - slidePos) > 0.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
-        {
-            disMove = (slidePos - transform.position.y) * (moveTime); //calculates the speed the player car needs to go to switch lanes
-            overshoot = Mathf.Abs(slidePos - transform.position.y); //calculates overshoot to where it needs to go
-            sliding = true;
-            tapped = false;
-            slideTimer = slideTimeMax;
-
-            //AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
         }
     }
 
@@ -608,6 +610,18 @@ public class playerCar : MonoBehaviour
                     {
                         lethalHit(collision);
                     }
+                }
+            }
+            if(boosting && boost.hitProt)
+            {
+                if (!collision.GetComponent<cars>().isDisabled) {
+                    float forceFactor = (collision.transform.position.y - transform.position.y) * 2.5f;
+                    if (Mathf.Abs(forceFactor) < 0.45)
+                    {
+                        forceFactor = Random.Range(1.5f, 4.0f) * ((Random.Range(0, 2) * 2) - 1);
+                    }
+                    collision.GetComponent<cars>().makeDisabled(Random.Range(5, 10), Random.Range(forceFactor * 0.75f, forceFactor * 1.25f));
+                    boost.takeBoost();
                 }
             }
             else

@@ -11,7 +11,6 @@ public class powerUpManager : MonoBehaviour
     public List<Sprite> icons;
 
     public GameObject magneticField;
-    public GameObject ram;
     public GameObject bigCoinhuna;
     public GameObject slowdown;
 
@@ -70,7 +69,21 @@ public class powerUpManager : MonoBehaviour
                 }
                 break;
             case 2:
-                activateBoost(15, 2);
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateBoost(3, 1.75f, false);
+                        break;
+                    case 1:
+                        activateBoost(3, 2.35f, false);
+                        break;
+                    case 2:
+                        activateBoost(4, 2.35f, false);
+                        break;
+                    case 3:
+                        activateBoost(4, 2.35f, true);
+                        break;
+                }
                 break;
             case 3:
                 switch (tiers[id])
@@ -163,9 +176,10 @@ public class powerUpManager : MonoBehaviour
         speedmer.startPowerup(hits, icons[1], false);
     }
 
-    public void activateBoost(int uses, float power)
+    public void activateBoost(int uses, float power, bool hitProt)
     {
-
+        pCar.gameObject.GetComponent<playerCar>().startBoost(uses, power, hitProt);
+        speedmer.startPowerup(uses, icons[2], false);
     }
 
     public void activateCoin(int time, float spawnMultipliyer, bool startHolo)

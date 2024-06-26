@@ -23,6 +23,8 @@ public class main : MonoBehaviour
     public float musicVol;
     public float radioVol;
 
+    public Image screenTint;
+
     public bool inTutorial;
     public int tutorialSteps;
     public GameObject tutorialHandOBJ;
@@ -907,6 +909,11 @@ public class main : MonoBehaviour
         }
     }
 
+    public void updateTint(Color32 color)
+    {
+        screenTint.color = color;
+    }
+
     void spawnGameCar()
     {
         carTimer += (Time.deltaTime * mph) * carTimerMultiplyer; // time that spawns a new car that speeds up depending on the speed of the game (mph)
@@ -1447,6 +1454,11 @@ public class main : MonoBehaviour
         }
 
         currentList[index] = setList[index] / 2;
+    }
+
+    float getValueScale(float val, float min, float max, float scale)
+    {
+        return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
     }
 
     public void nextTutorialStep()

@@ -40,7 +40,9 @@
                 }
             ],
             "ramX": 4,
-            "ramY": -0.3
+            "ramY": -0.3,
+            "boostX": -3.4,
+            "boostY": -0.5
         },
         {
             "typeName": "Retro",
@@ -82,7 +84,9 @@
                 }
             ],
             "ramX": 4,
-            "ramY": -0.3
+            "ramY": -0.3,
+            "boostX": -3.4,
+            "boostY": -0.5
         }
     ],
     "wheelTypes": [

@@ -165,14 +165,15 @@ public class cars : MonoBehaviour
             Destroy(gameObject); // destroys it otherwise
         }
 
-        if (isDisabled)
-        {
-            amDisabled();
-        }
         if (isDestroyed)
         {
             amDestroyed();
         }
+        else if (isDisabled)
+        {
+            amDisabled();
+        }
+        
     }
 
     public void amDisabled()
@@ -206,6 +207,7 @@ public class cars : MonoBehaviour
     public void makeDestroyed()
     {
         isDestroyed = true;
+        isDisabled = true;
         speed = 0;
         destroyedTimer = 0;
         Instantiate(destroyedCar, transform.position, Quaternion.identity, transform.parent);

@@ -109,9 +109,6 @@ public class powerUpManager : MonoBehaviour
                 activateRandom();
                 break;
             case 6:
-                activateRocket(15);
-                break;
-            case 7:
                 switch (tiers[id])
                 {
                     case 0:
@@ -125,6 +122,20 @@ public class powerUpManager : MonoBehaviour
                         break;
                 }
                 break;
+            case 7:
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateRocket(4.25f, 1.5f, 1.35f, false);
+                        break;
+                    case 1:
+                        activateRocket(6.5f, 1.5f, 1.35f, false);
+                        break;
+                    case 2:
+                        activateRocket(6.5f, 1.5f, 1.35f, true);
+                        break;
+                }
+                break;
             case 8:
                 activateTinyCars(15);
                 break;
@@ -132,7 +143,7 @@ public class powerUpManager : MonoBehaviour
                 switch (tiers[id])
                 {
                     case 0:
-                        activateSlowdown(20, 0.85f, true);
+                        activateSlowdown(20, 0.95f, true);
                         break;
                     case 1:
                         activateSlowdown(20, 0.65f, true);
@@ -146,13 +157,13 @@ public class powerUpManager : MonoBehaviour
                 switch (tiers[id])
                 {
                     case 0:
-                        activateTeleport(20, false, true);
+                        activateTeleport(20, 0.35f, new Color32(115, 255, 255, 255), false, true);
                         break;
                     case 1:
-                        activateTeleport(20, true, true);
+                        activateTeleport(20, 0.35f, new Color32(115, 115, 255, 255), true, true);
                         break;
                     case 2:
-                        activateTeleport(20, true, false);
+                        activateTeleport(20, 0.35f, new Color32(115, 0, 255, 255), true, false);
                         break;
                 }
                 break;
@@ -205,14 +216,14 @@ public class powerUpManager : MonoBehaviour
         speedmer.startPowerup(time, icons[6], autoStart);
     }
 
-    public void activateRocket(int time)
+    public void activateRocket(float power, float boostTime, float coinDist, bool allHolo)
     {
-
+        pCar.gameObject.GetComponent<playerCar>().startRocket(power, boostTime, coinDist, allHolo);
+        speedmer.startPowerup(power, icons[7], false);
     }
 
     public void activateTinyCars(int time)
     {
-
     }
 
     public void activateSlowdown(int time, float spawns, bool affectScore)
@@ -222,9 +233,9 @@ public class powerUpManager : MonoBehaviour
         speedmer.startPowerup(time, icons[9], true);
     }
 
-    public void activateTeleport(int uses, bool destroyObjs, bool affectCharge)
+    public void activateTeleport(int uses, float boltTimer, Color32 boltColor, bool destroyObjs, bool affectCharge)
     {
-        pCar.gameObject.GetComponent<playerCar>().enterTeleport(uses, destroyObjs, affectCharge);
+        pCar.gameObject.GetComponent<playerCar>().enterTeleport(uses, boltTimer, boltColor, destroyObjs, affectCharge);
         speedmer.startPowerup(uses, icons[10], false);
     }
 }

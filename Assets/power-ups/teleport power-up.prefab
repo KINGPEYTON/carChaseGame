@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 70
-  m_Sprite: {fileID: 21300000, guid: 38835fb101c754460a8ca89e343ba71b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4930c989ed11145af8f76c7e517dc579, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,14 +101,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powerUpId: 10
-  typeID: 3
+  typeID: 2
   controller: {fileID: 0}
   pwManager: {fileID: 0}
   popAni: {fileID: 0}
   speed: 0
   tier: 0
   tierSkins:
-  - {fileID: 21300000, guid: 38835fb101c754460a8ca89e343ba71b, type: 3}
+  - {fileID: 21300000, guid: 4930c989ed11145af8f76c7e517dc579, type: 3}
   icon:
   - {fileID: 21300000, guid: 08e36fc4a69824132bbdcb1a3b139b96, type: 3}
   iconOBJ: {fileID: 8652440727118574333, guid: 1203cbdba63e5422aae0db40f3556adf, type: 3}
@@ -179,7 +179,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 6.31, y: 6.29}
+    oldSize: {x: 6.33, y: 6.29}
     newSize: {x: 6.31, y: 6.29}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

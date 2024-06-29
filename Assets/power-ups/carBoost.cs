@@ -73,6 +73,7 @@ public class carBoost : MonoBehaviour
     public void useBoost()
     {
         pCar.boosting = true;
+        controller.carTimerMultiplyer = 0.15f;
         pCar.boostLeft = power;
         uses--;
     }
@@ -80,6 +81,7 @@ public class carBoost : MonoBehaviour
     public void finishBoost()
     {
         pCar.boosting = false;
+        controller.carTimerMultiplyer = 1.0f;
         controller.mph = prevMPH;
         controller.scoremph = prevScoreMPH;
         controller.updateTint(new Color32(255, 0, 0, 0));

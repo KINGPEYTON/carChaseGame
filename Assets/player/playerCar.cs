@@ -63,6 +63,10 @@ public class playerCar : MonoBehaviour
     public bool affectCharge;
     public bool destroyObstacle;
     public GameObject teleportEffect;
+    public float teleBoltTime;
+    public float teleBoltTimer;
+    public GameObject teleBolt;
+    public Color32 teleBoltColor;
 
     public bool inShield;
     public bool shieldReady;
@@ -78,6 +82,12 @@ public class playerCar : MonoBehaviour
     public float tempMPH;
     public GameObject boostOBJ;
     public carBoost boost;
+
+    public bool inRocket;
+    public bool rocketLanding;
+    public float landingTimer;
+    public GameObject rocketOBJ;
+    public rocketBoost rocket;
 
     void OnEnable()
     {
@@ -104,13 +114,16 @@ public class playerCar : MonoBehaviour
         if (controller.playing)
         {
             if (startPos == transform.position.x && controller.scoreShowing && controller.textNum >= 10) {
-                if (inTeleport)
+                if (!(inRocket && rocket.boosting))
                 {
-                    teleport();
-                }
-                else
-                {
-                    slideLanes();
+                    if (inTeleport)
+                    {
+                        teleport();
+                    }
+                    else
+                    {
+                        slideLanes();
+                    }
                 }
             } else {
                 transform.position += new Vector3(3*(moveTime) * Time.deltaTime, 0, 0);
@@ -139,8 +152,16 @@ public class playerCar : MonoBehaviour
             checkPowerUp();
         }
 
-        wheelB.transform.Rotate(0.0f, 0.0f, -Time.deltaTime * controller.mph * 10, Space.Self);
-        wheelF.transform.Rotate(0.0f, 0.0f, -Time.deltaTime * controller.mph * 10, Space.Self);
+        if (rocketLanding)
+        {
+            landingRocket();
+        }
+
+        if (!inRocket)
+        {
+            wheelB.transform.Rotate(0.0f, 0.0f, -Time.deltaTime * controller.mph * 10, Space.Self);
+            wheelF.transform.Rotate(0.0f, 0.0f, -Time.deltaTime * controller.mph * 10, Space.Self);
+        }
     }
 
     void checkPowerUp()
@@ -185,7 +206,7 @@ public class playerCar : MonoBehaviour
             Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
             if (tapped)
             {
-                if (firstTapPoint < 3.0f)
+                if (firstTapPoint < 3.0f || inRocket)
                 {
                     if ((tapPoint.y - firstTapPoint) > swipeDistToDetect) //if the tap if above the player car
                     {
@@ -263,9 +284,13 @@ public class playerCar : MonoBehaviour
             useCharge();
             teleportTimer--;
         }
-        if(teleportCharges <= 0)
+        if(teleportCharges <= 0 && tapped)
         {
             endTeleport();
+        }
+        if (teleportCharges > 1)
+        {
+            boltAni();
         }
     }
 
@@ -318,7 +343,10 @@ public class playerCar : MonoBehaviour
             tapped = false;
             newTap = false;
             teleTimer = 0;
+            Instantiate(teleportEffect, transform.position, Quaternion.identity, GameObject.Find("misc backround").transform);
             teleLocation = teleLane;
+            Animator newEffect = Instantiate(teleportEffect, new Vector3(transform.position.x, (teleLane * -1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("misc backround").transform).GetComponent<Animator>();
+            newEffect.Play("tele light exit");
             if (affectCharge)
             {
                 useCharge();
@@ -342,17 +370,21 @@ public class playerCar : MonoBehaviour
     {
         inTeleport = false;
         beginTeleport = false;
-        tapped = true;
+        targetPos = transform.position;
+        inPos = true;
     }
 
-    public void enterTeleport(int uses, bool destr, bool affect)
+    public void enterTeleport(int uses, float boltTime, Color32 boltColor, bool destr, bool affect)
     {
         teleportCharges = uses;
         affectCharge = affect;
         beginTeleport = true;
         destroyObstacle = destr;
-        teleTime = 0.15f;
-        teleTime2 = 0.25f;
+        teleTime = 0.25f;
+        teleTime2 = 0.35f;
+        teleBoltTime = boltTime;
+        teleBoltTimer = boltTime;
+        teleBoltColor = boltColor;
     }
 
     void readyTeleport()
@@ -371,13 +403,31 @@ public class playerCar : MonoBehaviour
     void teleportLane(int lane)
     {
         transform.position = new Vector3(startPos, (-lane * 1.25f) + 0.65f, 0);
-        body.sortingOrder = 2 + lane;
-        window.sortingOrder = 2 + lane;
-        wheelF.sortingOrder = 2 + lane;
-        wheelB.sortingOrder = 2 + lane;
-        livery.sortingOrder = 3 + lane;
-        ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane;
+        setOrder(lane);
         newLane = lane;
+    }
+
+    bool boltSide = false;
+    void boltAni()
+    {
+        teleBoltTimer += Time.deltaTime;
+        if(teleBoltTimer > teleBoltTime)
+        {
+            float boltPosX = Random.Range(2.0f, 4.5f);
+            float boltPosY = 1.5f - getValueScale(boltPosX, 2, 4.5f, 1.5f);
+            float boltRos = 120 - getValueScale(boltPosX, 2, 4.5f, 70);
+            if (boltSide)
+            {
+                boltPosX *= -1;
+                boltRos = 310 - boltRos;
+            }
+            boltSide = !boltSide;
+            GameObject bolt = Instantiate(teleBolt, transform);
+            bolt.transform.localPosition = new Vector3(boltPosX, boltPosY, 0);
+            bolt.transform.localEulerAngles = new Vector3(0, 0, boltRos);
+            bolt.GetComponent<SpriteRenderer>().color = teleBoltColor;
+            teleBoltTimer = 0;
+        }
     }
 
     void shieldAni()
@@ -463,19 +513,50 @@ public class playerCar : MonoBehaviour
         
     }
 
+    public void startRocket(float power, float boostTime, float coinRate, bool makeHolo)
+    {
+        rocket = Instantiate(rocketOBJ, transform.position, Quaternion.identity, transform).GetComponent<rocketBoost>();
+        int carTypeSave = PlayerPrefs.GetInt("playerCarType", 0); //grabes the id of the car type the player last used
+        rocket.setTargetPos(pManager.carPartsData.carTypes[carTypeSave].rocketX, pManager.carPartsData.carTypes[carTypeSave].rocketY, pManager.carPartsData.carTypes[carTypeSave].rocketX2);
+        rocket.startBoost(power, boostTime, coinRate, makeHolo);
+        setOrder(10);
+    }
+
+    void landingRocket()
+    {
+        landingTimer += Time.deltaTime;
+        if(landingTimer > 0.55f)
+        {
+            landRocket();
+        }
+    }
+
+    void landRocket()
+    {
+        inRocket = false;
+        targetPos = transform.position;
+        rocketLanding = false;
+        rocket.destroyed = true;
+        rocket.transform.parent = null;
+        rocket.setAni("rocket standby");
+        setOrder(findTapLane(targetPos.y));
+    }
+
     public void laneUp(int multiplier) //if tap is above player car
     {
         float maxLane = 0;
-        if (controller.topLane)
+        if (inRocket && !rocketLanding) { maxLane = 10.64f; }
+        else if (controller.topLane)
         {
-            if (controller.topLaneTime < 130) { maxLane = 0.65f; }
-            else { maxLane = -0.6f; }
+            if (controller.topLaneTime < 130) { maxLane = 0.64f; }
+            else { maxLane = -0.61f; }
         }
         else
         {
-            if (controller.topLaneTime < 10) { maxLane = -0.6f; }
-            else { maxLane = 0.65f; }
+            if (controller.topLaneTime < 10) { maxLane = -0.61f; }
+            else { maxLane = 0.64f; }
         }
+
         if (controller.inTutorial && controller.tutorialSteps < 3)
         {
             if(controller.tutorialSteps == 1 && controller.canSwipeTutorialTimer())
@@ -506,9 +587,25 @@ public class playerCar : MonoBehaviour
         }
         else
         {
-            if (targetPos.y > -4.35f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+            if (inRocket)
             {
-                startSlide(false, multiplier);
+                if (targetPos.y > 5.66f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+                {
+                    if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
+                    {
+                        startSlide(false, multiplier);
+                    }
+                }
+            }
+            else
+            {
+                if (targetPos.y > -4.34f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+                {
+                    if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
+                    {
+                        startSlide(false, multiplier);
+                    }
+                }
             }
         }
     }
@@ -542,7 +639,7 @@ public class playerCar : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (controller.playing)
+        if (controller.playing && !(inRocket && rocket.boosting))
         {
             switch (collision.tag)
             {
@@ -561,6 +658,17 @@ public class playerCar : MonoBehaviour
                 case "power-up":
                     hitPowerUp(collision);
                     break;
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (rocketLanding)
+        {
+            if (collision.tag == "car")
+            {
+                collision.GetComponent<cars>().makeDestroyed();
             }
         }
     }
@@ -623,6 +731,10 @@ public class playerCar : MonoBehaviour
                     collision.GetComponent<cars>().makeDisabled(Random.Range(5, 10), Random.Range(forceFactor * 0.75f, forceFactor * 1.25f));
                     boost.takeBoost();
                 }
+            }
+            else if (rocketLanding)
+            {
+                collision.GetComponent<cars>().makeDestroyed();
             }
             else
             {
@@ -720,6 +832,16 @@ public class playerCar : MonoBehaviour
         wheelB.sortingOrder += change;
         livery.sortingOrder += change;
         if (ramOn) { ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder += change; }
+    }
+
+    private void setOrder(int lane)
+    {
+        body.sortingOrder = 2 + lane;
+        window.sortingOrder = 2 + lane;
+        wheelF.sortingOrder = 2 + lane;
+        wheelB.sortingOrder = 2 + lane;
+        livery.sortingOrder = 3 + lane;
+        if (ramOn) { ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
     }
 
     public void getPlayerCustomazation()

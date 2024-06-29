@@ -360,16 +360,16 @@ public class main : MonoBehaviour
         updateSmokeScreen();
 
         // update blimp
-        if ((scoreBlimp.transform.position.x < -7.79f || scoreBlimp.transform.position.x > -4.82f) && Mathf.Abs(scoreBlimp.transform.position.x - newBlimpLocation.x) > 1.0) //if blimp went out of bounce on the X
+        if ((scoreBlimp.transform.localPosition.x < -7.79f || scoreBlimp.transform.localPosition.x > -4.82f) && Mathf.Abs(scoreBlimp.transform.localPosition.x - newBlimpLocation.x) > 1.0) //if blimp went out of bounce on the X
         {
             updateBlimpX(); // find new target location for blimp
         }
-        if ((scoreBlimp.transform.position.y > 4.58f || scoreBlimp.transform.position.y < 3.86f) && Mathf.Abs(scoreBlimp.transform.position.y - newBlimpLocation.y) > 0.5) //if blimp went out of bounce on the X
+        if ((scoreBlimp.transform.localPosition.y > 4.58f || scoreBlimp.transform.localPosition.y < 3.86f) && Mathf.Abs(scoreBlimp.transform.localPosition.y - newBlimpLocation.y) > 0.5) //if blimp went out of bounce on the X
         {
             updateBlimpY(); // find new target location for blimp
         }
 
-        scoreBlimp.transform.position += blimpSpeed * Time.deltaTime; // updates blimp position
+        scoreBlimp.transform.localPosition += blimpSpeed * Time.deltaTime; // updates blimp position
 
         //makes milestone sign
         if (score > (milestone + 210))
@@ -639,7 +639,7 @@ public class main : MonoBehaviour
     {
         if (skylineLast.position.x < 10)
         {
-            buildings newSkyline = Instantiate(skyline, new Vector3(skylineLast.position.x + skylineDist, 2.5f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+            buildings newSkyline = Instantiate(skyline, new Vector3(skylineLast.position.x + skylineDist, skylineLast.position.y, 0), Quaternion.identity, GameObject.Find("skyline").transform).GetComponent<buildings>(); //spawns new backround building
             newSkyline.setSkin(getbuildingFromOdds(skylineOdds, skylineCurrOdds, skylineSkins));
             skylineLast = newSkyline.gameObject.transform;
         }
@@ -651,7 +651,7 @@ public class main : MonoBehaviour
         cloudTimer += Time.deltaTime * mph; //timer that spawns a new builing
         if (cloudTimer > 925)
         {
-            Instantiate(cloud, new Vector3(13.5f, Random.Range(3.25f, 5.8f), 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+            Instantiate(cloud, new Vector3(13.5f, Random.Range(3.25f, 5.8f), 0), Quaternion.identity, GameObject.Find("clouds").transform); //spawns new backround building
             cloudTimer = 0;
         }
     }
@@ -1254,13 +1254,13 @@ public class main : MonoBehaviour
     public void updateBlimpX()
     {
         blimpSpeed = new Vector3(blimpSpeed.x * -1, blimpSpeed.y, 0);
-        newBlimpLocation = new Vector3(scoreBlimp.transform.position.x, newBlimpLocation.y, 0);
+        newBlimpLocation = new Vector3(scoreBlimp.transform.localPosition.x, newBlimpLocation.y, 0);
     }
 
     public void updateBlimpY()
     {
         blimpSpeed = new Vector3(blimpSpeed.x, blimpSpeed.y * -1, 0);
-        newBlimpLocation = new Vector3(newBlimpLocation.x, scoreBlimp.transform.position.y, 0);
+        newBlimpLocation = new Vector3(newBlimpLocation.x, scoreBlimp.transform.localPosition.y, 0);
     }
 
     public void gameGameOverButton()
@@ -1446,8 +1446,8 @@ public class main : MonoBehaviour
 
     private void changeOdds(int index, List<float> setList, List<float> currentList)
     {
-        float diff = currentList[index] - (setList[index]/2);
-        float listDiff = (diff * setList[index]) / (setList.Count - 1.0f);
+        float diff = currentList[index] - (setList[index]/2); //the odds that are being taken away from use
+        float listDiff = (diff * setList[index]) / (setList.Count - 1.0f); //the gap of what would of been added when changing odds
         for (int i = 0; i < setList.Count; i++)
         {
             currentList[i] += (diff * setList[i]) + listDiff; //this took me way to fucking long to figue out

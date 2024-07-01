@@ -122,6 +122,11 @@ public class police_Car : cars
                         transform.position = new Vector3(transform.position.x, playerCarOBJ.targetPos.y, 0);
                     }
                 }
+
+                if (controller.laserOn)
+                {
+                    getsShot();
+                }
             }
             else
             {
@@ -140,6 +145,7 @@ public class police_Car : cars
                 }
             }
         }
+
         else
         {
             if (chasingPlayer)
@@ -166,6 +172,15 @@ public class police_Car : cars
         if (isDestroyed)
         {
             amDestroyed();
+        }
+
+        if (makingTiny)
+        {
+            doTiny();
+        }
+        else if (makingBig)
+        {
+            doBig();
         }
     }
 

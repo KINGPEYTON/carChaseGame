@@ -4,15 +4,28 @@ using UnityEngine;
 
 public class powerUpManager : MonoBehaviour
 {
-    public Transform pCar;
-    public speedometer speedmer;
-
     public List<int> tiers;
-    public List<Sprite> icons;
+    public List<List<Sprite>> icons = new List<List<Sprite>>();
+
+    public List<Sprite> magnetIcons;
+    public List<Sprite> ramIcons;
+    public List<Sprite> boostIcons;
+    public List<Sprite> coinhunaIcons;
+    public List<Sprite> visionIcons;
+    public List<Sprite> randomIcons;
+    public List<Sprite> shieldIcons;
+    public List<Sprite> rocketIcons;
+    public List<Sprite> tinyIcons;
+    public List<Sprite> slowdownIcons;
+    public List<Sprite> teleportIcons;
+    public List<Sprite> laserIcons;
 
     public GameObject magneticField;
     public GameObject bigCoinhuna;
+    public GameObject tinyCar;
     public GameObject slowdown;
+    public Transform pCar;
+    public speedometer speedmer;
 
     void Awake()
     {
@@ -26,6 +39,19 @@ public class powerUpManager : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject);
         }
+        
+        icons.Add(magnetIcons);
+        icons.Add(ramIcons);
+        icons.Add(boostIcons);
+        icons.Add(coinhunaIcons);
+        icons.Add(visionIcons);
+        icons.Add(randomIcons);
+        icons.Add(shieldIcons);
+        icons.Add(rocketIcons);
+        icons.Add(tinyIcons);
+        icons.Add(slowdownIcons);
+        icons.Add(teleportIcons);
+        icons.Add(laserIcons);
     }
 
     public void collectPowerUp(int id)
@@ -103,7 +129,7 @@ public class powerUpManager : MonoBehaviour
                 }
                 break;
             case 4:
-                activateVision(15, 2);
+                activateVision(5, 2);
                 break;
             case 5:
                 activateRandom();
@@ -137,7 +163,18 @@ public class powerUpManager : MonoBehaviour
                 }
                 break;
             case 8:
-                activateTinyCars(15);
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateTinyCars(15, false);
+                        break;
+                    case 1:
+                        activateTinyCars(15, true);
+                        break;
+                    case 2:
+                        activateTinyCars(25, true);
+                        break;
+                }
                 break;
             case 9:
                 switch (tiers[id])
@@ -167,6 +204,20 @@ public class powerUpManager : MonoBehaviour
                         break;
                 }
                 break;
+            case 11:
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateLaser(10, 0.65f, 1.5f, false);
+                        break;
+                    case 1:
+                        activateLaser(10, 0.35f, 0.75f, false);
+                        break;
+                    case 2:
+                        activateLaser(20, 0.35f, 0.75f, true);
+                        break;
+                }
+                break;
         }
     }
 
@@ -177,32 +228,32 @@ public class powerUpManager : MonoBehaviour
         newMagnet.lifetime = time;
         newMagnet.setSize(strength);
         newMagnet.getHolo = getHolo;
-        speedmer.startPowerup(time, icons[0], true);
+        speedmer.startPowerup(time, icons[0][tiers[0]], true);
     }
 
     public void activateRam(int hits, bool justCars, bool headOn)
     {
 
         pCar.gameObject.GetComponent<playerCar>().startRam(hits, justCars, headOn);
-        speedmer.startPowerup(hits, icons[1], false);
+        speedmer.startPowerup(hits, icons[1][tiers[1]], false);
     }
 
     public void activateBoost(int uses, float power, bool hitProt)
     {
         pCar.gameObject.GetComponent<playerCar>().startBoost(uses, power, hitProt);
-        speedmer.startPowerup(uses, icons[2], false);
+        speedmer.startPowerup(uses, icons[2][tiers[2]], false);
     }
 
     public void activateCoin(int time, float spawnMultipliyer, bool startHolo)
     {
         coinhuna chuna = Instantiate(bigCoinhuna, GameObject.Find("contoller").transform).GetComponent<coinhuna>();
         chuna.setCoinhuna(time, spawnMultipliyer, startHolo);
-        speedmer.startPowerup(time, icons[3], true);
+        speedmer.startPowerup(time, icons[3][tiers[3]], true);
     }
 
     public void activateVision(int time, int avoidness)
     {
-
+        Debug.Log("Not yet added");
     }
 
     public void activateRandom()
@@ -213,29 +264,38 @@ public class powerUpManager : MonoBehaviour
     public void activateShield(int time, bool autoStart)
     {
         pCar.gameObject.GetComponent<playerCar>().startShield(time, autoStart);
-        speedmer.startPowerup(time, icons[6], autoStart);
+        speedmer.startPowerup(time, icons[6][tiers[6]], autoStart);
     }
 
     public void activateRocket(float power, float boostTime, float coinDist, bool allHolo)
     {
         pCar.gameObject.GetComponent<playerCar>().startRocket(power, boostTime, coinDist, allHolo);
-        speedmer.startPowerup(power, icons[7], false);
+        speedmer.startPowerup(power, icons[7][tiers[7]], false);
     }
 
-    public void activateTinyCars(int time)
+    public void activateTinyCars(int time, bool allCars)
     {
+        tinyCars tCars = Instantiate(tinyCar, GameObject.Find("contoller").transform).GetComponent<tinyCars>();
+        tCars.setTinyCars(time, allCars);
+        speedmer.startPowerup(time, icons[8][tiers[8]], true);
     }
 
     public void activateSlowdown(int time, float spawns, bool affectScore)
     {
         incognito inco = Instantiate(slowdown, GameObject.Find("contoller").transform).GetComponent<incognito>();
         inco.setSlowdown(time, spawns, affectScore);
-        speedmer.startPowerup(time, icons[9], true);
+        speedmer.startPowerup(time, icons[9][tiers[9]], true);
     }
 
     public void activateTeleport(int uses, float boltTimer, Color32 boltColor, bool destroyObjs, bool affectCharge)
     {
         pCar.gameObject.GetComponent<playerCar>().enterTeleport(uses, boltTimer, boltColor, destroyObjs, affectCharge);
-        speedmer.startPowerup(uses, icons[10], false);
+        speedmer.startPowerup(uses, icons[10][tiers[10]], false);
+    }
+
+    public void activateLaser(int shots, float fireRate, float cooldown, bool autoShoot)
+    {
+        pCar.gameObject.GetComponent<playerCar>().startLaser(shots, fireRate, cooldown, autoShoot);
+        speedmer.startPowerup(shots, icons[11][tiers[11]], false);
     }
 }

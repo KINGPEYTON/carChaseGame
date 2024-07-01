@@ -89,6 +89,10 @@ public class playerCar : MonoBehaviour
     public GameObject rocketOBJ;
     public rocketBoost rocket;
 
+    public GameObject laserGun;
+    public laser carLaser;
+    public bool laserAutoShoot;
+
     void OnEnable()
     {
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
@@ -147,6 +151,11 @@ public class playerCar : MonoBehaviour
             if (boosting)
             {
                 doBoost();
+            }
+
+            if(controller.laserOn && laserAutoShoot && !carLaser.inCooldown)
+            {
+                shootCloseCar(1.35f);
             }
 
             checkPowerUp();
@@ -542,6 +551,15 @@ public class playerCar : MonoBehaviour
         setOrder(findTapLane(targetPos.y));
     }
 
+    public void startLaser(int shots, float fireRate, float cooldown, bool autoShoot)
+    {
+        carLaser = Instantiate(laserGun, transform.position, Quaternion.identity, transform).GetComponent<laser>();
+        carLaser.startLaser(shots, fireRate, cooldown);
+        int carTypeSave = PlayerPrefs.GetInt("playerCarType", 0); //grabes the id of the car type the player last used
+        carLaser.setTargetPos(pManager.carPartsData.carTypes[carTypeSave].laserX, pManager.carPartsData.carTypes[carTypeSave].laserY);
+        laserAutoShoot = autoShoot;
+    }
+
     public void laneUp(int multiplier) //if tap is above player car
     {
         float maxLane = 0;
@@ -685,12 +703,7 @@ public class playerCar : MonoBehaviour
                     {
                         speedo.finishPowerup();
                     }
-                    float forceFactor = (collision.transform.position.y - transform.position.y) * 3.5f;
-                    if (Mathf.Abs(forceFactor) < 0.45)
-                    {
-                        forceFactor = Random.Range(1.5f, 4.0f) * ((Random.Range(0, 2) * 2) - 1);
-                    }
-                    collision.GetComponent<cars>().makeDisabled(Random.Range(5, 10), Random.Range(forceFactor * 0.75f, forceFactor * 1.25f));
+                    disableCar(collision, 3.5f);
                 }
             }
             else if (ramOn)
@@ -701,12 +714,7 @@ public class playerCar : MonoBehaviour
                     {
                         if (!ram.headOn || Mathf.Abs(transform.position.y - collision.transform.position.y) < 0.25f)
                         {
-                            float forceFactor = (collision.transform.position.y - transform.position.y) * 2.5f;
-                            if (Mathf.Abs(forceFactor) < 0.45)
-                            {
-                                forceFactor = Random.Range(1.5f, 4.0f) * ((Random.Range(0, 2) * 2) - 1);
-                            }
-                            collision.GetComponent<cars>().makeDisabled(Random.Range(5, 10), Random.Range(forceFactor * 0.75f, forceFactor * 1.25f));
+                            disableCar(collision, 2.5f);
                             ram.ramHit();
                         }
                         else
@@ -720,17 +728,16 @@ public class playerCar : MonoBehaviour
                     }
                 }
             }
-            if(boosting && boost.hitProt)
+            else if(boosting && boost.hitProt)
             {
                 if (!collision.GetComponent<cars>().isDisabled) {
-                    float forceFactor = (collision.transform.position.y - transform.position.y) * 2.5f;
-                    if (Mathf.Abs(forceFactor) < 0.45)
-                    {
-                        forceFactor = Random.Range(1.5f, 4.0f) * ((Random.Range(0, 2) * 2) - 1);
-                    }
-                    collision.GetComponent<cars>().makeDisabled(Random.Range(5, 10), Random.Range(forceFactor * 0.75f, forceFactor * 1.25f));
+
+                    disableCar(collision, 2.15f);
                     boost.takeBoost();
                 }
+            } else if (collision.GetComponent<cars>().isTiny && !collision.GetComponent<cars>().isDisabled)
+            {
+                disableCar(collision, 7.5f);
             }
             else if (rocketLanding)
             {
@@ -778,6 +785,16 @@ public class playerCar : MonoBehaviour
         crash(); //what happens when the player crashes
     }
 
+    void disableCar(Collider2D collision, float multiplyer)
+    {
+        float forceFactor = (collision.transform.position.y - transform.position.y) * multiplyer;
+        if (Mathf.Abs(forceFactor) < 0.45)
+        {
+            forceFactor = Random.Range(1.5f, 4.0f) * ((Random.Range(0, 2) * 2) - 1);
+        }
+        collision.GetComponent<cars>().makeDisabled(Random.Range(5, 10), Random.Range(forceFactor * 0.75f, forceFactor * 1.25f));
+    }
+
     void hitBarrier(Collider2D collision)
     {
         laneDown(1);
@@ -799,10 +816,13 @@ public class playerCar : MonoBehaviour
             smokeLevel = 500;
         }
 
-        if (controller.screenDistortTarget < smokeLevel / 500)
+        if (!inShield)
         {
+            if (controller.screenDistortTarget < smokeLevel / 500)
+            {
 
-            controller.screenDistortTarget = smokeLevel / 500;
+                controller.screenDistortTarget = smokeLevel / 500;
+            }
         }
     }
 
@@ -831,7 +851,7 @@ public class playerCar : MonoBehaviour
         wheelF.sortingOrder += change;
         wheelB.sortingOrder += change;
         livery.sortingOrder += change;
-        if (ramOn) { ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder += change; }
+        if (controller.laserOn) { carLaser.gameObject.GetComponent<SpriteRenderer>().sortingOrder += change; }
     }
 
     private void setOrder(int lane)
@@ -842,6 +862,7 @@ public class playerCar : MonoBehaviour
         wheelB.sortingOrder = 2 + lane;
         livery.sortingOrder = 3 + lane;
         if (ramOn) { ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
+        if (controller.laserOn) { carLaser.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
     }
 
     public void getPlayerCustomazation()
@@ -921,17 +942,57 @@ public class playerCar : MonoBehaviour
         return new Vector3(xVal, yVal, 1) + startScale;
     }
 
+    private void shootCloseCar(float min)
+    {
+        Transform closestCar = findNearestCar(min, transform.position.y, 1.35f);
+        if (carLaser.carToDestroy == null && closestCar != null)
+        {
+            float closestDistX = closestCar.position.x - transform.position.x;
+            float closestDistY = closestCar.position.y - transform.position.y;
+            if ((closestDistX < 5.75f && closestDistX > min) && Mathf.Abs(closestDistY) < 1.35f)
+            {
+                carLaser.makeTarget(closestCar.gameObject.GetComponent<cars>());
+            }
+        }
+    }
+
     private void playHorn()
     {
         Transform closestCar = findClosestCar();
         if (closestCar != null)
         {
             float closestDist = transform.position.x - closestCar.position.x;
-            //Debug.Log(closestDist + " : "+ closestCar.position.x);
             if ((closestDist < 2.75f && closestDist > 1) && closestCar.position.y == targetPos.y)
             {
                 closestCar.gameObject.GetComponent<cars>().nearCrash();
             }
+        }
+    }
+
+    private Transform findNearestCar(float min, float yVal, float yTol)
+    {
+        try
+        {
+            Transform closest = controller.carsInGame[0].transform;
+            for (int i = 1; i < controller.carsInGame.Count; i++)
+            {
+                Transform currCar = controller.carsInGame[i].transform;
+                if (Mathf.Abs(currCar.position.y - yVal) < yTol)
+                {
+                    if (currCar.position.x > transform.position.x + min)
+                    {
+                        if (currCar.position.x < closest.position.x || closest.position.x < transform.position.x + min)
+                        {
+                            closest = currCar;
+                        }
+                    }
+                }
+            }
+            return closest;
+        }
+        catch
+        {
+            return null;
         }
     }
 

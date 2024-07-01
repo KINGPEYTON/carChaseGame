@@ -93,29 +93,33 @@ public class rocketBoost : MonoBehaviour
                 targY = pCar.targetPos.y + 10;
                 setAni("rocket boost");
             }
-        } else if (boosting)
-        {
-            if (inSky)
-            {
-                boostDown();
-            }
-            else
-            {
-                boostUp();
-            }
-            spawnCoins();
         }
-        else if (inSky)
+        else if (controller.playing)
         {
-            sky();
-            spawnCoins();
-        }
-        else if (destroyed)
-        {
-            transform.position = transform.position - new Vector3(Time.deltaTime / 6 * controller.mph, 0, 0); //moves guard across the screen
-            if (transform.position.x <= -13) //checks if its offscreen
+            if (boosting)
             {
-                Destroy(gameObject);
+                if (inSky)
+                {
+                    boostDown();
+                }
+                else
+                {
+                    boostUp();
+                }
+                spawnCoins();
+            }
+            else if (inSky)
+            {
+                sky();
+                spawnCoins();
+            }
+            else if (destroyed)
+            {
+                transform.position = transform.position - new Vector3(Time.deltaTime / 6 * controller.mph, 0, 0); //moves guard across the screen
+                if (transform.position.x <= -13) //checks if its offscreen
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }

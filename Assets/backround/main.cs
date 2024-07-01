@@ -43,6 +43,8 @@ public class main : MonoBehaviour
     public float coinSpawnMultiplier;
     public bool isBigCoinhuna;
 
+    public bool laserOn;
+
     public GameObject pauseMenu;
 
     public GameObject scoreBlimp;
@@ -131,6 +133,10 @@ public class main : MonoBehaviour
     public GameObject[] milestoneSigns;
     public GameObject milestoneBigSign;
     public int milestone;
+
+    public List<GameObject> carsInGame;
+    public bool inTinyCars;
+    public bool allTinyCars;
 
     public List<GameObject> carsList;
     public List<float> carsOdds;
@@ -792,7 +798,7 @@ public class main : MonoBehaviour
                 frontBuildingDist = 10;
                 buildingDist = 10;
                 Instantiate(bridgeStartConnector, new Vector3(guardLast.position.x -1, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform);
-                Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + 2, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + 1.5f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
                 guardLast = newBar;
                 guardDist = 4.3665f;
                 buildingFrontList = 3;
@@ -1047,7 +1053,11 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        if (inTinyCars)
+        {
+            makeCarTiny(newCar, true);
+        }
     }
 
     void spawnLargeCar()
@@ -1061,7 +1071,11 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        if (inTinyCars)
+        {
+            makeCarTiny(newCar, true);
+        }
     }
 
     void spawnSpecalCar()
@@ -1075,7 +1089,11 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        Instantiate(getCarFromOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList), new Vector3(25, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = Instantiate(getCarFromOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList), new Vector3(25, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        if (inTinyCars)
+        {
+            makeCarTiny(newCar, true);
+        }
     }
 
     void spawnCoin()
@@ -1340,6 +1358,43 @@ public class main : MonoBehaviour
             }
         }
         coinSpawnMultiplier = 1;
+    }
+
+    void makeCarTiny(GameObject tinyCar, bool doInstant)
+    {
+        cars c = tinyCar.GetComponent<cars>();
+        if(allTinyCars || c.isCar)
+        {
+            c.makeTiny(doInstant);
+        }
+    }
+
+    void makeCarNormal(GameObject tinyCar)
+    {
+        cars c = tinyCar.GetComponent<cars>();
+        if (allTinyCars || c.isCar)
+        {
+            c.makeNormal();
+        }
+    }
+
+    public void startTinyCars(bool allTiny)
+    {
+        inTinyCars = true;
+        allTinyCars = allTiny;
+        foreach (GameObject ca in carsInGame)
+        {
+            makeCarTiny(ca, false);
+        }
+    }
+
+    public void endTinyCars()
+    {
+        inTinyCars = false;
+        foreach (GameObject ca in carsInGame)
+        {
+            makeCarNormal(ca);
+        }
     }
 
     public void changeMasterVol(float newVol)

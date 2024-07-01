@@ -54,6 +54,11 @@ public class maniac_van : cars
             {
                 transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / currSpeed), turningSpeed * Time.deltaTime, 0); //car movment in the start up animation
             }
+
+            if (controller.laserOn)
+            {
+                getsShot();
+            }
         }
         else
         {
@@ -90,6 +95,15 @@ public class maniac_van : cars
         if (isDestroyed)
         {
             amDestroyed();
+        }
+
+        if (makingTiny)
+        {
+            doTiny();
+        }
+        else if (makingBig)
+        {
+            doBig();
         }
 
     }

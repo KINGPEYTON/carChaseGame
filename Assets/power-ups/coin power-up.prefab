@@ -109,8 +109,10 @@ MonoBehaviour:
   tier: 0
   tierSkins:
   - {fileID: 21300000, guid: eb33f8dc7d7dc4f5792d618f954e2171, type: 3}
-  icon:
-  - {fileID: 21300000, guid: 5f33774fd964e46fca9498dd06d5654e, type: 3}
+  - {fileID: 21300000, guid: eb33f8dc7d7dc4f5792d618f954e2171, type: 3}
+  - {fileID: 21300000, guid: eb33f8dc7d7dc4f5792d618f954e2171, type: 3}
+  - {fileID: 21300000, guid: eb33f8dc7d7dc4f5792d618f954e2171, type: 3}
+  icon: {fileID: 0}
   iconOBJ: {fileID: 8652440727118574333, guid: 1203cbdba63e5422aae0db40f3556adf, type: 3}
   bounceUp: 0
   startPoint: 0

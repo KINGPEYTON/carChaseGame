@@ -45,7 +45,9 @@
             "boostY": -0.5,
             "rocketX": -3.0,
             "rocketY": -1.0,
-            "rocketX2": 5.0
+            "rocketX2": 5.0,
+            "laserX": -1,
+            "laserY": 0
         },
         {
             "typeName": "Retro",
@@ -89,7 +91,12 @@
             "ramX": 4,
             "ramY": -0.3,
             "boostX": -3.4,
-            "boostY": -0.5
+            "boostY": -0.5,
+            "rocketX": -3.0,
+            "rocketY": -1.0,
+            "rocketX2": 5.0,
+            "laserX": -1,
+            "laserY": 0
         }
     ],
     "wheelTypes": [

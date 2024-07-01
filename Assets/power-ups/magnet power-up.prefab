@@ -103,13 +103,16 @@ MonoBehaviour:
   powerUpId: 0
   typeID: 0
   controller: {fileID: 0}
+  pwManager: {fileID: 0}
   popAni: {fileID: 0}
   speed: 0
   tier: 0
   tierSkins:
   - {fileID: 21300000, guid: 4cf85174a5f7c4b64a087982dd92116b, type: 3}
-  icon:
-  - {fileID: 21300000, guid: 87d60ed71484a4d9c99de3de2d13c241, type: 3}
+  - {fileID: 21300000, guid: 4cf85174a5f7c4b64a087982dd92116b, type: 3}
+  - {fileID: 21300000, guid: 4cf85174a5f7c4b64a087982dd92116b, type: 3}
+  - {fileID: 21300000, guid: 4cf85174a5f7c4b64a087982dd92116b, type: 3}
+  icon: {fileID: 0}
   iconOBJ: {fileID: 8652440727118574333, guid: 1203cbdba63e5422aae0db40f3556adf, type: 3}
   bounceUp: 0
   startPoint: 0

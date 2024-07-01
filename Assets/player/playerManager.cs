@@ -241,6 +241,7 @@ public class carTypesReader : carPart
     public float wheelHight;
     public float wheelF;
     public float wheelB;
+
     public float ramX;
     public float ramY;
     public float boostX;
@@ -248,6 +249,9 @@ public class carTypesReader : carPart
     public float rocketX;
     public float rocketY;
     public float rocketX2;
+    public float laserX;
+    public float laserY;
+
     public carBodyReader[] bodies;
 }
 

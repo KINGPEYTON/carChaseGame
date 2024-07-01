@@ -14,7 +14,7 @@ public class powerUp : MonoBehaviour
 
     public int tier;
     public List<Sprite> tierSkins;
-    public List<Sprite> icon;
+    public Sprite icon;
     public GameObject iconOBJ;
 
     //animation stuff
@@ -34,7 +34,8 @@ public class powerUp : MonoBehaviour
         popAni.enabled = false;
         speed = 7.5f;
 
-        //tier = pwManager.tiers[powerUpId];
+        tier = pwManager.tiers[powerUpId];
+        icon = pwManager.icons[powerUpId][tier];
         GetComponent<SpriteRenderer>().sprite = tierSkins[tier];
     }
 
@@ -85,7 +86,7 @@ public class powerUp : MonoBehaviour
         popped = true;
         GameObject iconThing = Instantiate(iconOBJ, transform.position, Quaternion.identity);
         iconThing.GetComponent<powerUpIcon>().id = powerUpId;
-        iconThing.GetComponent<SpriteRenderer>().sprite = icon[tier];
+        iconThing.GetComponent<SpriteRenderer>().sprite = icon;
         setPopAnimation();
     }
 

@@ -24,6 +24,7 @@ public class powerUpManager : MonoBehaviour
     public GameObject bigCoinhuna;
     public GameObject tinyCar;
     public GameObject slowdown;
+    public GameObject randomBar;
     public Transform pCar;
     public speedometer speedmer;
 
@@ -129,22 +130,36 @@ public class powerUpManager : MonoBehaviour
                 }
                 break;
             case 4:
-                activateVision(5, 2);
+                activateVision(5, false, 2, 0.5f);
                 break;
             case 5:
-                activateRandom();
+                switch (tiers[id])
+                {
+                    case 0:
+                        activateRandom(5.6f, false, false, false);
+                        break;
+                    case 1:
+                        activateRandom(5.6f, true, false, false);
+                        break;
+                    case 2:
+                        activateRandom(5.6f, true, true, false);
+                        break;
+                    case 3:
+                        activateRandom(5.6f, true, true, true);
+                        break;
+                }
                 break;
             case 6:
                 switch (tiers[id])
                 {
                     case 0:
-                        activateShield(10, true);
+                        activateShield(10, true, false);
                         break;
                     case 1:
-                        activateShield(15, true);
+                        activateShield(15, true, false);
                         break;
                     case 2:
-                        activateShield(15, false);
+                        activateShield(15, false, false);
                         break;
                 }
                 break;
@@ -208,7 +223,7 @@ public class powerUpManager : MonoBehaviour
                 switch (tiers[id])
                 {
                     case 0:
-                        activateLaser(10, 0.65f, 1.5f, false);
+                        activateLaser(10, 0.55f, 1.5f, false);
                         break;
                     case 1:
                         activateLaser(10, 0.35f, 0.75f, false);
@@ -251,19 +266,22 @@ public class powerUpManager : MonoBehaviour
         speedmer.startPowerup(time, icons[3][tiers[3]], true);
     }
 
-    public void activateVision(int time, int avoidness)
+    public void activateVision(int time, bool showIcons, float turnMultiplyer, float hitBoxSize)
     {
         Debug.Log("Not yet added");
     }
 
-    public void activateRandom()
+    public void activateRandom(float spinTime, bool maxTier, bool isLonger, bool isStronger)
     {
-
+        randomWheel rWheel = Instantiate(randomBar).GetComponent<randomWheel>();
+        rWheel.pwManager = this;
+        rWheel.startRandom(spinTime - 1, maxTier, isLonger, isStronger);
+        speedmer.startPowerup(spinTime, icons[5][tiers[10]], true);
     }
 
-    public void activateShield(int time, bool autoStart)
+    public void activateShield(int time, bool autoStart, bool startWhenHit)
     {
-        pCar.gameObject.GetComponent<playerCar>().startShield(time, autoStart);
+        pCar.gameObject.GetComponent<playerCar>().startShield(time, autoStart, startWhenHit);
         speedmer.startPowerup(time, icons[6][tiers[6]], autoStart);
     }
 

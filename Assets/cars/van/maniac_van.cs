@@ -48,12 +48,28 @@ public class maniac_van : cars
         {
             if (controller.mph > controller.playerCar.startMph) // checks if its not in the game start animation
             {
-                transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / currSpeed), turningSpeed * Time.deltaTime, 0); //move fowards in game
+                if (currSpeed > 0)
+                {
+                    transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / currSpeed), turningSpeed * Time.deltaTime, 0); //move fowards in game
+                }
+                else
+                {
+                    transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
+                }
             }
             else
             {
-                transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / currSpeed), turningSpeed * Time.deltaTime, 0); //car movment in the start up animation
+                if (currSpeed > 0)
+                {
+                    transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / currSpeed), turningSpeed * Time.deltaTime, 0); //car movment in the start up animation
+                }
+                else
+                {
+                    transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / 3.5f), 9, 0); //car movment in the start up animation
+                }
             }
+
+            spawnCoin();
 
             if (controller.laserOn)
             {
@@ -62,12 +78,13 @@ public class maniac_van : cars
         }
         else
         {
-            transform.position = transform.position + new Vector3(Time.deltaTime * (currSpeed / 2.0f), turningSpeed * Time.deltaTime, 0); // moves the across cars the screen when game isnt on (like game over screen)
+            if (currSpeed > 0)
+            {
+                transform.position = transform.position + new Vector3(Time.deltaTime * (currSpeed / 2.0f), turningSpeed * Time.deltaTime, 0); // moves the across cars the screen when game isnt on (like game over screen)
+            } else {
+                transform.position = transform.position + new Vector3(0, 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
+            }
         }
-
-        spawnCoin();
-
-        checkInBounce();
 
         if (transform.position.x <= -12) // checks if the car is on screen
         {
@@ -92,6 +109,10 @@ public class maniac_van : cars
         {
             amDisabled();
         }
+        else
+        {
+            checkInBounce();
+        }
         if (isDestroyed)
         {
             amDestroyed();
@@ -105,12 +126,50 @@ public class maniac_van : cars
         {
             doBig();
         }
-
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public override void makeDisabled(float xF, float yF)
     {
-        if (collision.tag == "car") //if a car hits another car
+        isDisabled = true;
+        currSpeed = 0;
+        startSpeed = 0;
+        xForce = xF;
+        yForce = yF;
+    }
+
+    void hitCar(Collider2D collision)
+    {
+        cars daCarhit = collision.GetComponent<cars>();
+        if (isDisabled)
+        {
+            if (daCarhit.isDisabled)
+            {
+                if (xForce > daCarhit.xForce)
+                {
+                    daCarhit.xForce = xForce * Random.Range(0.65f, 0.85f);
+                }
+                if (yForce > daCarhit.yForce)
+                {
+                    daCarhit.yForce = yForce * Random.Range(0.65f, 0.85f);
+                }
+            }
+            else
+            {
+                float xF = xForce; float yF = yForce;
+                if (xF == 0) { xF = -1.5f; } //if(yF == 0) { yF = -0.5f; }
+                daCarhit.makeDisabled(xF * 0.55f, yF * 0.55f);
+                if (controller.isOver)
+                {
+                    controller.bannedLanes.Add(daCarhit.lane);
+                }
+            }
+
+            xForce *= Random.Range(-0.9f, -0.65f);
+            yForce *= -Random.Range(-0.9f, -0.65f);
+
+            isHit = false;
+        }
+        else if (!isDestroyed && !daCarhit.isDestroyed && !daCarhit.isDisabled)
         {
             if (transform.position.y > (collision.transform.position.y + 0.4f))
             {
@@ -122,7 +181,11 @@ public class maniac_van : cars
             }
             else if (transform.position.x < collision.transform.position.x)
             {
-                currSpeed = collision.GetComponent<cars>().speed - 1; //changes the speed so cars won't go through eachother
+                if (daCarhit.speed > 8)
+                {
+                    currSpeed = daCarhit.speed - 1; //changes the speed so cars won't go through eachother
+                }
+                else { daCarhit.speed = currSpeed + 1; }
             }
         }
     }
@@ -134,7 +197,8 @@ public class maniac_van : cars
             Instantiate(coins, transform.position, Quaternion.identity, GameObject.Find("coins").transform);
             coinTimer = 0.75f;//Random.Range(0.5f, 1.15f);
         }
-        coinTimer -= Time.deltaTime;
+        if (isTiny) { coinTimer -= Time.deltaTime / 2; }
+        else { coinTimer -= Time.deltaTime; }
     }
 
     private void checkInBounce()

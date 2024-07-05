@@ -16,11 +16,11 @@ public class cars : MonoBehaviour
     public bool switchDown;
     public GameObject turnUp;
     public GameObject turnDown;
-    public bool willSwith;
     public float switchTimer;
 
     public float turningTimer;
     public float turnTime; // the time it shoul take the player car to switch lanes
+    public float startTurnPos;
     public float targPos;
     public float disMove; //speed the car has to move to get to targetPos on time
     public float overshoot; // keeps track of the distance moved so you know it wont go too far
@@ -64,7 +64,7 @@ public class cars : MonoBehaviour
         controller.carsInGame.Add(gameObject);
         setLane();
 
-        turnTime = 3.5f;
+        turnTime = 1.75f;
         switchLane(blinkTime);
 
         destroyedTime = 0.35f;
@@ -86,31 +86,11 @@ public class cars : MonoBehaviour
                 {
                     transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
                 }
+
                 switchTimer -= Time.deltaTime;
                 if (switchTimer < 0) //checks if its time to switch lanes
                 {
-                    int maxLane = 0;
-                    if (controller.topLane)
-                    {
-                        maxLane = 0;
-                    }
-                    else
-                    {
-                        maxLane = 1;
-                    }
-                    if (Random.Range(0, 2) == 0 && lane > maxLane) //randomly decides which lane to switch to and if its a valid lane
-                    {
-                        switchUp = true; //initiats the switch up
-                        targPos += 1.25f;
-                    }
-                    else if (lane < 4) //checks if its switching to a valid lane
-                    {
-                        switchDown = true; //initiats the switch down
-                        targPos -= 1.25f;
-                    }
-                    disMove = (targPos - transform.position.y) * turnTime; //calculates the speed the car needs to go to switch lanes
-                    overshoot = Mathf.Abs(targPos - transform.position.y); //calculates overshoot to where it needs to go
-                    switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
+                    startSwitch();
                 }
             }
             else
@@ -138,22 +118,7 @@ public class cars : MonoBehaviour
                 {
                     if (turningTimer > 1.5f) //if its time to turn
                     {
-                        if (transform.position.y != targPos) //checks to see if its not in its target pos
-                        {
-                            transform.position += new Vector3(0, 4 * (Time.deltaTime / disMove), 0); //moves the car towards where they need to be
-
-                            overshoot -= Mathf.Abs(4 * Time.deltaTime / disMove); //calculate the distance it moved since getting its new current
-                            if (overshoot < 0) //checks if its past if target
-                            {
-                                transform.position = new Vector3(transform.position.x, targPos, 0); //places car where it should be
-                                overshoot = 0; //resets overshoot
-                                turningTimer = 0;
-                                switchDown = false; //turns down blinker off
-                                switchUp = false; //turns up blinker off
-                                setLane(); //update so the car knows what lane its in
-                                switchLane(blinkTime * 2); //sees if it wants to switch lanes again
-                            }
-                        }
+                        turnLanes();
                     }
                 }
             }
@@ -193,11 +158,53 @@ public class cars : MonoBehaviour
         if (makingTiny)
         {
             doTiny();
-        } else if (makingBig)
+        }
+        else if (makingBig)
         {
             doBig();
         }
-        
+
+    }
+
+    void turnLanes()
+    {
+        if (transform.position.y != targPos) //checks to see if its not in its target pos
+        {
+            transform.position = new Vector3 (transform.position.x, startTurnPos + getValueScale(overshoot, 0, disMove, targPos - startTurnPos), 1);
+            overshoot += Time.deltaTime;
+            if (overshoot > disMove) //checks if its past if target
+            {
+                transform.position = new Vector3(transform.position.x, targPos, 0); //places car where it should be
+                turningTimer = 0;
+                switchDown = false; //turns down blinker off
+                switchUp = false; //turns up blinker off
+                setLane(); //update so the car knows what lane its in
+                switchLane(blinkTime * 2); //sees if it wants to switch lanes again
+            }
+        }
+    }
+
+    void startSwitch()
+    {
+        int maxLane = 0;
+        if (controller.topLane){ maxLane = 0; }
+        else { maxLane = 1; }
+
+        if (Random.Range(0, 2) == 0 && lane > maxLane) //randomly decides which lane to switch to and if its a valid lane
+        {
+            switchUp = true; //initiats the switch up
+            targPos += 1.25f;
+        }
+        else if (lane < 4) //checks if its switching to a valid lane
+        {
+            switchDown = true; //initiats the switch down
+            targPos -= 1.25f;
+        }
+
+        disMove = turnTime; //calculates the speed the car needs to go to switch lanes
+        overshoot = 0; //calculates overshoot to where it needs to go
+        startTurnPos = transform.position.y;
+        switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
     }
 
     public void amDisabled()
@@ -220,7 +227,7 @@ public class cars : MonoBehaviour
         }
     }
 
-    public void makeDisabled(float xF, float yF)
+    public virtual void makeDisabled(float xF, float yF)
     {
         isDisabled = true;
         speed = 0;
@@ -433,19 +440,22 @@ public class cars : MonoBehaviour
                 {
                     daCarhit.xForce = xForce * Random.Range(0.65f, 0.85f);
                 }
-                if(yForce > daCarhit.yForce)
+                if (yForce > daCarhit.yForce)
                 {
                     daCarhit.yForce = yForce * Random.Range(0.65f, 0.85f);
                 }
             }
             else
             {
-                float xF = xForce; float yF = yForce;
-                if (xF == 0) { xF = -1.5f; } //if(yF == 0) { yF = -0.5f; }
-                daCarhit.makeDisabled(xF * 0.55f, yF * 0.55f);
-                if (controller.isOver)
+                if (!isTiny || daCarhit.isTiny)
                 {
-                    controller.bannedLanes.Add(daCarhit.lane);
+                    float xF = xForce; float yF = yForce;
+                    if (xF == 0) { xF = -1.5f; } //if(yF == 0) { yF = -0.5f; }
+                    daCarhit.makeDisabled(xF * 0.55f, yF * 0.55f);
+                    if (controller.isOver)
+                    {
+                        controller.bannedLanes.Add(daCarhit.lane);
+                    }
                 }
             }
 
@@ -456,29 +466,25 @@ public class cars : MonoBehaviour
         }
         else if (!isDestroyed && !daCarhit.isDestroyed && !daCarhit.isDisabled)
         {
-            if (transform.position.y > collision.transform.position.y)
+            if (switchUp)
             {
-                if (disMove < 0)
-                {
-                    targPos += 1.25f;
-                    disMove *= -1;
-                }
+                startTurnPos = transform.position.y;
+                targPos -= 1.25f;
                 switchUp = false;
-                overshoot = Mathf.Abs(targPos - transform.position.y); //calculates overshoot to where it needs to go
+                disMove = overshoot;
+                overshoot = 0; //calculates overshoot to where it needs to go
             }
-            else if (transform.position.y < collision.transform.position.y)
+            else if (switchDown)
             {
-                if (disMove > 0)
-                {
-                    targPos -= 1.25f;
-                    disMove *= -1;
-                }
+                startTurnPos = transform.position.y;
+                targPos += 1.25f;
                 switchDown = false;
-                overshoot = Mathf.Abs(targPos - transform.position.y); //calculates overshoot to where it needs to go
+                disMove = overshoot;
+                overshoot = 0; //calculates overshoot to where it needs to go
             }
             else if (transform.position.x < collision.transform.position.x)
             {
-                if (speed > 8)
+                if (daCarhit.speed > 8)
                 {
                     speed = daCarhit.speed - 1; //changes the speed so cars won't go through eachother
                 }
@@ -497,8 +503,14 @@ public class cars : MonoBehaviour
         {
             if (transform.position.y == collision.transform.position.y && transform.position.x < collision.transform.position.x)
             {
-                speed -= Time.deltaTime * 3;
-                collision.GetComponent<cars>().speed += Time.deltaTime * 4; //changes the speed so cars won't go through eachother
+                if (speed < 8)
+                {
+                    speed -= Time.deltaTime * 3;
+                }
+                if (collision.GetComponent<cars>().speed < 25)
+                {
+                    collision.GetComponent<cars>().speed += Time.deltaTime * 4; //changes the speed so cars won't go through eachother
+                }
             }
         }
     }
@@ -574,12 +586,5 @@ public class cars : MonoBehaviour
     float getValueScale(float val, float min, float max, float scale)
     {
         return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
-    }
-
-    Vector3 calcPos(Vector3 dis, Vector3 startScale, float targetTimer, float targetTime)
-    {
-        float xVal = getValueScale(targetTimer, 0, targetTime, dis.x);
-        float yVal = getValueScale(targetTimer, 0, targetTime, dis.y);
-        return new Vector3(xVal, yVal, 1) + startScale;
     }
 }

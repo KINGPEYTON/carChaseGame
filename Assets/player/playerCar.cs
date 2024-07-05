@@ -70,7 +70,10 @@ public class playerCar : MonoBehaviour
 
     public bool inShield;
     public bool shieldReady;
+    public bool shieldWhenHit;
     public float shieldTimer;
+    public GameObject shieldAniOBJ;
+    public shieldAni shieldAni;
 
     public bool ramOn;
     public GameObject ramOBJ;
@@ -142,7 +145,13 @@ public class playerCar : MonoBehaviour
             if (inShield)
             {
                 shieldTimer -= Time.deltaTime;
-                if(shieldTimer < 0)
+
+                if (shieldTimer < 1 && !shieldAni.doFadeOut)
+                {
+                    shieldAni.startFade(false);
+                }
+
+                if (shieldTimer < 0)
                 {
                     endShield();
                 }
@@ -439,24 +448,24 @@ public class playerCar : MonoBehaviour
         }
     }
 
-    void shieldAni()
-    {
-
-    }
-
-    public void startShield(float time, bool autoActive)
+    public void startShield(float time, bool autoActive, bool activeWhenHit)
     {
         shieldTimer = time;
         shieldReady = true;
+        shieldAni = Instantiate(shieldAniOBJ, transform.position, Quaternion.identity, transform).GetComponent<shieldAni>();
+        shieldAni.startFade(true);
         if (autoActive)
         {
             inShield = true;
+            shieldAni.startAni();
         }
+        shieldWhenHit = activeWhenHit;
     }
 
     void activateShield()
     {
         inShield = true;
+        shieldAni.startAni();
         speedo.powerupIsTimed = true;
     }
 
@@ -464,6 +473,10 @@ public class playerCar : MonoBehaviour
     {
         shieldReady = false;
         inShield = false;
+        if (!shieldAni.doFadeOut)
+        {
+            shieldAni.startFade(false);
+        }
     }
 
     public void startRam(int uses, bool justCars, bool headOn)
@@ -653,6 +666,12 @@ public class playerCar : MonoBehaviour
         body.sprite = crashSprite; //car crashed
         controller.gameOver(); //sets the game to its game over state
         AudioSource.PlayClipAtPoint(crash1, new Vector3 (0,0,-10), controller.masterVol * controller.sfxVol);
+
+        GameObject rWheel = GameObject.Find("random bar(Clone)");
+        if(rWheel != null && !rWheel.GetComponent<randomWheel>().doFadeOut)
+        {
+            rWheel.GetComponent<randomWheel>().startFade(false);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -701,7 +720,12 @@ public class playerCar : MonoBehaviour
                 {
                     if (!inShield)
                     {
-                        speedo.finishPowerup();
+                        if (shieldWhenHit) { activateShield(); }
+                        else
+                        {
+                            speedo.finishPowerup();
+                            endShield();
+                        }
                     }
                     disableCar(collision, 3.5f);
                 }

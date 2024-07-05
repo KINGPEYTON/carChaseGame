@@ -37,6 +37,8 @@ public class powerUp : MonoBehaviour
         tier = pwManager.tiers[powerUpId];
         icon = pwManager.icons[powerUpId][tier];
         GetComponent<SpriteRenderer>().sprite = tierSkins[tier];
+
+        checkChanges();
     }
 
     // Update is called once per frame
@@ -107,6 +109,18 @@ public class powerUp : MonoBehaviour
             case 3:
                 popAni.Play("prem red");
                 break;
+        }
+    }
+
+    void checkChanges()
+    {
+        if(powerUpId == 6 && tier == 2)
+        {
+            typeID = 3;
+        }
+        else if(powerUpId == 10 && tier == 2)
+        {
+            typeID = 2;
         }
     }
 }

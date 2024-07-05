@@ -405,14 +405,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6304048ce9eb248ddb29e768fb396ba1, type: 3}
   speed: 0
   lane: 0
+  isCar: 0
   switchUp: 0
   switchDown: 0
   turnUp: {fileID: 1206752751788894485}
   turnDown: {fileID: 5381396951033141539}
-  willSwith: 0
   switchTimer: 0
   turningTimer: 0
   turnTime: 0
+  startTurnPos: 0
   targPos: 0
   disMove: 0
   overshoot: 0
@@ -431,12 +432,20 @@ MonoBehaviour:
   yForce: 0
   forceMass: 0
   isHit: 0
+  isTiny: 0
+  makingTiny: 0
+  makingBig: 0
+  tinyVal: 0
+  normalVal: 0
+  tinyTimer: 0
+  laserTimer: 0
   playerCarOBJ: {fileID: 0}
   chasingPlayer: 0
   crash: {fileID: 8300000, guid: 7beda4447c72246df995b524a1358bb4, type: 3}
   siren: {fileID: 5335798434806762981}
   chasingVan: 0
   vanOBJ: {fileID: 0}
+  playerLastLoc: 0
 --- !u!61 &5060727178146619802
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -469,7 +478,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.25}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -480,7 +489,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 7.5, y: 1.4}
+  m_Size: {x: 7.1, y: 1.1}
   m_EdgeRadius: 0
 --- !u!61 &603578793451388790
 BoxCollider2D:
@@ -525,7 +534,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 5, y: 2.3}
+  m_Size: {x: 5, y: 1.95}
   m_EdgeRadius: 0
 --- !u!50 &7278802074792887847
 Rigidbody2D:

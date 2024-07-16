@@ -14,8 +14,10 @@ public class powerUpIcon : MonoBehaviour
     public float targetTime;
     public float targetSize;
 
-    public int id;
+    public string id;
+    public int tier;
     public powerUpManager pwManage;
+    public main controller;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +28,7 @@ public class powerUpIcon : MonoBehaviour
         targetSize = 0.35f;
         speedometer = GameObject.Find("Speedometer").transform;
         pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
+        controller = GameObject.Find("contoller").GetComponent<main>();
     }
 
     // Update is called once per frame
@@ -41,6 +44,13 @@ public class powerUpIcon : MonoBehaviour
         {
             runAwayIcon();
         }
+    }
+
+    public void setIcon(Sprite icon, string newID, int newTier)
+    {
+        GetComponent<SpriteRenderer>().sprite = icon;
+        id = newID;
+        tier = newTier;
     }
 
     void runAwayIcon()
@@ -61,7 +71,7 @@ public class powerUpIcon : MonoBehaviour
             startSize = transform.localScale;
             sizeU = true; 
             targetTimer = 0;
-            pwManage.collectPowerUp(id);
+            if (controller.playing) { pwManage.collectPowerUp(id, tier); }
         }
     }
 

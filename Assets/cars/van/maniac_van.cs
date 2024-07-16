@@ -39,6 +39,8 @@ public class maniac_van : cars
         party.sprite = partySkins[Random.Range(0, partySkins.Length)];
         musicPlayer.volume = controller.musicVol * controller.masterVol * 0.85f;
         isCar = true;
+
+        if (controller.senseVision) { createOuline(controller.enhancedSense); }
     }
 
     // Update is called once per frame
@@ -69,7 +71,7 @@ public class maniac_van : cars
                 }
             }
 
-            spawnCoin();
+            if (!isTiny) { spawnCoin(); }
 
             if (controller.laserOn)
             {
@@ -91,9 +93,9 @@ public class maniac_van : cars
             partyMusic.transform.position -= new Vector3(0, 0, Time.deltaTime * 10);
         }
 
-        if (transform.position.x <= -30 || transform.position.x >= 25) // checks if the car is on screen
+        if (transform.position.x <= -30 || (!controller.playing && transform.position.x >= 25)) // checks if the car is on screen
         {
-            Destroy(gameObject); // destroys it otherwise
+            destroyCar(); // destroys it otherwise
         }
 
         if (currSpeed < startSpeed)
@@ -105,27 +107,7 @@ public class maniac_van : cars
 
         musicPlayer.volume = controller.musicVol * controller.masterVol * 0.85f;
 
-        if (isDisabled)
-        {
-            amDisabled();
-        }
-        else
-        {
-            checkInBounce();
-        }
-        if (isDestroyed)
-        {
-            amDestroyed();
-        }
-
-        if (makingTiny)
-        {
-            doTiny();
-        }
-        else if (makingBig)
-        {
-            doBig();
-        }
+        checkStuff();
     }
 
     public override void makeDisabled(float xF, float yF)
@@ -240,6 +222,31 @@ public class maniac_van : cars
             }
             party.sprite = partySkins[partyList];
             partyBeatTimer -= partyBeatTime;
+        }
+    }
+
+    public override void checkStuff()
+    {
+        if (isDisabled)
+        {
+            amDisabled();
+        }
+        else
+        {
+            checkInBounce();
+        }
+        if (isDestroyed)
+        {
+            amDestroyed();
+        }
+
+        if (makingTiny)
+        {
+            doTiny();
+        }
+        else if (makingBig)
+        {
+            doBig();
         }
     }
 }

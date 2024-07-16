@@ -59,6 +59,11 @@ public class main : MonoBehaviour
     public playerCar playerCar;
     public AudioClip startEngine;
 
+    public powerUpManager pwManage;
+    public bool powerupActive;
+    public float powerupTimer;
+    public float powerupTime;
+
     public GameObject road; //road gameobject to spawn
     public GameObject roadPart; //road gameobject to spawn
     public List<Sprite> roadSkins;
@@ -138,15 +143,20 @@ public class main : MonoBehaviour
     public bool inTinyCars;
     public bool allTinyCars;
 
+    public bool senseVision;
+    public sense enhancedSense;
+
     public List<GameObject> carsList;
     public List<float> carsOdds;
     public List<float> carsCurrOdds;
     public int carList; //how many cars have spawned since the last bus
     public float carTimer;
+    public float carTime;
     public float carTimerMultiplyer;
     public bool isSlowdown;
     public float largeCarOdds;
     public float specalCarOdds;
+    public float carPlace;
 
     public List<GameObject> carsLargeList;
     public List<float> carsLargeOdds;
@@ -218,6 +228,7 @@ public class main : MonoBehaviour
     {
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
         menuSound = GameObject.Find("ambience").GetComponent<AudioSource>();
+        pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
 
         masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
@@ -245,6 +256,10 @@ public class main : MonoBehaviour
 
         largeCarOdds = 0.05f;
         specalCarOdds = 0.01f;
+
+        carTime = 80;
+        carPlace = 12;
+        powerupTime = Random.Range(450, 1600);
 
         milestone = 0;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
@@ -327,6 +342,7 @@ public class main : MonoBehaviour
                 newTopLane();
                 changeArea();
                 spawnGameCar();
+                spawnPowerup();
             }
             else
             {
@@ -888,6 +904,23 @@ public class main : MonoBehaviour
         }
     }
 
+    void spawnPowerup()
+    {
+        if (!powerupActive)
+        {
+            powerupTimer += Time.deltaTime * mph;
+            if (powerupTimer > powerupTime)
+            {
+                float newLane = 0;
+                if (topLane) { newLane = (Random.Range(0, -5) * 1.25f) + 0.85f; }
+                else { newLane = (Random.Range(-1, -5) * 1.25f) + 0.85f; }
+                pwManage.createPowerup(getPowerupFromOdds(pwManage.powerupOdds, pwManage.powerupCurrOdds), new Vector3(15, newLane, 0));
+                powerupTimer = 0;
+                powerupTime = Random.Range(1200, 2250);
+            }
+        }
+    }
+
     void updateSmokeScreen()
     {
         if (screenDistort == screenDistortTarget)
@@ -923,7 +956,7 @@ public class main : MonoBehaviour
     void spawnGameCar()
     {
         carTimer += (Time.deltaTime * mph) * carTimerMultiplyer; // time that spawns a new car that speeds up depending on the speed of the game (mph)
-        if (carTimer > 80)
+        if (carTimer > carTime)
         {
             float specalCar = Random.Range(0.0f, 1.0f);
             if (specalCar > largeCarOdds + specalCarOdds)
@@ -1053,7 +1086,8 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        GameObject newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(carPlace, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        if (senseVision && enhancedSense.showIcons) { newCar.GetComponent<cars>().createIcon(enhancedSense); }
         if (inTinyCars)
         {
             makeCarTiny(newCar, true);
@@ -1071,7 +1105,8 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        GameObject newCar = Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(carPlace + 1, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        if (senseVision && enhancedSense.showIcons) { newCar.GetComponent<cars>().createIcon(enhancedSense); }
         if (inTinyCars)
         {
             makeCarTiny(newCar, true);
@@ -1089,7 +1124,8 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        GameObject newCar = Instantiate(getCarFromOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList), new Vector3(25, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = Instantiate(getCarFromOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList), new Vector3(carPlace + 13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        if (senseVision && enhancedSense.showIcons) { newCar.GetComponent<cars>().createIcon(enhancedSense); }
         if (inTinyCars)
         {
             makeCarTiny(newCar, true);
@@ -1177,6 +1213,25 @@ public class main : MonoBehaviour
         return buildingSkinsList[0];
     }
 
+    int getPowerupFromOdds(List<float> oddsList, List<float> currOddsList)
+    {
+        float newBuildingOdds = Random.Range(0.0f, 1.0f);
+        float oddsAccum = 0.0f;
+
+        for (int i = 0; i < oddsList.Count; i++)
+        {
+            oddsAccum += currOddsList[i];
+            if (oddsAccum > newBuildingOdds)
+            {
+                pwManage.changePowerupOdds(i);
+                return i;
+            }
+        }
+
+        pwManage.changePowerupOdds(0);
+        return 0;
+    }
+
     void blimpText()
     {
         if (!scoreShowing)
@@ -1226,6 +1281,8 @@ public class main : MonoBehaviour
     {
         playing = false; //sets the game to no longer be playing
         mph = 0; //stops the backround from moving (as the player is supose to be still)
+
+        if (senseVision) { enhancedSense.startFade(false); }
 
         if (score > highScore) { //check if theres a new high score
             highScore = score; // sets the new high score

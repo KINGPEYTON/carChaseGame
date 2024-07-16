@@ -120,7 +120,6 @@ public class playerManager : MonoBehaviour
     private carPartsReader readCarDataJSON()
     {
         carPartsReader carDataInJson = JsonUtility.FromJson<carPartsReader>(carPartsJSON.text);
-
         foreach (carTypesReader carType in carDataInJson.carTypes)
         {
             carNames.Add(carType.typeName);
@@ -207,7 +206,6 @@ public class playerManager : MonoBehaviour
 [System.Serializable]
 public class carPartsReader
 {
-    //employees is case sensitive and must match the string "employees" in the JSON.
     public carTypesReader[] carTypes;
     public carWheelReader[] wheelTypes;
     public carWindowReader[] windowTints;
@@ -227,6 +225,7 @@ public class carPart
 
     public carPart()
     {
+        cost = 0;
     }
 }
 

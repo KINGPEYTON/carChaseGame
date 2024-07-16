@@ -51,6 +51,10 @@ public class playerCar : MonoBehaviour
 
     public float crashForce;
 
+    public float hitboxSizeX;
+    public float hitboxSizeY;
+    public BoxCollider2D hitbox;
+
     public bool inTeleport;
     public bool beginTeleport;
     public float teleTimer;
@@ -96,6 +100,8 @@ public class playerCar : MonoBehaviour
     public laser carLaser;
     public bool laserAutoShoot;
 
+    public float turnMulti;
+
     void OnEnable()
     {
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
@@ -108,6 +114,11 @@ public class playerCar : MonoBehaviour
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
         speedo = GameObject.Find("Speedometer").GetComponent<speedometer>();
+        hitbox = GetComponent<BoxCollider2D>();
+
+        hitboxSizeX = hitbox.size.x;
+        hitboxSizeY = hitbox.size.y;
+        turnMulti = 1;
 
         startPos = -7f;
         swipeDistToDetect = 0.25f;
@@ -228,11 +239,11 @@ public class playerCar : MonoBehaviour
                 {
                     if ((tapPoint.y - firstTapPoint) > swipeDistToDetect) //if the tap if above the player car
                     {
-                        laneUp(1);
+                        laneUp(turnMulti);
                     }
                     else if ((tapPoint.y - firstTapPoint) < -swipeDistToDetect) //if the tap is below the player car
                     {
-                        laneDown(1);
+                        laneDown(turnMulti);
                     }
                 }
                 newTap = false;
@@ -573,7 +584,45 @@ public class playerCar : MonoBehaviour
         laserAutoShoot = autoShoot;
     }
 
-    public void laneUp(int multiplier) //if tap is above player car
+    public void createOuline(sense sen)
+    {
+        SpriteRenderer newOutline = new GameObject("Sense Outline", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+        newOutline.gameObject.transform.parent = transform;
+        newOutline.sprite = liveryMaskSprite;
+        newOutline.sortingOrder = 153;
+
+        newOutline.transform.localScale = new Vector3(1, 1, 1);
+        newOutline.transform.localPosition = new Vector3(0, 0, 0);
+
+        newOutline.color = new Color32(0, 200, 200, 0);
+
+        sen.playerOutline = newOutline;
+
+        SpriteRenderer newWheelFOutline = new GameObject("Sense Outline", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+        newWheelFOutline.gameObject.transform.parent = wheelF.gameObject.transform;
+        newWheelFOutline.sprite = wheelSprite;
+        newWheelFOutline.sortingOrder = 153;
+        newWheelFOutline.transform.localScale = new Vector3(1, 1, 1);
+        newWheelFOutline.transform.localPosition = new Vector3(0, 0, 0);
+        newWheelFOutline.color = new Color32(0, 200, 200, 0);
+        sen.playerWheelFOutline = newWheelFOutline;
+
+        SpriteRenderer newWheelBOutline = new GameObject("Sense Outline", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+        newWheelBOutline.gameObject.transform.parent = wheelB.gameObject.transform;
+        newWheelBOutline.sprite = wheelSprite;
+        newWheelBOutline.sortingOrder = 153;
+        newWheelBOutline.transform.localScale = new Vector3(1, 1, 1);
+        newWheelBOutline.transform.localPosition = new Vector3(0, 0, 0);
+        newWheelBOutline.color = new Color32(0, 200, 200, 0);
+        sen.playerWheelBOutline = newWheelBOutline;
+    }
+
+    public void changeHitBox(float multi)
+    {
+        hitbox.size = new Vector2(hitboxSizeX * multi, hitboxSizeY * multi);
+    }
+
+    public void laneUp(float multiplier) //if tap is above player car
     {
         float maxLane = 0;
         if (inRocket && !rocketLanding) { maxLane = 10.64f; }
@@ -607,7 +656,7 @@ public class playerCar : MonoBehaviour
         }
     }
 
-    public void laneDown(int multiplier)
+    public void laneDown(float multiplier)
     {
         if (controller.inTutorial && controller.tutorialSteps < 3)
         {
@@ -648,7 +697,7 @@ public class playerCar : MonoBehaviour
             float dis = 0; 
             if (isUp) { dis = 1.25f; } else { dis = -1.25f; }
             targetPos += new Vector3(0, dis, 0); //changes targetPos to the new lane it needs to go to
-            disMove = (moveTime * multiplier); //calculates the speed the player car needs to go to switch lanes
+            disMove = (moveTime * (1/multiplier)); //calculates the speed the player car needs to go to switch lanes
             turnPos = transform.position;
             if (isUp) { changeOrder(-1); } else { changeOrder(1); }
             overshoot = 0; //resets overshoot
@@ -821,7 +870,7 @@ public class playerCar : MonoBehaviour
 
     void hitBarrier(Collider2D collision)
     {
-        laneDown(1);
+        laneDown(turnMulti);
     }
 
     void hitCoin(Collider2D collision)

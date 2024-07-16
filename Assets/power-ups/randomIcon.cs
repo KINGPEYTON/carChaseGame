@@ -14,7 +14,7 @@ public class randomIcon : MonoBehaviour
     public float targetTime;
     public Vector3 targetSize;
 
-    public int id;
+    public string id;
     public bool selected;
     public randomWheel pwManage;
 

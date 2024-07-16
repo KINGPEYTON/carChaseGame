@@ -35,12 +35,17 @@ public class police_Car : cars
 
         turnTime = 0.75f;
         isCar = false;
+
+        if (controller.senseVision) {
+            createOuline(controller.enhancedSense);
+            if (chasingVan) { createIcon(controller.enhancedSense); }
+        }
     }
 
     // Update is called once per frame
     public override void Update()
     {
-        if (chasingPlayer || chasingVan)
+        if (chasingPlayer || chasingVan && !isDestroyed)
         {
             GetComponent<SpriteRenderer>().sprite = skins[((int)turningTimer) % 2];
             turnDown.SetActive(turningTimer % 2 < 1); //turns the down blinker on if it should
@@ -52,7 +57,7 @@ public class police_Car : cars
 
         if (chasingVan && vanOBJ == null && !isDisabled)
         {
-            Destroy(gameObject);
+            destroyCar();
         }
 
         if (controller.playing) //checks if game is in season
@@ -114,28 +119,12 @@ public class police_Car : cars
             }
         }
 
-        if (transform.position.x <= -30 || transform.position.x >= 30) // checks if the car is on screen
+        if (transform.position.x <= -30 || (!controller.playing && transform.position.x >= 30)) // checks if the car is on screen
         {
-            Destroy(gameObject); // destroys it otherwise
+            destroyCar(); // destroys it otherwise
         }
 
-        if (isDisabled)
-        {
-            amDisabled();
-        }
-        if (isDestroyed)
-        {
-            amDestroyed();
-        }
-
-        if (makingTiny)
-        {
-            doTiny();
-        }
-        else if (makingBig)
-        {
-            doBig();
-        }
+        checkStuff();
     }
 
     void chasePlayer()
@@ -263,6 +252,17 @@ public class police_Car : cars
             }
         }
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "car") //if a car hits another car
+        {
+            hitCar(collision);
+        }
+        else if (collision.tag == "barrier")
+        {
+            hitBarrier();
+        }
+    }
 
     void hitCar(Collider2D collision)
     {
@@ -310,7 +310,6 @@ public class police_Car : cars
             {
                 if (transform.position.y > collision.transform.position.y && !(daCarhit.switchUp || daCarhit.isDisabled) && daCarhit.lane > 0)
                 {
-                    Debug.Log("here");
                     daCarhit.switchDown = true;
                     daCarhit.startTurnPos = daCarhit.transform.position.y;
                     daCarhit.targPos -= 1.25f;
@@ -319,7 +318,6 @@ public class police_Car : cars
                 }
                 else if (transform.position.y < collision.transform.position.y && !(daCarhit.switchDown || daCarhit.isDisabled) && daCarhit.lane < 4)
                 {
-                    Debug.Log("here");
                     daCarhit.switchUp = true;
                     daCarhit.startTurnPos = daCarhit.transform.position.y;
                     daCarhit.targPos += 1.25f;
@@ -336,6 +334,20 @@ public class police_Car : cars
                 else { daCarhit.speed = speed + 1; }
             }
         }
+    }
+
+    public override void createIcon(sense sen)
+    {
+        GameObject newOutline = new GameObject("Car Icon", typeof(SpriteRenderer), typeof(carIcon));
+
+        newOutline.transform.localScale = new Vector3(0.165f, 0.165f, 1);
+        if (chasingVan) { newOutline.transform.position = new Vector3(7, transform.position.y, 0); }
+        else { newOutline.transform.position = new Vector3(9, transform.position.y, 0); }
+        newOutline.GetComponent<SpriteRenderer>().sprite = warningIcon;
+        newOutline.GetComponent<SpriteRenderer>().sortingOrder = 154;
+        sen.carIcons.Add(newOutline);
+        newOutline.GetComponent<carIcon>().carAttached = this;
+        newOutline.GetComponent<carIcon>().sen = sen;
     }
 
     float getValueScale(float val, float min, float max, float scale)

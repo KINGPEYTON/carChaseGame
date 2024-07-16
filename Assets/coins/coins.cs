@@ -23,6 +23,7 @@ public class coins : MonoBehaviour
     public Vector3 attractStart;
     public float attractTime;
 
+    public GameObject outlineOBJ;
 
     public bool makingHolo;
     public bool makingNormal;
@@ -33,12 +34,20 @@ public class coins : MonoBehaviour
     public AudioClip[] pickupsSFX;
     public AudioClip[] collectsSFX;
 
+    public float hitboxSizeX;
+    public float hitboxSizeY;
+    public BoxCollider2D hitbox;
+
     // Start is called before the first frame update
     void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
         speedometer = GameObject.Find("Speedometer").transform;
         ani = GetComponent<Animator>();
+        hitbox = GetComponent<BoxCollider2D>();
+
+        hitboxSizeX = hitbox.size.x;
+        hitboxSizeY = hitbox.size.y;
 
         controller.coinList.Add(gameObject);
         setLane();
@@ -52,10 +61,13 @@ public class coins : MonoBehaviour
         if (isHolo)
         {
             ani.Play("holoCoin");
-        } else if (controller.isBigCoinhuna)
+        }
+        else if (controller.isBigCoinhuna)
         {
             makeHolo();
         }
+
+        if (controller.senseVision) { createOuline(controller.enhancedSense); }
     }
 
     // Update is called once per frame
@@ -65,7 +77,7 @@ public class coins : MonoBehaviour
         {
             if (attractTarget == null)
             {
-                transform.position = transform.position - new Vector3(Time.deltaTime / 6 * controller.GetComponent<main>().mph, 0, 0); //moves coin across the screen
+                transform.position -= new Vector3(Time.deltaTime / 6 * controller.GetComponent<main>().mph, 0, 0); //moves coin across the screen
             }
             else
             {
@@ -73,8 +85,7 @@ public class coins : MonoBehaviour
             }
             if (transform.position.x <= -12) //checks if its offscreen
             {
-                controller.coinList.Remove(gameObject);
-                Destroy(gameObject);
+                destroyCoin();
             }
 
             if(makingHolo || makingNormal) { transitionAnimation(); }
@@ -118,7 +129,13 @@ public class coins : MonoBehaviour
     {
         controller.collectCoin(value);
         AudioSource.PlayClipAtPoint(collectsSFX[Random.Range(0, collectsSFX.Length - 1)], new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        destroyCoin();
+    }
+
+    void destroyCoin()
+    {
         controller.coinList.Remove(gameObject);
+        if (controller.senseVision) { controller.enhancedSense.coinsOutline.Remove(outlineOBJ); }
         Destroy(gameObject);
     }
 
@@ -194,5 +211,45 @@ public class coins : MonoBehaviour
                 makingNormal = false;
             }
         }
+    }
+
+    public virtual void createOuline(sense sen)
+    {
+        GameObject newOutline = new GameObject("Sense Outline", typeof(SpriteRenderer), typeof(Animator));
+        outlineOBJ = newOutline;
+        newOutline.GetComponent<Animator>().runtimeAnimatorController = ani.runtimeAnimatorController;
+        newOutline.GetComponent<Animator>().Play("outline", 0, ani.GetCurrentAnimatorStateInfo(0).normalizedTime);
+
+        newOutline.transform.parent = transform;
+        newOutline.GetComponent<SpriteRenderer>().sortingOrder = 151;
+
+        newOutline.transform.parent = transform;
+        newOutline.transform.localScale = new Vector3(1, 1, 1);
+        newOutline.transform.localPosition = new Vector3(0, 0, 0);
+
+        sen.coinsOutline.Add(newOutline);
+        if (!(sen.doFadeIn || sen.doFadeOut))
+        {
+            if (isHolo)
+            {
+                newOutline.GetComponent<SpriteRenderer>().color = new Color32(180, 200, 0, 235);
+            }
+            else
+            {
+                newOutline.GetComponent<SpriteRenderer>().color = new Color32(0, 200, 0, 235);
+            }
+        }
+        else
+        {
+            newOutline.GetComponent<SpriteRenderer>().color = new Color32(0, 200, 0, 0);
+        }
+
+        changeHitbox(1 / (sen.hitBoxSize));
+        //changeHitbox(sen.pCar.hitboxSizeX * sen.hitBoxSize, sen.pCar.hitboxSizeY * sen.hitBoxSize);
+    }
+
+    public void changeHitbox(float multi)
+    {
+        hitbox.size = new Vector2(hitboxSizeX * multi, hitboxSizeY * multi);
     }
 }

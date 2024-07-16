@@ -57,7 +57,7 @@ public class randomWheel : MonoBehaviour
         iconSpining = true;
     }
 
-    public void pickPowerup(int id)
+    public void pickPowerup(string id)
     {
         startFade(false);
         if (makeStronger)
@@ -74,101 +74,93 @@ public class randomWheel : MonoBehaviour
         }
         else
         {
-            pwManager.collectPowerUp(id);
+            pwManager.collectPowerUp(id, pwManager.tiers[pwManager.getPowerupTier(id)]);
         }
     }
 
-    void getMaxPowerUp(int id)
+    void getMaxPowerUp(string id)
     {
-        int currTier = pwManager.tiers[id];
-        if (id < 6) {
-            pwManager.tiers[id] = 3;
-        }
-        else
-        {
-            pwManager.tiers[id] = 2;
-        }
-
-        pwManager.collectPowerUp(id);
-        pwManager.tiers[id] = currTier;
+        int MaxTier = 2;
+        if (pwManager.powerupIDs.IndexOf(id) < pwManager.pwReader.standard.Length) { MaxTier = 3; }
+        pwManager.collectPowerUp(id, MaxTier);
     }
 
-    void getLongerPowerUp(int id)
+    void getLongerPowerUp(string id)
     {
         switch (id)
         {
-            case 0:
+            case "magnet":
                 pwManager.activateMagnet(35, 1.25f, true);
                 break;
-            case 1:
+            case "ram":
                 pwManager.activateRam(3, false, false);
                 break;
-            case 2:
+            case "boost":
                 pwManager.activateBoost(6, 2.35f, true);
                 break;
-            case 3:
-                pwManager.activateCoin(22, 2, true);
+            case "coin":
+                pwManager.activateCoin(45, 2, true);
                 break;
-            case 4:
-                Debug.Log("aa");
+            case "sense":
+                pwManager.activateVision(30, true, 2, 0.5f);
                 break;
-            case 6:
+            case "shield":
                 pwManager.activateShield(22, false, true);
                 break;
-            case 7:
+            case "rocket":
                 pwManager.activateRocket(10, 1.5f, 1.35f, true);
                 break;
-            case 8:
+            case "tiny":
                 pwManager.activateTinyCars(35, true);
                 break;
-            case 9:
+            case "slowdown":
                 pwManager.activateSlowdown(30, 0.65f, false);
                 break;
-            case 10:
+            case "teleport":
                 pwManager.activateTeleport(30, 0.35f, new Color32(115, 0, 255, 255), true, false);
                 break;
-            case 11:
+            case "laser":
                 pwManager.activateLaser(30, 0.35f, 0.75f, true);
                 break;
         }
     }
 
-    void getStrongerPowerUp(int id)
+    void getStrongerPowerUp(string id)
     {
 
         switch (id)
         {
-            case 0:
+            case "magnet":
                 pwManager.activateMagnet(35, 2.05f, true);
                 break;
-            case 1:
+            case "ram":
                 pwManager.activateRam(4, false, false);
                 break;
-            case 2:
+            case "boost":
                 pwManager.activateBoost(6, 3.85f, true);
                 break;
-            case 3:
-                pwManager.activateCoin(22, 3, true);
+            case "coin":
+                pwManager.activateCoin(45, 3, true);
                 break;
-            case 4:
-                Debug.Log("aa");
+            case "sense":
+                pwManager.activateVision(30, true, 3, 0.3f);
                 break;
-            case 6:
+            case "shield":
                 pwManager.activateShield(30, false, true);
                 break;
-            case 7:
+            case "rocket":
                 pwManager.activateRocket(10, 0.95f, 0.65f, true);
                 break;
-            case 8:
+            case "tiny":
                 pwManager.activateTinyCars(50, true);
                 break;
-            case 9:
+            case "slowdown":
                 pwManager.activateSlowdown(30, 0.45f, false);
                 break;
-            case 10:
+            case "teleport":
                 pwManager.activateTeleport(40, 0.35f, new Color32(115, 0, 255, 255), true, false);
                 break;
-            case 11:
+            case "laser":
                 pwManager.activateLaser(35, 0.15f, 0.45f, true);
                 break;
         }
@@ -244,8 +236,10 @@ public class randomWheel : MonoBehaviour
                 setIconAlpha(icons[i], 255);
             }
             int iconPlace = iconAmount - 4;
-            int iconId = iconsToUse.IndexOf(iconsIn[iconPlace]);
-            if(iconId > 4) { iconId++; } // to accomedate the gap of ids without the random powerup
+            int newID = iconsToUse.IndexOf(iconsIn[iconPlace]);
+            if (newID > 4) { newID++; } // to accomedate the gap of ids without the random powerup
+            string iconId = pwManager.powerupIDs[newID];
+            icons[iconPlace].AddComponent(typeof(randomIcon));
             icons[iconPlace].GetComponent<randomIcon>().id = iconId;
             icons[iconPlace].GetComponent<randomIcon>().select(this);
         }
@@ -255,32 +249,24 @@ public class randomWheel : MonoBehaviour
     {
         if (maxTier)
         {
-            iconsToUse.Add(pwManager.magnetIcons[3]);
-            iconsToUse.Add(pwManager.ramIcons[3]);
-            iconsToUse.Add(pwManager.boostIcons[3]);
-            iconsToUse.Add(pwManager.coinhunaIcons[3]);
-            iconsToUse.Add(pwManager.visionIcons[3]);
-            iconsToUse.Add(pwManager.shieldIcons[2]);
-            iconsToUse.Add(pwManager.rocketIcons[2]);
-            iconsToUse.Add(pwManager.tinyIcons[2]);
-            iconsToUse.Add(pwManager.slowdownIcons[2]);
-            iconsToUse.Add(pwManager.teleportIcons[2]);
-            iconsToUse.Add(pwManager.laserIcons[2]);
+            int stdLen = pwManager.pwReader.standard.Length;
+            for (int i = 0; i < stdLen - 1; i++)
+            {
+                iconsToUse.Add(pwManager.icons[i][3]);
+            }
+            for(int i = stdLen; i < pwManager.pwReader.premium.Length + stdLen; i++)
+            {
+                iconsToUse.Add(pwManager.icons[i][2]);
+            }
         }
         else
         {
 
-            iconsToUse.Add(pwManager.magnetIcons[pwManager.tiers[0]]);
-            iconsToUse.Add(pwManager.ramIcons[pwManager.tiers[1]]);
-            iconsToUse.Add(pwManager.boostIcons[pwManager.tiers[2]]);
-            iconsToUse.Add(pwManager.coinhunaIcons[pwManager.tiers[3]]);
-            iconsToUse.Add(pwManager.visionIcons[pwManager.tiers[4]]);
-            iconsToUse.Add(pwManager.shieldIcons[pwManager.tiers[6]]);
-            iconsToUse.Add(pwManager.rocketIcons[pwManager.tiers[7]]);
-            iconsToUse.Add(pwManager.tinyIcons[pwManager.tiers[8]]);
-            iconsToUse.Add(pwManager.slowdownIcons[pwManager.tiers[9]]);
-            iconsToUse.Add(pwManager.teleportIcons[pwManager.tiers[10]]);
-            iconsToUse.Add(pwManager.laserIcons[pwManager.tiers[11]]);
+            for (int i = 0; i < pwManager.powerupIDs.Count; i++)
+            {
+                if(i == pwManager.pwReader.standard.Length - 1) { i++; } //skips the random icon
+                iconsToUse.Add(pwManager.icons[i][pwManager.getPowerupTier(pwManager.powerupIDs[i])]);
+            }
         }
     }
 

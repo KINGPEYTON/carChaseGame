@@ -31,9 +31,6 @@ public class carBoost : MonoBehaviour
         controller = GameObject.Find("contoller").GetComponent<main>();
         speedo = GameObject.Find("Speedometer").GetComponent<speedometer>();
         startPos = transform.localPosition;
-
-        prevMPH = controller.mph;
-        prevScoreMPH = controller.scoremph;
         if(controller.mph < 100) { targetMPH = 150; }
         else { targetMPH = controller.mph * 1.5f; }
     }
@@ -76,6 +73,9 @@ public class carBoost : MonoBehaviour
         controller.carTimerMultiplyer = 0.15f;
         pCar.boostLeft = power;
         uses--;
+
+        prevMPH = controller.mph;
+        prevScoreMPH = controller.scoremph;
     }
 
     public void finishBoost()

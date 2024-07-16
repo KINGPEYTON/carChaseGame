@@ -54,6 +54,10 @@ public class cars : MonoBehaviour
 
     public float laserTimer;
 
+    public Sprite outline;
+    public SpriteRenderer outlineOBJ;
+    public Sprite warningIcon;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,6 +73,8 @@ public class cars : MonoBehaviour
 
         destroyedTime = 0.35f;
         normalVal = 0.45f;
+
+        if (controller.senseVision) { createOuline(controller.enhancedSense); }
     }
 
     // Update is called once per frame
@@ -86,11 +92,13 @@ public class cars : MonoBehaviour
                 {
                     transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
                 }
-
-                switchTimer -= Time.deltaTime;
-                if (switchTimer < 0) //checks if its time to switch lanes
+                if (blinkTime > -1) // checks if its a car that can turn
                 {
-                    startSwitch();
+                    switchTimer -= Time.deltaTime;
+                    if (switchTimer < 0) //checks if its time to switch lanes
+                    {
+                        startSwitch();
+                    }
                 }
             }
             else
@@ -105,23 +113,21 @@ public class cars : MonoBehaviour
                 }
             }
 
-            if (blinkTime > -1) // checks if its a car that can turn
+            turnDown.SetActive(switchDown && turningTimer % 1 < 0.5f); //turns the down blinker on if it should
+            turnUp.SetActive(switchUp && turningTimer % 1 < 0.5f); //turns the up blinker on if it should
+            if (switchDown || switchUp) //checks if one of the blinkers are on
             {
-                turnDown.SetActive(switchDown && turningTimer % 1 < 0.5f); //turns the down blinker on if it should
-                turnUp.SetActive(switchUp && turningTimer % 1 < 0.5f); //turns the up blinker on if it should
-                if (switchDown || switchUp) //checks if one of the blinkers are on
-                {
-                    turningTimer += Time.deltaTime;
-                }
+                turningTimer += Time.deltaTime;
+            }
 
-                if (!isDisabled)
+            if (!isDisabled)
+            {
+                if (turningTimer > 1.5f) //if its time to turn
                 {
-                    if (turningTimer > 1.5f) //if its time to turn
-                    {
-                        turnLanes();
-                    }
+                    turnLanes();
                 }
             }
+
 
             if (controller.laserOn)
             {
@@ -141,28 +147,12 @@ public class cars : MonoBehaviour
             }
         }
 
-        if (transform.position.x <= -15 || transform.position.x >= 15) // checks if the car is on screen
+        if (transform.position.x <= -15 || (!controller.playing && transform.position.x >= 15)) // checks if the car is on screen
         {
             destroyCar(); // destroys it otherwise
         }
 
-        if (isDestroyed)
-        {
-            amDestroyed();
-        }
-        else if (isDisabled)
-        {
-            amDisabled();
-        }
-
-        if (makingTiny)
-        {
-            doTiny();
-        }
-        else if (makingBig)
-        {
-            doBig();
-        }
+        checkStuff();
 
     }
 
@@ -190,12 +180,13 @@ public class cars : MonoBehaviour
         if (controller.topLane){ maxLane = 0; }
         else { maxLane = 1; }
 
-        if (Random.Range(0, 2) == 0 && lane > maxLane) //randomly decides which lane to switch to and if its a valid lane
+        bool laneSwitch = Random.Range(0, 2) == 0;
+        if ((laneSwitch && lane > maxLane) || lane == 4) //randomly decides which lane to switch to and if its a valid lane
         {
             switchUp = true; //initiats the switch up
             targPos += 1.25f;
         }
-        else if (lane < 4) //checks if its switching to a valid lane
+        else 
         {
             switchDown = true; //initiats the switch down
             targPos -= 1.25f;
@@ -205,6 +196,47 @@ public class cars : MonoBehaviour
         overshoot = 0; //calculates overshoot to where it needs to go
         startTurnPos = transform.position.y;
         switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
+    }
+
+    public void makeScared(float explosionLane)
+    {
+        turningTimer = 1.5f;
+        int maxLane = 0;
+        if (controller.topLane) { maxLane = 0; }
+        else { maxLane = 1; }
+        if (lane < explosionLane && lane > maxLane)
+        {
+            switchUp = true; //initiats the switch up
+            switchDown = false;
+            targPos += 1.25f;
+            switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
+        }
+        else if (lane > explosionLane && lane < 4)
+        {
+            switchDown = true; //initiats the switch down
+            switchUp = false;
+            targPos -= 1.25f;
+            switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
+        } else if(lane == explosionLane)
+        {
+            bool laneSwitch = Random.Range(0, 2) == 0;
+            if ((laneSwitch && lane > maxLane) || lane == 4) //randomly decides which lane to switch to and if its a valid lane
+            {
+                switchUp = true; //initiats the switch up
+                targPos += 1.25f;
+            }
+            else
+            {
+                switchDown = true; //initiats the switch down
+                targPos -= 1.25f;
+            }
+        }
+
+        disMove = turnTime / Random.Range(1.75f, 2.25f); //calculates the speed the car needs to go to switch lanes
+        overshoot = 0; //calculates overshoot to where it needs to go
+        startTurnPos = transform.position.y;
+
+        speed += Random.Range(2.0f, 3.0f);
     }
 
     public void amDisabled()
@@ -242,6 +274,11 @@ public class cars : MonoBehaviour
         speed = 0;
         destroyedTimer = 0;
         Instantiate(destroyedCar, transform.position, Quaternion.identity, transform.parent);
+
+        foreach (GameObject c in controller.carsInGame)
+        {
+            c.GetComponent<cars>().makeScared(lane);
+        }
     }
 
     void applyForce()
@@ -391,6 +428,38 @@ public class cars : MonoBehaviour
         }
     }
 
+    public virtual void createOuline(sense sen)
+    {
+        SpriteRenderer newOutline = new GameObject("Sense Outline", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+        outlineOBJ = newOutline;
+
+        newOutline.gameObject.transform.parent = transform;
+        newOutline.sprite = outline;
+        newOutline.sortingOrder = 152;
+
+        newOutline.gameObject.transform.parent = transform;
+        newOutline.transform.localScale = new Vector3(1, 1, 1);
+        newOutline.transform.localPosition = new Vector3(0, 0, 0);
+
+        sen.carsOutline.Add(newOutline);
+        if (!(sen.doFadeIn || sen.doFadeOut)) { newOutline.color = new Color32(200, 0, 0, 235); }
+        else { newOutline.color = new Color32(200, 0, 0, 0); }
+    }
+
+    public virtual void createIcon(sense sen)
+    {
+        GameObject newIcon = new GameObject("Car Icon", typeof(SpriteRenderer), typeof(carIcon));
+
+        newIcon.transform.localScale = new Vector3(0.165f, 0.165f, 1);
+        newIcon.transform.position = new Vector3(9, transform.position.y, 0);
+        newIcon.GetComponent<SpriteRenderer>().sprite = warningIcon;
+        newIcon.GetComponent<SpriteRenderer>().sortingOrder = 154;
+        newIcon.GetComponent<SpriteRenderer>().color = new Color32(0, 0, 0, 0);
+        sen.carIcons.Add(newIcon);
+        newIcon.GetComponent<carIcon>().carAttached = this;
+        newIcon.GetComponent<carIcon>().sen = sen;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "car") //if a car hits another car
@@ -415,7 +484,7 @@ public class cars : MonoBehaviour
         }
     }
 
-    void hitBarrier()
+    public void hitBarrier()
     {
         if (isDisabled)
         {
@@ -572,10 +641,32 @@ public class cars : MonoBehaviour
         }
     }
 
-    void destroyCar()
+    public void destroyCar()
     {
         controller.carsInGame.Remove(gameObject);
+        if (controller.senseVision) { controller.enhancedSense.carsOutline.Remove(outlineOBJ); }
         Destroy(gameObject);
+    }
+
+    public virtual void checkStuff()
+    {
+        if (isDestroyed)
+        {
+            amDestroyed();
+        }
+        else if (isDisabled)
+        {
+            amDisabled();
+        }
+
+        if (makingTiny)
+        {
+            doTiny();
+        }
+        else if (makingBig)
+        {
+            doBig();
+        }
     }
 
     public virtual void nearCrash()

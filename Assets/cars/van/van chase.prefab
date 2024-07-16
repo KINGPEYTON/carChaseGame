@@ -446,6 +446,9 @@ MonoBehaviour:
   normalVal: 0
   tinyTimer: 0
   laserTimer: 0
+  outline: {fileID: 21300000, guid: 28034de2a735d44d1b61463b277caeca, type: 3}
+  outlineOBJ: {fileID: 0}
+  warningIcon: {fileID: 21300000, guid: 29b05419aef924f71a6ca0db6d3c5d0e, type: 3}
   currSpeed: 0
   startSpeed: 0
   turningSpeed: 0
@@ -1022,6 +1025,9 @@ MonoBehaviour:
   normalVal: 0
   tinyTimer: 0
   laserTimer: 0
+  outline: {fileID: 21300000, guid: 703ce93fb1ab443fbb4b87a391766f6e, type: 3}
+  outlineOBJ: {fileID: 0}
+  warningIcon: {fileID: 21300000, guid: 03ab31f1297b94a4c936dbc6b9efef98, type: 3}
   playerCarOBJ: {fileID: 0}
   chasingPlayer: 0
   crash: {fileID: 8300000, guid: 7beda4447c72246df995b524a1358bb4, type: 3}

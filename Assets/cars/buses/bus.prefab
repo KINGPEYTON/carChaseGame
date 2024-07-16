@@ -446,14 +446,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f364e700c8e7945b5a61322dacc0bd2b, type: 3}
   speed: 0
   lane: 0
+  isCar: 0
   switchUp: 0
   switchDown: 0
   turnUp: {fileID: 1396120802447968810}
   turnDown: {fileID: 1803423213621134600}
-  willSwith: 0
   switchTimer: 0
   turningTimer: 0
   turnTime: 0
+  startTurnPos: 0
   targPos: 0
   disMove: 0
   overshoot: 0
@@ -472,6 +473,16 @@ MonoBehaviour:
   yForce: 0
   forceMass: 0
   isHit: 0
+  isTiny: 0
+  makingTiny: 0
+  makingBig: 0
+  tinyVal: 0
+  normalVal: 0
+  tinyTimer: 0
+  laserTimer: 0
+  outline: {fileID: 21300000, guid: 82ad56188b04740f08551bec8c92c7bb, type: 3}
+  outlineOBJ: {fileID: 0}
+  warningIcon: {fileID: 21300000, guid: 7700b0d46363245cf952e365a555e61f, type: 3}
   adOBJ: {fileID: 254978129}
   ads:
   - {fileID: 21300000, guid: 5d1c3373255d3430a94395543c22375f, type: 3}

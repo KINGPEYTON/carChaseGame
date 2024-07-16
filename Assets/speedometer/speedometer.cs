@@ -110,14 +110,18 @@ public class speedometer : MonoBehaviour
 
     public void startPowerup(float uses, Sprite icon, bool isTimed)
     {
-        powerUpIcon.sprite = icon;
-        powerupIsTimed = isTimed;
-        powerUpTimer = uses;
-        powerUpUses = (int)uses;
-        powerUpStartUses = (int)uses;
-        powerUpUseText.text = powerUpUses.ToString();
-        iconHueTimer = 0;
-        powerupActive = true;
+        if (controller.playing)
+        {
+            powerUpIcon.sprite = icon;
+            powerupIsTimed = isTimed;
+            powerUpTimer = uses;
+            powerUpUses = (int)uses;
+            powerUpStartUses = (int)uses;
+            powerUpUseText.text = powerUpUses.ToString();
+            iconHueTimer = 0;
+            powerupActive = true;
+            controller.powerupActive = true;
+        }
     }
 
     public void usePowerUp(int uses)
@@ -221,5 +225,6 @@ public class speedometer : MonoBehaviour
         iconHueTimer = 0;
         powerUpTimer = 0;
         powerUpUses = 0;
+        controller.powerupActive = false;
     }
 }

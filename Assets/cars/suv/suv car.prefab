@@ -194,14 +194,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bd30e91cbaf2e4e8e88070e36b4dedf8, type: 3}
   speed: 0
   lane: 0
+  isCar: 0
   switchUp: 0
   switchDown: 0
   turnUp: {fileID: 333222610730823761}
   turnDown: {fileID: 9046066250475835561}
-  willSwith: 0
   switchTimer: 0
   turningTimer: 0
   turnTime: 0
+  startTurnPos: 0
   targPos: 0
   disMove: 0
   overshoot: 0
@@ -216,6 +217,20 @@ MonoBehaviour:
   destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
   carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
   isDisabled: 0
+  xForce: 0
+  yForce: 0
+  forceMass: 0
+  isHit: 0
+  isTiny: 0
+  makingTiny: 0
+  makingBig: 0
+  tinyVal: 0
+  normalVal: 0
+  tinyTimer: 0
+  laserTimer: 0
+  outline: {fileID: 21300000, guid: 5606001b8b7704dc1b8c4062ee30403a, type: 3}
+  outlineOBJ: {fileID: 0}
+  warningIcon: {fileID: 21300000, guid: d9ee098b2f275448d981a0a2d6082901, type: 3}
 --- !u!61 &2212268519586176285
 BoxCollider2D:
   m_ObjectHideFlags: 0

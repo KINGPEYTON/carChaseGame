@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class powerUp : MonoBehaviour
 {
-    public int powerUpId;
+    public string powerUpId;
     public int typeID;
 
     public main controller;
@@ -13,7 +13,6 @@ public class powerUp : MonoBehaviour
     public float speed;
 
     public int tier;
-    public List<Sprite> tierSkins;
     public Sprite icon;
     public GameObject iconOBJ;
 
@@ -29,14 +28,9 @@ public class powerUp : MonoBehaviour
     {
         startPoint = transform.position.y;
         controller = GameObject.Find("contoller").GetComponent<main>();
-        pwManager = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
         popAni = GetComponent<Animator>();
         popAni.enabled = false;
-        speed = 7.5f;
-
-        tier = pwManager.tiers[powerUpId];
-        icon = pwManager.icons[powerUpId][tier];
-        GetComponent<SpriteRenderer>().sprite = tierSkins[tier];
+        speed = 25.5f;
 
         checkChanges();
     }
@@ -50,7 +44,7 @@ public class powerUp : MonoBehaviour
 
             if (controller.playing)
             {
-                transform.position = transform.position - new Vector3(Time.deltaTime / speed * controller.mph, 0, 0); //moves guard across the screen
+                transform.position -= new Vector3(Time.deltaTime / speed * controller.mph, 0, 0); //moves guard across the screen
                 if (transform.position.x <= -13) //checks if its offscreen
                 {
                     Destroy(gameObject);
@@ -63,7 +57,26 @@ public class powerUp : MonoBehaviour
         }
     }
 
-    public void bounceAnimation()
+    public void createPowerUp(string id, int tpId, Sprite newIcon, Sprite bubble, int level, powerUpManager pman, GameObject iconO)
+    {
+        powerUpId = id;
+        typeID = tpId;
+        tier = level;
+        icon = newIcon;
+        GetComponent<SpriteRenderer>().sprite = bubble;
+        pwManager = pman;
+        iconOBJ = iconO;
+    }
+
+    public void collect()
+    {
+        popped = true;
+        powerUpIcon iconThing = Instantiate(iconOBJ, transform.position, Quaternion.identity).GetComponent<powerUpIcon>();
+        iconThing.setIcon(icon, powerUpId, tier);
+        setPopAnimation();
+    }
+
+    void bounceAnimation()
     {
         if (bounceUp)
         {
@@ -81,15 +94,6 @@ public class powerUp : MonoBehaviour
                 bounceUp = true;
             }
         }
-    }
-
-    public void collect()
-    {
-        popped = true;
-        GameObject iconThing = Instantiate(iconOBJ, transform.position, Quaternion.identity);
-        iconThing.GetComponent<powerUpIcon>().id = powerUpId;
-        iconThing.GetComponent<SpriteRenderer>().sprite = icon;
-        setPopAnimation();
     }
 
     void setPopAnimation()
@@ -114,11 +118,11 @@ public class powerUp : MonoBehaviour
 
     void checkChanges()
     {
-        if(powerUpId == 6 && tier == 2)
+        if(powerUpId == "shield" && tier == 2)
         {
             typeID = 3;
         }
-        else if(powerUpId == 10 && tier == 2)
+        else if(powerUpId == "teleport" && tier == 2)
         {
             typeID = 2;
         }

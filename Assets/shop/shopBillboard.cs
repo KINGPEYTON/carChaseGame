@@ -1161,14 +1161,14 @@ public class shopBillboard : MonoBehaviour
                     newUpgrade.transform.Find("Cost").GetComponent<TextMeshProUGUI>().text = pwManage.tierCosts[powID][tier].ToString();
                     if (tier == pwManage.tiers[powID] + 1)
                     {
+                        if (tier < pwManage.tierCosts[powID].Count)
+                        {
+                            newUpgrade.transform.Find("Upgrade Button").GetComponent<Button>().onClick.AddListener(() => upgradePowerup(powID, pwManage.tierCosts[powID][tier]));
+                        }
                         if (pwManage.tierCosts[powID][tier] < controller.totalCoins)
                         {
                             newUpgrade.GetComponent<Image>().color = new Color32(150, 255, 150, 255);
                             newUpgrade.transform.Find("Unlock Text").GetComponent<TextMeshProUGUI>().text = "Upgrade";
-                            if (tier < pwManage.tierCosts[powID].Count)
-                            {
-                                newUpgrade.transform.Find("Upgrade Button").GetComponent<Button>().onClick.AddListener(() => upgradePowerup(powID, pwManage.tierCosts[powID][tier]));
-                            }
                         }
                         else
                         {

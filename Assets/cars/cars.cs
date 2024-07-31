@@ -39,6 +39,7 @@ public class cars : MonoBehaviour
     public GameObject destroyedCar;
     public GameObject carDebris;
     public bool isDisabled;
+    public ParticleSystem crashSmoke;
 
     public float xForce;
     public float yForce;
@@ -265,6 +266,7 @@ public class cars : MonoBehaviour
         speed = 0;
         xForce = xF;
         yForce = yF;
+        crashSmoke.Play();
     }
 
     public void makeDestroyed()

@@ -9,6 +9,7 @@ TagManager:
   - barrier
   - smoke
   - power-up
+  - cone
   layers:
   - Default
   - TransparentFX

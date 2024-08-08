@@ -182,6 +182,10 @@ public class main : MonoBehaviour
 
     public AudioClip clickSound;
 
+    public bool inConstruction;
+    public GameObject constructionArrow;
+    public float constructionTimer;
+
     public bool topLane;
     public float topLaneTime;
     public float topLaneTimer;
@@ -266,6 +270,7 @@ public class main : MonoBehaviour
 
         topLaneTimer = Random.Range(500, 3000);
         areaTimer = Random.Range(500, 2000);
+        constructionTimer = Random.Range(750, 1475);
 
         bigPlaneTimer = Random.Range(15, 65);
 
@@ -339,6 +344,7 @@ public class main : MonoBehaviour
             if (!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3))
             {
                 spawnCoin();
+                newConstruction();
                 newTopLane();
                 changeArea();
                 spawnGameCar();
@@ -678,9 +684,23 @@ public class main : MonoBehaviour
         }
     }
 
+    void newConstruction()
+    {
+        if (!inConstruction)
+        {
+            if (topLane) { constructionTimer -= Time.deltaTime * mph; }
+            if (constructionTimer < 0)
+            {
+                inConstruction = true;
+                GameObject newCar = Instantiate(constructionArrow, new Vector3(65, -4.35f, 0), Quaternion.identity, GameObject.Find("cars").transform);
+                checkCarEffects(newCar);
+            }
+        }
+    }
+
     void newTopLane()
     {
-        if (areaEvent == 0) { topLaneTimer -= Time.deltaTime * mph; }
+        if (areaEvent == 0 && !inConstruction) { topLaneTimer -= Time.deltaTime * mph; }
         if (topLaneTimer <= 0 && topLaneTime <= 0)
         {
             topLane = !topLane;
@@ -912,8 +932,10 @@ public class main : MonoBehaviour
             if (powerupTimer > powerupTime)
             {
                 float newLane = 0;
-                if (topLane) { newLane = (Random.Range(0, -5) * 1.25f) + 0.85f; }
-                else { newLane = (Random.Range(-1, -5) * 1.25f) + 0.85f; }
+                int maxLane = 1; if (topLane) { maxLane = 0; }
+                int minLane = 5; if (inConstruction) { minLane = 4; }
+                newLane = (Random.Range(-maxLane, -minLane) * 1.25f) + 0.85f;
+
                 pwManage.createPowerup(getPowerupFromOdds(pwManage.powerupOdds, pwManage.powerupCurrOdds), new Vector3(15, newLane, 0));
                 powerupTimer = 0;
                 powerupTime = Random.Range(1200, 2250);
@@ -1087,11 +1109,7 @@ public class main : MonoBehaviour
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
         GameObject newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(carPlace, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-        if (senseVision && enhancedSense.showIcons) { newCar.GetComponent<cars>().createIcon(enhancedSense); }
-        if (inTinyCars)
-        {
-            makeCarTiny(newCar, true);
-        }
+        checkCarEffects(newCar);
     }
 
     void spawnLargeCar()
@@ -1106,11 +1124,7 @@ public class main : MonoBehaviour
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
         GameObject newCar = Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(carPlace + 1, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-        if (senseVision && enhancedSense.showIcons) { newCar.GetComponent<cars>().createIcon(enhancedSense); }
-        if (inTinyCars)
-        {
-            makeCarTiny(newCar, true);
-        }
+        checkCarEffects(newCar);
     }
 
     void spawnSpecalCar()
@@ -1125,6 +1139,11 @@ public class main : MonoBehaviour
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
         GameObject newCar = Instantiate(getCarFromOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList), new Vector3(carPlace + 13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        checkCarEffects(newCar);
+    }
+
+    public void checkCarEffects(GameObject newCar)
+    {
         if (senseVision && enhancedSense.showIcons) { newCar.GetComponent<cars>().createIcon(enhancedSense); }
         if (inTinyCars)
         {
@@ -1157,7 +1176,7 @@ public class main : MonoBehaviour
         }
     }
 
-    GameObject getCarFromOdds(List<float> oddsList, List<float> currOddsList, List<GameObject> carList)
+    public GameObject getCarFromOdds(List<float> oddsList, List<float> currOddsList, List<GameObject> carList)
     {
         float newCarOdds = Random.Range(0.0f, 1.0f);
         float oddsAccum = 0.0f;

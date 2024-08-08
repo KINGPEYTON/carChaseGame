@@ -694,10 +694,10 @@ public class playerCar : MonoBehaviour
     {
         if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
         {
-            float dis = 0; 
+            float dis = 0;
             if (isUp) { dis = 1.25f; } else { dis = -1.25f; }
             targetPos += new Vector3(0, dis, 0); //changes targetPos to the new lane it needs to go to
-            disMove = (moveTime * (1/multiplier)); //calculates the speed the player car needs to go to switch lanes
+            disMove = (moveTime * (1 / multiplier)); //calculates the speed the player car needs to go to switch lanes
             turnPos = transform.position;
             if (isUp) { changeOrder(-1); } else { changeOrder(1); }
             overshoot = 0; //resets overshoot
@@ -708,6 +708,24 @@ public class playerCar : MonoBehaviour
 
             playHorn();
         }
+    }
+
+
+    void forceSlide(bool isUp, float multiplier)
+    {
+        float dis = 0;
+        if (isUp) { dis = 1.25f; } else { dis = -1.25f; }
+        targetPos += new Vector3(0, dis, 0); //changes targetPos to the new lane it needs to go to
+        disMove = (moveTime * (1 / multiplier)); //calculates the speed the player car needs to go to switch lanes
+        turnPos = transform.position;
+        if (isUp) { changeOrder(-1); } else { changeOrder(1); }
+        overshoot = 0; //resets overshoot
+
+        AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
+        inPos = false;
+        tapped = false;
+
+        playHorn();
     }
 
     public void crash()
@@ -734,6 +752,9 @@ public class playerCar : MonoBehaviour
                     break;
                 case "barrier":
                     hitBarrier(collision);
+                    break;
+                case "cone":
+                    hitCone(collision);
                     break;
                 case "coin":
                     hitCoin(collision);
@@ -870,7 +891,12 @@ public class playerCar : MonoBehaviour
 
     void hitBarrier(Collider2D collision)
     {
-        laneDown(turnMulti);
+        forceSlide(false, turnMulti);
+    }
+
+    void hitCone(Collider2D collision)
+    {
+        if (targetPos.y < transform.position.y && controller.inConstruction) { forceSlide(true, turnMulti * 2); }
     }
 
     void hitCoin(Collider2D collision)

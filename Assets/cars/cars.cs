@@ -40,6 +40,7 @@ public class cars : MonoBehaviour
     public GameObject carDebris;
     public bool isDisabled;
     public ParticleSystem crashSmoke;
+    public bool inTraffic;
 
     public float xForce;
     public float yForce;
@@ -62,12 +63,17 @@ public class cars : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = Random.Range(speedMin, speedMax);
+        if (!inTraffic) { speed = Random.Range(speedMin, speedMax); }
         controller = GameObject.Find("contoller").GetComponent<main>();
         GetComponent<SpriteRenderer>().sprite = skins[Random.Range(0, skins.Length)]; //set the skin to a random one at spawn
 
         controller.carsInGame.Add(gameObject);
         setLane();
+
+        if (controller.bannedLanes.Contains(lane) && !inTraffic)
+        {
+            newCarLane();
+        }
 
         turnTime = 1.75f;
         switchLane(blinkTime);
@@ -85,15 +91,15 @@ public class cars : MonoBehaviour
         {
             if (controller.mph > controller.playerCar.startMph) // checks if its not in the game start animation
             {
-                if (speed > 0)
+                if (speed > 6f)
                 {
-                    transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0); //move fowards in game
+                    transform.position -= new Vector3(((controller.mph) * Time.deltaTime / speed), 0, 0); //move fowards in game
                 }
                 else
                 {
-                    transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
+                    transform.position -= new Vector3(((controller.mph) * Time.deltaTime / 6f), 0, 0); //move fowards in game
                 }
-                if (blinkTime > -1) // checks if its a car that can turn
+                if (blinkTime > -1 && !inTraffic) // checks if its a car that can turn
                 {
                     switchTimer -= Time.deltaTime;
                     if (switchTimer < 0) //checks if its time to switch lanes
@@ -110,7 +116,7 @@ public class cars : MonoBehaviour
                 }
                 else
                 {
-                    transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / 3.5f), 0, 0); //car movment in the start up animation
+                    transform.position += new Vector3((((controller.playerCar.startMph / 1.5f) - controller.mph) * 5 * Time.deltaTime / 6f), 0, 0); //car movment in the start up animation
                 }
             }
 
@@ -139,7 +145,7 @@ public class cars : MonoBehaviour
         {
             if (speed > 0)
             {
-                transform.position = transform.position + new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
+                transform.position += new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
 
                 if (controller.bannedLanes.Contains(lane) && transform.position.x < -10)
                 {
@@ -177,12 +183,14 @@ public class cars : MonoBehaviour
 
     void startSwitch()
     {
-        int maxLane = 0;
-        if (controller.topLane){ maxLane = 0; }
-        else { maxLane = 1; }
+        int maxLane = 1;
+        if (controller.topLane) { maxLane = 0; }
+
+        int minLane = 4;
+        if (controller.inConstruction) { minLane = 3; }
 
         bool laneSwitch = Random.Range(0, 2) == 0;
-        if ((laneSwitch && lane > maxLane) || lane == 4) //randomly decides which lane to switch to and if its a valid lane
+        if ((laneSwitch && lane > maxLane) || lane == minLane) //randomly decides which lane to switch to and if its a valid lane
         {
             switchUp = true; //initiats the switch up
             targPos += 1.25f;
@@ -201,43 +209,48 @@ public class cars : MonoBehaviour
 
     public void makeScared(float explosionLane)
     {
-        turningTimer = 1.5f;
-        int maxLane = 0;
-        if (controller.topLane) { maxLane = 0; }
-        else { maxLane = 1; }
-        if (lane < explosionLane && lane > maxLane)
+        if (speed > 0)
         {
-            switchUp = true; //initiats the switch up
-            switchDown = false;
-            targPos += 1.25f;
-            switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
-        }
-        else if (lane > explosionLane && lane < 4)
-        {
-            switchDown = true; //initiats the switch down
-            switchUp = false;
-            targPos -= 1.25f;
-            switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
-        } else if(lane == explosionLane)
-        {
-            bool laneSwitch = Random.Range(0, 2) == 0;
-            if ((laneSwitch && lane > maxLane) || lane == 4) //randomly decides which lane to switch to and if its a valid lane
+            turningTimer = 1.5f;
+            int maxLane = 0;
+            if (controller.topLane) { maxLane = 0; }
+            int minLane = 4;
+            if (controller.inConstruction) { minLane = 3; }
+            if (lane < explosionLane && lane > maxLane)
             {
                 switchUp = true; //initiats the switch up
+                switchDown = false;
                 targPos += 1.25f;
+                switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
             }
-            else
+            else if (lane > explosionLane && lane < minLane)
             {
                 switchDown = true; //initiats the switch down
+                switchUp = false;
                 targPos -= 1.25f;
+                switchTimer = 100; //so the car wont try to switch lanes again before its done switching currently
             }
+            else if (lane == explosionLane)
+            {
+                bool laneSwitch = Random.Range(0, 2) == 0;
+                if ((laneSwitch && lane > maxLane) || lane == minLane) //randomly decides which lane to switch to and if its a valid lane
+                {
+                    switchUp = true; //initiats the switch up
+                    targPos += 1.25f;
+                }
+                else
+                {
+                    switchDown = true; //initiats the switch down
+                    targPos -= 1.25f;
+                }
+            }
+
+            disMove = turnTime / Random.Range(1.75f, 2.25f); //calculates the speed the car needs to go to switch lanes
+            overshoot = 0; //calculates overshoot to where it needs to go
+            startTurnPos = transform.position.y;
+
+            speed += Random.Range(2.0f, 3.0f);
         }
-
-        disMove = turnTime / Random.Range(1.75f, 2.25f); //calculates the speed the car needs to go to switch lanes
-        overshoot = 0; //calculates overshoot to where it needs to go
-        startTurnPos = transform.position.y;
-
-        speed += Random.Range(2.0f, 3.0f);
     }
 
     public void amDisabled()
@@ -555,7 +568,12 @@ public class cars : MonoBehaviour
             }
             else if (transform.position.x < collision.transform.position.x)
             {
-                if (daCarhit.speed > 8)
+                if (daCarhit.inTraffic)
+                {
+                    speed = daCarhit.speed;
+                    inTraffic = true;
+                }
+                else if (daCarhit.speed > 8 && !inTraffic)
                 {
                     speed = daCarhit.speed - 1; //changes the speed so cars won't go through eachother
                 }
@@ -599,20 +617,25 @@ public class cars : MonoBehaviour
     {
         if (controller.playing)
         {
-            transform.position = new Vector3(12, (Random.Range(0, -5) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
+            int maxLane = 1;
+            if (controller.topLane)
+            { maxLane = 0; }
+
+            int minLane = 5;
+            if (controller.inConstruction)
+            { minLane = 4; }
+            transform.position = new Vector3(transform.position.x, (Random.Range(maxLane, -minLane) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
         }
         else
         {
-            float maxLane = 0;
+            int maxLane = 1;
             if (controller.topLane)
-            {
-                maxLane = 0.65f;
-            }
-            else
-            {
-                maxLane = -0.6f;
-            }
-            transform.position = new Vector3(-14, maxLane, 0);  //spawn new car in a random lane before going on screen;
+            { maxLane = 0; }
+
+            int minLane = 5;
+            if (controller.inConstruction)
+            { minLane = 4; }
+            transform.position = new Vector3(-14, (Random.Range(maxLane, -minLane) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
         }
         setLane();
     }
@@ -643,7 +666,7 @@ public class cars : MonoBehaviour
         }
     }
 
-    public void destroyCar()
+    public virtual void destroyCar()
     {
         controller.carsInGame.Remove(gameObject);
         if (controller.senseVision) { controller.enhancedSense.carsOutline.Remove(outlineOBJ); }
@@ -669,6 +692,12 @@ public class cars : MonoBehaviour
         {
             doBig();
         }
+    }
+
+    public void makeTraffic(float sped)
+    {
+        inTraffic = true;
+        speed = sped;
     }
 
     public virtual void nearCrash()

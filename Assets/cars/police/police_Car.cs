@@ -79,7 +79,7 @@ public class police_Car : cars
                         transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
                     }
                 }
-                if (transform.position.x < -16 && controller.mph > 70 && !playerCarOBJ.boosting)
+                if (transform.position.x < -16 && controller.mph > 70 && !playerCarOBJ.boosting && !playerCarOBJ.inRocket)
                 {
                     startPlayerChase();
                 }

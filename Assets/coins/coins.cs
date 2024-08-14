@@ -7,6 +7,7 @@ public class coins : MonoBehaviour
     public main controller;
     public Transform speedometer;
     public Animator ani;
+    public SpriteRenderer sr;
 
     public int value;
     public bool isHolo;
@@ -44,6 +45,7 @@ public class coins : MonoBehaviour
         controller = GameObject.Find("contoller").GetComponent<main>();
         speedometer = GameObject.Find("Speedometer").transform;
         ani = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
         hitbox = GetComponent<BoxCollider2D>();
 
         hitboxSizeX = hitbox.size.x;
@@ -52,15 +54,17 @@ public class coins : MonoBehaviour
         controller.coinList.Add(gameObject);
         setLane();
         collectedTime = 1.25f;
-        collectedSize = 0.35f;
+        collectedSize = 0.001f;
         attractTime = 0.75f;
 
-        startSize = 2;
-        targetBigSize = 3.25f;
+        startSize = 0.04f;
+        targetBigSize = 0.065f;
 
         if (isHolo)
         {
             ani.Play("holoCoin");
+            sr.color = new Color32(255, 200, 200, 255);
+
         }
         else if (controller.isBigCoinhuna)
         {
@@ -179,6 +183,7 @@ public class coins : MonoBehaviour
     {
         ani.Play("holoCoin", 0, ani.GetCurrentAnimatorStateInfo(0).normalizedTime);
         value = 2;
+        sr.color = new Color32(255, 200, 200, 255);
 
     }
 
@@ -186,6 +191,7 @@ public class coins : MonoBehaviour
     {
         ani.Play("coin", 0, ani.GetCurrentAnimatorStateInfo(0).normalizedTime);
         value = 1;
+        sr.color = new Color32(255, 255, 255, 255);
     }
 
     void transitionAnimation() {
@@ -232,16 +238,16 @@ public class coins : MonoBehaviour
         {
             if (isHolo)
             {
-                newOutline.GetComponent<SpriteRenderer>().color = new Color32(180, 200, 0, 235);
+                newOutline.GetComponent<SpriteRenderer>().color = new Color32(0, 200, 0, 235);
             }
             else
             {
-                newOutline.GetComponent<SpriteRenderer>().color = new Color32(0, 200, 0, 235);
+                newOutline.GetComponent<SpriteRenderer>().color = new Color32(180, 200, 0, 235);
             }
         }
         else
         {
-            newOutline.GetComponent<SpriteRenderer>().color = new Color32(0, 200, 0, 0);
+            newOutline.GetComponent<SpriteRenderer>().color = new Color32(180, 200, 0, 0);
         }
 
         changeHitbox(1 / (sen.hitBoxSize));

@@ -132,7 +132,7 @@ public class shopBillboard : MonoBehaviour
         pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
 
-        if (pManager.intro) // delete this to make the start animation again
+        if (pManager.intro && false) // delete this to make the start animation again
         {
             startup();
             pManager.intro = false; // makes it so it wont go in the start animation again without closing the app

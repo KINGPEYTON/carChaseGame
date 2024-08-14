@@ -362,9 +362,9 @@ public class cars : MonoBehaviour
     public void makeTiny(bool doInstant)
     {
         tinyVal = 0.22f;
+        isTiny = true;
         if (doInstant)
         {
-            isTiny = true;
             transform.localScale = new Vector3(tinyVal, tinyVal, 1);
         }
         else
@@ -376,7 +376,6 @@ public class cars : MonoBehaviour
 
     public void makeNormal()
     {
-        isTiny = false;
         makingBig = true;
         tinyTimer = 0;
     }
@@ -406,7 +405,6 @@ public class cars : MonoBehaviour
             transform.localScale = new Vector3(valToScale, valToScale, 1);
         }
         else {
-            isTiny = true;
             makingTiny = false;
             transform.localScale = new Vector3(tinyVal, tinyVal, 1);
         }
@@ -439,6 +437,7 @@ public class cars : MonoBehaviour
         else
         {
             makingBig = false;
+            isTiny = true;
             transform.localScale = new Vector3(normalVal, normalVal, 1);
         }
     }

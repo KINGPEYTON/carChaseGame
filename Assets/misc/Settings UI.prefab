@@ -2044,7 +2044,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 51
+  m_SortingOrder: 251
   m_TargetDisplay: 0
 --- !u!114 &3914550148770872327
 MonoBehaviour:

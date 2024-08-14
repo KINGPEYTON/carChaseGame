@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4, y: 2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -77,12 +77,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -102,16 +102,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &760577245907436107
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -148,14 +165,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &4969322596625616286
 Rigidbody2D:
@@ -236,7 +253,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8, y: -2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -282,12 +299,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -307,16 +324,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &8335935598653355890
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -353,14 +387,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &1053929764823431352
 Rigidbody2D:
@@ -441,7 +475,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2, y: -2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -487,12 +521,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -512,16 +546,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &7541072985303619694
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -558,14 +609,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &6928624478762311902
 Rigidbody2D:
@@ -646,7 +697,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2, y: 2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -692,12 +743,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -717,16 +768,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &8675195235785722752
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -763,14 +831,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &7235542444278811302
 Rigidbody2D:
@@ -851,7 +919,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6, y: -2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -897,12 +965,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -922,16 +990,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &6977596683038862147
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -968,14 +1053,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &9008901476597605285
 Rigidbody2D:
@@ -1056,7 +1141,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8, y: -1.25, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -1102,12 +1187,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1127,16 +1212,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &1603149518044883554
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1173,14 +1275,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &5694766710207368165
 Rigidbody2D:
@@ -1261,7 +1363,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -1307,12 +1409,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1332,16 +1434,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &2715033559286325410
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1378,14 +1497,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &2715033559286325409
 Rigidbody2D:
@@ -1514,7 +1633,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1.25, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -1560,12 +1679,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1585,16 +1704,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &2715033560533543132
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1631,14 +1767,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &2715033560533543131
 Rigidbody2D:
@@ -1719,7 +1855,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -1765,12 +1901,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1790,16 +1926,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &2715033560684921581
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1836,14 +1989,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &2715033560684921580
 Rigidbody2D:
@@ -1924,7 +2077,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -1970,12 +2123,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1995,16 +2148,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &9215525759900802789
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2041,14 +2211,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &825507455418425663
 Rigidbody2D:
@@ -2129,7 +2299,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -2175,12 +2345,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2200,16 +2370,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &7378256108767867504
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2246,14 +2433,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &7636589760483066758
 Rigidbody2D:
@@ -2334,7 +2521,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8, y: 2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -2380,12 +2567,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2405,16 +2592,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &4483151747953232141
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2451,14 +2655,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &3923330914254114603
 Rigidbody2D:
@@ -2539,7 +2743,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4, y: -2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -2585,12 +2789,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2610,16 +2814,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &3727716908095374821
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2656,14 +2877,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &3683646487815157967
 Rigidbody2D:
@@ -2744,7 +2965,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.25, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -2790,12 +3011,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2815,16 +3036,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &1260487828763337243
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2861,14 +3099,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &9135659047157471458
 Rigidbody2D:
@@ -2949,7 +3187,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8, y: 1.25, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -2995,12 +3233,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -3020,16 +3258,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &1636804414405402537
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3066,14 +3321,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &6095730469145110304
 Rigidbody2D:
@@ -3154,7 +3409,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6, y: 2.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715033560204347905}
@@ -3200,12 +3455,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300000, guid: 60e717e7bd8bd4e449d22cfe86518f1a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 595b2c01236164df2bb9121708b7cbd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 23.34, y: 23.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -3225,16 +3480,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speedometer: {fileID: 0}
+  ani: {fileID: 0}
   value: 1
+  isHolo: 0
   collected: 0
   collectedpos: {x: 0, y: 0, z: 0}
+  collectedStartSize: {x: 0, y: 0, z: 0}
+  collectedSize: 0
   collectedTimer: 0
+  collectedTime: 0
+  attractTarget: {fileID: 0}
+  attractStart: {x: 0, y: 0, z: 0}
+  attractTime: 0
+  outlineOBJ: {fileID: 0}
+  makingHolo: 0
+  makingNormal: 0
+  transitionTimer: 0
+  startSize: 0
+  targetBigSize: 0
   pickupsSFX:
   - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
   collectsSFX:
   - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
   - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
   - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  hitboxSizeX: 0
+  hitboxSizeY: 0
+  hitbox: {fileID: 0}
 --- !u!61 &860116610035529600
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3271,14 +3543,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.5}
-    newSize: {x: 0.5, y: 0.5}
+    oldSize: {x: 23.34, y: 23.34}
+    newSize: {x: 23.34, y: 23.34}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
 --- !u!50 &299749216273641781
 Rigidbody2D:

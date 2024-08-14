@@ -9,6 +9,9 @@ public class construction : cars
     public GameObject cones;
     public Transform conesLast;
 
+    public List<GameObject> coneList;
+    public Sprite coneOutline;
+
     public float carTime;
     public float carTimer;
 
@@ -21,12 +24,13 @@ public class construction : cars
         speed = 0;
         controller = GameObject.Find("contoller").GetComponent<main>();
         GetComponent<SpriteRenderer>().sprite = skins[Random.Range(0, skins.Length)]; //set the skin to a random one at spawn
-        targPos = transform.position.y; controller.carsInGame.Add(gameObject);
+        targPos = transform.position.y;
 
         turnTime = 0.75f;
         isCar = false;
         setLane();
         controller.carsInGame.Add(gameObject);
+        controller.constructionOBJ = this;
 
         if (controller.senseVision) { createOuline(controller.enhancedSense); }
 
@@ -46,20 +50,14 @@ public class construction : cars
                 getsShot();
             }
 
-            if (inSight)
+            if (inEnd && conesLast == null) // checks if the car is on screen
             {
-                if (transform.position.x < -110)
-                {
-                    Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform);
-                    inEnd = true;
-                }
-                if (!inEnd)
-                {
-                    if (conesLast.transform.position.x < 12)
-                    {
-                        conesLast = Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y + 0.5f, 0), Quaternion.identity, GameObject.Find("cars").transform).transform;
-                    }
-                }
+                destroyCar(); // destroys it otherwise
+            }
+
+            if (inSight && !inEnd)
+            {
+                spawnCones();
             }
             else
             {
@@ -78,23 +76,7 @@ public class construction : cars
                 }
                 if (transform.position.x < 27)
                 {
-                    conesLast = Instantiate(cones, new Vector3(transform.position.x + 2, transform.position.y + 0.25f, 0), Quaternion.identity, GameObject.Find("cars").transform).transform;
-                    inSight = true;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        cars c = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 2.5f - (i * 3), transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
-                        c.makeTraffic(0);
-                        controller.checkCarEffects(c.gameObject);
-                    }
-                    cars ca = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 14.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
-                    ca.makeTraffic(7.5f);
-                    controller.checkCarEffects(ca.gameObject);
-                    for (int i = 0; i < 8; i++)
-                    {
-                        cars cr = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 11.5f + (i * 3.5f), transform.position.y + 1.25f, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
-                        cr.makeTraffic(0);
-                        controller.checkCarEffects(cr.gameObject);
-                    }
+                    spawnJam();
                 }
             }
         }
@@ -102,12 +84,44 @@ public class construction : cars
         GetComponent<SpriteRenderer>().sprite = skins[((int)turningTimer) % 2];
         turningTimer += Time.deltaTime * 4;
 
-        if (inEnd && conesLast == null) // checks if the car is on screen
-        {
-            destroyCar(); // destroys it otherwise
-        }
-
         checkStuff();
+    }
+
+    void spawnJam()
+    {
+        conesLast = Instantiate(cones, new Vector3(transform.position.x + 2, transform.position.y + 0.25f, 0), Quaternion.identity, GameObject.Find("cars").transform).transform;
+        inSight = true;
+        for (int i = 0; i < 3; i++)
+        {
+            cars c = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 2.5f - (i * 3), transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
+            c.makeTraffic(0);
+            controller.checkCarEffects(c.gameObject);
+        }
+        cars ca = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 14.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
+        ca.makeTraffic(7.5f);
+        controller.checkCarEffects(ca.gameObject);
+        for (int i = 0; i < 8; i++)
+        {
+            cars cr = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 11.5f + (i * 3.5f), transform.position.y + 1.25f, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
+            cr.makeTraffic(0);
+            controller.checkCarEffects(cr.gameObject);
+        }
+    }
+
+    void spawnCones()
+    {
+        if (transform.position.x < -110)
+        {
+            Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform);
+            inEnd = true;
+        }
+        if (!inEnd)
+        {
+            if (conesLast.transform.position.x < 12)
+            {
+                conesLast = Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y + 0.5f, 0), Quaternion.identity, GameObject.Find("cars").transform).transform;
+            }
+        }
     }
 
     public override void destroyCar()

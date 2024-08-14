@@ -8,7 +8,9 @@ public class police_Car : cars
 
     public bool chasingPlayer;
     public AudioClip crash;
+
     public AudioSource siren;
+    public float speedLimit;
 
     public bool chasingVan;
     public maniac_van vanOBJ;
@@ -35,6 +37,8 @@ public class police_Car : cars
 
         turnTime = 0.75f;
         isCar = false;
+
+        speedLimit = 80;
 
         if (controller.senseVision) {
             createOuline(controller.enhancedSense);
@@ -79,7 +83,7 @@ public class police_Car : cars
                         transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
                     }
                 }
-                if (transform.position.x < -16 && controller.mph > 70 && !playerCarOBJ.boosting && !playerCarOBJ.inRocket)
+                if (transform.position.x < -16 && controller.mph > speedLimit && !playerCarOBJ.boosting && !playerCarOBJ.inRocket)
                 {
                     startPlayerChase();
                 }
@@ -207,7 +211,7 @@ public class police_Car : cars
             switchDown = false; //turns down blinker off
             switchUp = false; //turns up blinker off
             setLane(); //update so the car knows what lane its in
-            switchTimer = 0.35f + getValueScale(getValueRanged(controller.mph, 70, 130), 70, 130, 0.65f);
+            switchTimer = 0.35f + getValueScale(getValueRanged(controller.mph, speedLimit, 130), speedLimit, 130, 0.65f);
         }
     }
 
@@ -225,7 +229,7 @@ public class police_Car : cars
         chasingPlayer = true;
         chasingVan = false;
         siren.Play();
-        switchTimer = 0.35f + getValueScale(getValueRanged(controller.mph, 70, 130), 70, 130, 0.65f);
+        switchTimer = 0.35f + getValueScale(getValueRanged(controller.mph, speedLimit, 130), speedLimit, 130, 0.65f);
         targPos = playerCarOBJ.targetPos.y;
         transform.position = new Vector3(transform.position.x, playerCarOBJ.targetPos.y, 0);
     }

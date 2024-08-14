@@ -183,6 +183,7 @@ public class main : MonoBehaviour
     public AudioClip clickSound;
 
     public bool inConstruction;
+    public construction constructionOBJ;
     public GameObject constructionArrow;
     public float constructionTimer;
 

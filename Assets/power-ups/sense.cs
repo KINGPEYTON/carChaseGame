@@ -20,6 +20,7 @@ public class sense : MonoBehaviour
     public SpriteRenderer playerWheelBOutline;
     public List<SpriteRenderer> carsOutline;
     public List<GameObject> coinsOutline;
+    public List<SpriteRenderer> conesOutline;
     public List<GameObject> carIcons;
 
     public Transform scoreBlimp;
@@ -88,6 +89,13 @@ public class sense : MonoBehaviour
         {
             c.GetComponent<coins>().createOuline(this);
         }
+        if (controller.constructionOBJ != null)
+        {
+            foreach (GameObject c in controller.constructionOBJ.coneList)
+            {
+                c.GetComponent<cone>().createOuline(this);
+            }
+        }
 
         Transform newOutline = Instantiate(outlineUI).transform;
         scoreBlimpOutline = newOutline.Find("Score Blimp Outline").gameObject;
@@ -133,12 +141,11 @@ public class sense : MonoBehaviour
             Destroy(playerWheelFOutline);
             Destroy(playerWheelBOutline);
 
-            Destroy(scoreBlimpOutline);
-            Destroy(scoreBlimpOutlineText);
-            Destroy(pausePlaneOutline);
+            Destroy(scoreBlimpOutline.transform.parent.gameObject);
 
             foreach (SpriteRenderer sr in carsOutline) { Destroy(sr.gameObject); }
             foreach (GameObject sr in coinsOutline) { Destroy(sr); }
+            foreach (SpriteRenderer sr in conesOutline) { if (sr != null) { Destroy(sr.gameObject); } }
             foreach (GameObject sr in controller.coinList) { sr.GetComponent<coins>().changeHitbox(hitBoxSize); } //fix the coin hitboxs
             foreach (GameObject sr in carIcons) { Destroy(sr); }
             Destroy(gameObject);
@@ -176,6 +183,13 @@ public class sense : MonoBehaviour
         pausePlaneOutline.GetComponent<Image>().color = new Color32(0, 200, 200, (byte)value);
         scoreBlimpOutlineText.color = new Color32(200, 200, 0, (byte)value);
 
+        foreach (SpriteRenderer sr in conesOutline)
+        {
+            if (sr != null)
+            {
+                sr.color = new Color32(200, 50, 50, (byte)value);
+            }
+        }
         foreach (SpriteRenderer sr in carsOutline)
         {
             sr.color = new Color32(200, 0, 0, (byte)value);

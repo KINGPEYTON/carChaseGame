@@ -89,7 +89,10 @@ public class construction : cars
 
     void spawnJam()
     {
-        conesLast = Instantiate(cones, new Vector3(transform.position.x + 2, transform.position.y + 0.25f, 0), Quaternion.identity, GameObject.Find("cars").transform).transform;
+        GameObject newCone = Instantiate(cones, new Vector3(transform.position.x + 2, transform.position.y + 0.25f, 0), Quaternion.identity, GameObject.Find("cars").transform);
+        conesLast = newCone.transform;
+        coneList.Add(newCone);
+        newCone.GetComponent<cone>().construc = this;
         inSight = true;
         for (int i = 0; i < 3; i++)
         {
@@ -112,21 +115,31 @@ public class construction : cars
     {
         if (transform.position.x < -110)
         {
-            Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform);
+            GameObject newCone = Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform);
             inEnd = true;
+            coneList.Add(newCone);
+            newCone.GetComponent<cone>().construc = this;
         }
         if (!inEnd)
         {
             if (conesLast.transform.position.x < 12)
             {
-                conesLast = Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y + 0.5f, 0), Quaternion.identity, GameObject.Find("cars").transform).transform;
+                GameObject newCone = Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y + 0.5f, 0), Quaternion.identity, GameObject.Find("cars").transform);
+                conesLast = newCone.transform;
+                coneList.Add(newCone);
+                newCone.GetComponent<cone>().construc = this;
             }
         }
     }
 
     public override void destroyCar()
     {
-        if (!inEnd) { Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform); }
+        if (!inEnd)
+        {
+            GameObject newCone = Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform);
+            coneList.Add(newCone);
+            newCone.GetComponent<cone>().construc = this;
+        }
         controller.bannedLanes.Remove(lane);
         controller.inConstruction = false;
         controller.constructionTimer = Random.Range(450, 1375);
@@ -137,8 +150,10 @@ public class construction : cars
     {
         if (!inEnd)
         {
-            Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform);
+            GameObject newCone = Instantiate(cones, new Vector3(conesLast.position.x + 3.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform);
             inEnd = true;
+            coneList.Add(newCone);
+            newCone.GetComponent<cone>().construc = this;
         }
         controller.bannedLanes.Remove(lane);
         controller.inConstruction = false;

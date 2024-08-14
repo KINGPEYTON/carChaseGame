@@ -24,15 +24,24 @@ public class carIcon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(carAttached.transform.position.x < transform.position.x + 2 && !doFadeOut)
+        try
         {
-            startFade(false);
+            if (carAttached.transform.position.x < transform.position.x + 2 && !doFadeOut)
+            {
+                startFade(false);
+            }
+
+            transform.position = new Vector3(transform.position.x, carAttached.transform.position.y, 1);
+
+            if (doFadeIn) { visionFadeIn(); }
+            if (doFadeOut) { visionFadeOut(); }
         }
-
-        transform.position = new Vector3(transform.position.x, carAttached.transform.position.y, 1);
-
-        if (doFadeIn) { visionFadeIn(); }
-        if (doFadeOut) { visionFadeOut(); }
+        catch
+        {
+            fadeAni(0);
+            sen.carIcons.Remove(gameObject);
+            Destroy(gameObject);
+        }
     }
 
     void visionFadeIn()

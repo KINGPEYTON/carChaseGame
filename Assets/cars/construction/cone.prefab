@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5538977882722792232}
   - component: {fileID: 2176374249671322997}
   - component: {fileID: 6786546877807060531}
-  - component: {fileID: 938282359097351757}
+  - component: {fileID: 6031992172550798542}
   m_Layer: 0
   m_Name: cone
   m_TagString: cone
@@ -159,7 +159,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &938282359097351757
+--- !u!114 &6031992172550798542
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,8 +168,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5955303942070324948}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8fa1efa0917548c09ecb9a6d3a2b8a6, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e0a2114b5bd148bc970faaa93f9fe61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speed: 6
+  outline: {fileID: 21300000, guid: 5b6af7fc0adae49a2a14613e5345f8e9, type: 3}
+  construc: {fileID: 0}

@@ -15,6 +15,10 @@ public class main : MonoBehaviour
     public float score;
     public float highScore;
 
+    public float upMPHmod;
+    public float startMPHmod;
+    public float boostDist;
+
     public float screenDistort;
     public float screenDistortTarget;
 
@@ -252,6 +256,9 @@ public class main : MonoBehaviour
         mph = 0; //sets inital mph
         inStartup = true;
 
+        upMPHmod = 1;
+        startMPHmod = 1;
+
         coins = 0;
         highScore = PlayerPrefs.GetInt("highscore", 0); //sets high score to the one saved
         totalCoins = PlayerPrefs.GetInt("coins", 0); //sets high score to the one saved
@@ -300,8 +307,8 @@ public class main : MonoBehaviour
         {
             if (inStartup) //checks if the game is in its starting animation
             {
-                mph += (mph/2 + 15.0f) * Time.deltaTime;
-                if(mph > playerCar.startMph)
+                mph += (mph/2 + 15.0f) * Time.deltaTime * upMPHmod;
+                if(mph > playerCar.startMph * startMPHmod)
                 {
                     inStartup = false;
                 }
@@ -310,11 +317,11 @@ public class main : MonoBehaviour
             {
                 if (!isSlowdown)
                 {
-                    mph += playerCar.upMph * Time.deltaTime; //graudully increeses the mph (+1 every 2 sec)
+                    mph += playerCar.upMph * Time.deltaTime * upMPHmod; //graudully increeses the mph (+1 every 2 sec)
                 }
                 else
                 {
-                    mph += playerCar.upMph * Time.deltaTime * 2.5f;
+                    mph += playerCar.upMph * Time.deltaTime * 2.5f * upMPHmod;
                 }
                 if (mph > scoremph) { scoremph = mph; }
             }

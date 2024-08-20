@@ -38,6 +38,7 @@ public class shopBillboard : MonoBehaviour
     public Button myButton;
     public Button shopButton;
     public Button settingsButton;
+    public Button inventoryButton;
     public GameObject bigBillboard;
 
     public GameObject statics;
@@ -52,6 +53,7 @@ public class shopBillboard : MonoBehaviour
 
     public playerManager pManager;
     public powerUpManager pwManage;
+    public boostManager modManage;
     public playerCar playerCar;
 
     public int displayCarType;
@@ -90,29 +92,49 @@ public class shopBillboard : MonoBehaviour
 
     public Transform playerCategoryTransform;
     public Transform uiCategoryTransform;
-    public Transform boostCategoryTransform;
+    public Transform inventoryCategoryTransform;
     public Transform powerupCategoryTransform;
 
     public Transform playerItemsTransform;
     public Transform uiItemsTransform;
-    public Transform boostItemsTransform;
+    public Transform modShopItemsTransform;
+    public Transform inventoryItemsTransform;
     public Transform powerupItemsTransform;
 
     public GameObject itemButton;
     public List<Button> itemButtonList;
     public GameObject categoryButton;
     public GameObject powerupButton;
+    public GameObject modButton;
 
     public Button playerCategoryButton;
     public List<Button> playerCategoryButtonList;
     public Button powerUpCategoryButton;
     public List<Button> powerUpCategoryButtonList;
 
+    public GameObject modMenu;
+    public GameObject modShop;
+    public GameObject modInventory;
+
+    public GameObject modItem;
+    public Button modBuyButton;
+    public Image modBuyBackround;
+    public TextMeshProUGUI modBuyText;
+
+    public GameObject modIconOBJ;
+    public GameObject modIconCurr;
+
+    public GameObject inventoryRow;
+    public GameObject inventoryItem;
+
     public TextMeshProUGUI coinTextMain;
     public TextMeshProUGUI coinTextPlayer;
     public TextMeshProUGUI coinTextUI;
-    public TextMeshProUGUI coinTextBoost;
     public TextMeshProUGUI coinTextPowerup;
+    public TextMeshProUGUI coinTextBoost;
+
+    public TextMeshProUGUI coinTextModShop;
+    public TextMeshProUGUI coinTextInventory;
 
     public Sprite window;
     public Button activeCategoryButton;
@@ -130,6 +152,7 @@ public class shopBillboard : MonoBehaviour
 
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
         pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
+        modManage = GameObject.Find("modsManager").GetComponent<boostManager>();
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
 
         if (pManager.intro && false) // delete this to make the start animation again
@@ -284,6 +307,7 @@ public class shopBillboard : MonoBehaviour
             controller.StartGame();
             shopButton.interactable = false;
             settingsButton.interactable = false;
+            inventoryButton.interactable = false;
             statics.SetActive(true);
             staticTimer = 1f;
             AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
@@ -332,7 +356,9 @@ public class shopBillboard : MonoBehaviour
     coinTextUI.text = controller.totalCoins.ToString();
     coinTextBoost.text = controller.totalCoins.ToString();
     coinTextPowerup.text = controller.totalCoins.ToString();
-}
+    coinTextModShop.text = controller.totalCoins.ToString();
+    coinTextInventory.text = controller.totalCoins.ToString();
+    }
 
     public void openMainStoreScreen()
     {
@@ -385,7 +411,6 @@ public class shopBillboard : MonoBehaviour
 
         shopCategoryTransform = uiCategoryTransform;
         shopItemsTransform = uiItemsTransform;
-        //getPlayerItemButtons(0);
     }
 
     public void openBoosts()
@@ -397,9 +422,7 @@ public class shopBillboard : MonoBehaviour
         uiCoverPage.SetActive(false);
         boostsCoverPage.SetActive(true);
 
-        shopCategoryTransform = boostCategoryTransform;
-        shopItemsTransform = boostItemsTransform;
-        //getPlayerItemButtons(0);
+        openModMenu();
     }
 
     public Vector3 setTargetSpeed(Vector3 target, float speed, Vector3 currPos)
@@ -1310,6 +1333,263 @@ public class shopBillboard : MonoBehaviour
             areYouSure.message = "Not enough coins. Would you like to buy some more?";
         }
     }
+
+    public void openModMenu()
+    {
+        modMenu.SetActive(true);
+        modInventory.SetActive(false);
+        modShop.SetActive(false);
+
+        if(modIconCurr != null)
+        {
+            Destroy(modIconCurr);
+        }
+    }
+
+    public void openModShop()
+    {
+        modMenu.SetActive(false);
+        modInventory.SetActive(false);
+        modShop.SetActive(true);
+
+        shopItemsTransform = modShopItemsTransform;
+        activateModStoreButtons();
+    }
+
+    public void openModInventory()
+    {
+        modMenu.SetActive(false);
+        modInventory.SetActive(true);
+        modShop.SetActive(false);
+
+        shopItemsTransform = inventoryItemsTransform;
+        createInventoryButtons();
+    }
+
+    public void activateModStoreButtons()
+    {
+        int numButtons = modManage.inventory.Count;
+        foreach (Button i in itemButtonList)
+        {
+            Destroy(i.gameObject);
+        }
+        itemButtonList.Clear();
+
+        for (int i = 1; i < numButtons; i++)
+        {
+            Button newButton = createModStoreButton(i, shopItemsTransform);
+            itemButtonList.Add(newButton);
+        }
+        selectMods(1);
+    }
+
+    Button createModStoreButton(int id, Transform newParent)
+    {
+        Button newButton = Instantiate(modButton, newParent).GetComponent<Button>();
+        newButton.onClick.AddListener(() => selectMods(id));
+
+        newButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = modManage.modNames[id];
+
+        int cost = modManage.modCosts[id];
+
+        setModButtonColor(newButton, cost, id);
+
+        newButton.transform.Find("Image").GetComponent<Image>().sprite = modManage.icons[id];
+        newButton.transform.Find("Image").GetComponent<Image>().preserveAspect = true;
+
+        TextMeshProUGUI costText = newButton.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
+        costText.text = cost.ToString();
+        newButton.transform.Find("Coin").localPosition = new Vector3(7.3f - (cost.ToString().Length * 2.25f), 6, 0);
+
+        return newButton;
+    }
+
+    public void setModButtonColor(Button newButton, int cost, int id)
+    {
+        if (cost < controller.totalCoins)
+        {
+            switch (modManage.modRarity[id])
+            {
+                case 1:
+                    newButton.GetComponent<Image>().color = new Color32(175, 255, 175, 255);
+                    newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(125, 205, 125, 255);
+                    break;
+                case 2:
+                    newButton.GetComponent<Image>().color = new Color32(175, 175, 255, 255);
+                    newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(125, 125, 205, 255);
+                    break;
+                case 3:
+                    newButton.GetComponent<Image>().color = new Color32(175, 0, 175, 255);
+                    newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(125, 50, 205, 255);
+                    break;
+            }
+        }
+        else
+        {
+            switch (modManage.modRarity[id])
+            {
+                case 1:
+                    newButton.GetComponent<Image>().color = new Color32(175, 205, 175, 255);
+                    newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(125, 155, 125, 255);
+                    break;
+                case 2:
+                    newButton.GetComponent<Image>().color = new Color32(175, 175, 205, 255);
+                    newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(125, 125, 165, 255);
+                    break;
+                case 3:
+                    newButton.GetComponent<Image>().color = new Color32(175, 125, 175, 255);
+                    newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(175, 155, 175, 255);
+                    break;
+            }
+        }
+    }
+
+    public void selectMods(int buttonID)
+    {
+        itemID = buttonID;
+        int cost = modManage.modCosts[buttonID];
+
+        switch (modManage.modRarity[buttonID])
+        {
+            case 1:
+                modItem.GetComponent<Image>().color = new Color32(175, 255, 175, 255);
+                modItem.transform.Find("rarity color").GetComponent<Image>().color = new Color32(175, 255, 175, 255);
+                modItem.transform.Find("rarity text").GetComponent<TextMeshProUGUI>().text = "Basic";
+                break;
+            case 2:
+                modItem.GetComponent<Image>().color = new Color32(175, 175, 255, 255);
+                modItem.transform.Find("rarity color").GetComponent<Image>().color = new Color32(175, 175, 255, 255);
+                modItem.transform.Find("rarity text").GetComponent<TextMeshProUGUI>().text = "Rare";
+                break;
+            case 3:
+                modItem.GetComponent<Image>().color = new Color32(175, 0, 175, 255);
+                modItem.transform.Find("rarity color").GetComponent<Image>().color = new Color32(175, 0, 175, 255);
+                modItem.transform.Find("rarity text").GetComponent<TextMeshProUGUI>().text = "Super";
+                break;
+        }
+        
+        modItem.transform.Find("mod icon").GetComponent<Image>().sprite = modManage.icons[buttonID];
+        modItem.transform.Find("name text").GetComponent<TextMeshProUGUI>().text = modManage.modNames[buttonID];
+        modItem.transform.Find("description text").GetComponent<TextMeshProUGUI>().text = modManage.modDescription[buttonID];
+
+        TextMeshProUGUI costText = modItem.transform.Find("coins text").GetComponent<TextMeshProUGUI>();
+        costText.text = cost.ToString();
+        modItem.transform.Find("coin image").localPosition = new Vector3(-0.7f - (cost.ToString().Length * 0.95f), -10.75f, 0);
+
+        setAmmountElements(buttonID);
+    }
+
+    public void setAmmountElements(int id)
+    {
+        int cost = modManage.modCosts[id];
+        int ammount = modManage.inventory[id];
+        modBuyText.text = ammount.ToString();
+
+        if (ammount >= 99)
+        {
+            modBuyBackround.color = new Color32(5, 5, 5, 255);
+        }
+        else
+        {
+            modBuyBackround.color = new Color32(100, 100, 100, 255);
+        }
+
+        if (cost < controller.totalCoins && ammount < 100)
+        {
+            modBuyButton.GetComponent<Image>().color = new Color32(0, 255, 150, 255);
+        }
+        else
+        {
+            modBuyButton.GetComponent<Image>().color = new Color32(115, 175, 150, 255);
+        }
+    }
+
+    public void buyMod()
+    {
+        int cost = modManage.modCosts[itemID];
+        int ammount = modManage.inventory[itemID];
+        if (cost < controller.totalCoins && ammount < 100)
+        {
+            modManage.addMod(itemID);
+            controller.totalCoins -= cost;
+            PlayerPrefs.SetInt("coins", controller.totalCoins); //saves the total coins
+            updateCoinText();
+
+            modShopIcon mIcon = Instantiate(modIconOBJ, modItem.transform).GetComponent<modShopIcon>();
+            mIcon.setIcon(modManage.icons[itemID], this, modBuyBackround.transform, itemID);
+            modIconCurr = mIcon.gameObject;
+
+            for(int i = 1; i < itemButtonList.Count; i++)
+            {
+                setModButtonColor(itemButtonList[i-1], modManage.modCosts[i], i);
+            }
+        }
+        else
+        {
+            youSure areYouSure = Instantiate(areYouSureToCreate, sideTransform).GetComponent<youSure>();
+            areYouSure.methodToCall = buyMoreCoins;
+            areYouSure.message = "Not enough coins. Would you like to buy some more?";
+        }
+    }
+
+    public void createInventoryButtons()
+    {
+        foreach (Button b in itemButtonList)
+        {
+            Destroy(b.gameObject);
+        }
+        itemButtonList.Clear();
+
+        List<int> items = new List<int>();
+        for (int j = 1; j < modManage.inventory.Count; j++)
+        {
+            for (int k = 0; k < modManage.inventory[j]; k++)
+            {
+                items.Add(j);
+            }
+        }
+
+        int i = 0;
+        while (i < items.Count)
+        {
+            Transform newRow = Instantiate(inventoryRow, shopItemsTransform).transform;
+            for (int j = 0; j < 7; j++)
+            {
+                if (i < items.Count)
+                {
+                    Button newButton = createInventoryItem(items[i], newRow);
+                    itemButtonList.Add(newButton);
+                    i++;
+                }
+            }
+        }
+    }
+
+    public Button createInventoryItem(int id, Transform paren)
+    {
+        Button newButton = Instantiate(inventoryItem, paren).GetComponent<Button>();
+
+        switch (modManage.modRarity[id])
+        {
+            case 1:
+                newButton.GetComponent<Image>().color = new Color32(175, 255, 175, 255);
+                newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(125, 205, 125, 255);
+                break;
+            case 2:
+                newButton.GetComponent<Image>().color = new Color32(175, 175, 255, 255);
+                newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(125, 125, 205, 255);
+                break;
+            case 3:
+                newButton.GetComponent<Image>().color = new Color32(175, 0, 175, 255);
+                newButton.transform.Find("Text Backround").GetComponent<Image>().color = new Color32(125, 50, 205, 255);
+                break;
+        }
+        newButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = modManage.modNames[id];
+        newButton.transform.Find("mod icon").GetComponent<Image>().sprite = modManage.icons[id];
+
+        return newButton;
+    }
+
 
     float getValueScale(float val, float min, float max, float scale)
     {

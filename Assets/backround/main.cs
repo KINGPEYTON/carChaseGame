@@ -68,6 +68,8 @@ public class main : MonoBehaviour
     public float powerupTimer;
     public float powerupTime;
 
+    public boostManager modMang;
+
     public GameObject road; //road gameobject to spawn
     public GameObject roadPart; //road gameobject to spawn
     public List<Sprite> roadSkins;
@@ -179,6 +181,7 @@ public class main : MonoBehaviour
     public List<int> carsPast;
 
     public GameObject settingsUI;
+    public GameObject inventoryUI;
 
     public AudioClip menuAmbience;
     public AudioClip gameAmbience;
@@ -238,6 +241,7 @@ public class main : MonoBehaviour
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
         menuSound = GameObject.Find("ambience").GetComponent<AudioSource>();
         pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
+        modMang = GameObject.Find("modsManager").GetComponent<boostManager>();
 
         masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
@@ -1351,6 +1355,11 @@ public class main : MonoBehaviour
         {
             nextTutorialStep();
         }
+
+        if(modMang.currSelect > 0)
+        {
+            modMang.useMod();
+        }
     }
 
     public void updateBlimpX()
@@ -1398,6 +1407,12 @@ public class main : MonoBehaviour
     {
         AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol * sfxVol);
         Instantiate(settingsUI);
+    }
+
+    public void inventoryButton()
+    {
+        AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol * sfxVol);
+        Instantiate(inventoryUI);
     }
 
     public void setMilestone()

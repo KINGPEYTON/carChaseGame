@@ -11,6 +11,7 @@ public class playerCar : MonoBehaviour
     public float upMph; //how fast the car will speed up
     public float moveTime; // the time it shoul take the player car to switch lanes
     public float smokeMulitplyer;
+    public int hits;
 
     public Sprite bodySprite;
     public Sprite crashSprite;
@@ -102,6 +103,12 @@ public class playerCar : MonoBehaviour
 
     public float turnMulti;
 
+    public bool autoShield;
+    public bool beginBoost;
+    public int beginBoostTarget;
+    public float beginBoostTime;
+    public float beginBoostScoreMPH;
+
     void OnEnable()
     {
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
@@ -131,54 +138,64 @@ public class playerCar : MonoBehaviour
     {
         if (controller.playing)
         {
-            if (startPos == transform.position.x && controller.scoreShowing && controller.textNum >= 10) {
-                if (!(inRocket && rocket.boosting))
+            if (!beginBoost)
+            {
+                if (startPos == transform.position.x && controller.scoreShowing && controller.textNum >= 10)
                 {
-                    if (inTeleport)
+                    if (!(inRocket && rocket.boosting))
                     {
-                        teleport();
+                        if (inTeleport)
+                        {
+                            teleport();
+                        }
+                        else
+                        {
+                            slideLanes();
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    transform.position += new Vector3(3 * (moveTime) * Time.deltaTime, 0, 0);
+                    if (startPos - transform.position.x < 0)
                     {
-                        slideLanes();
+                        transform.position = new Vector3(startPos, transform.position.y, 0);
+                        targetPos = transform.position;
+                        inPos = true;
                     }
                 }
-            } else {
-                transform.position += new Vector3(3*(moveTime) * Time.deltaTime, 0, 0);
-                if(startPos - transform.position.x < 0)
-                {
-                    transform.position = new Vector3(startPos, transform.position.y, 0);
-                    targetPos = transform.position;
-                    inPos = true;
-                }
-            }
 
-            if (inShield)
-            {
-                shieldTimer -= Time.deltaTime;
-
-                if (shieldTimer < 1 && !shieldAni.doFadeOut)
+                if (inShield)
                 {
-                    shieldAni.startFade(false);
+                    shieldTimer -= Time.deltaTime;
+
+                    if (shieldTimer < 1 && !shieldAni.doFadeOut)
+                    {
+                        shieldAni.startFade(false);
+                    }
+
+                    if (shieldTimer < 0)
+                    {
+                        endShield();
+                    }
                 }
 
-                if (shieldTimer < 0)
+                if (boosting)
                 {
-                    endShield();
+                    doBoost();
                 }
-            }
 
-            if (boosting)
+                if (controller.laserOn && laserAutoShoot && !carLaser.inCooldown)
+                {
+                    shootCloseCar(1.35f);
+                }
+
+                checkPowerUp();
+            }
+            else
             {
-                doBoost();
+                doBeginBoost();
             }
-
-            if(controller.laserOn && laserAutoShoot && !carLaser.inCooldown)
-            {
-                shootCloseCar(1.35f);
-            }
-
-            checkPowerUp();
         }
 
         if (rocketLanding)
@@ -471,6 +488,82 @@ public class playerCar : MonoBehaviour
             shieldAni.startAni();
         }
         shieldWhenHit = activeWhenHit;
+    }
+
+    void useAutoShield()
+    {
+        inShield = true;
+        shieldTimer = 20;
+        shieldReady = true;
+        shieldAni = Instantiate(shieldAniOBJ, transform.position, Quaternion.identity, transform).GetComponent<shieldAni>();
+        shieldAni.startFade(true);
+        inShield = true;
+        shieldAni.startAni();
+        autoShield = false;
+    }
+
+    public void makePermMagnet()
+    {
+        magnetField newMagnet = Instantiate(controller.pwManage.magneticField, transform.position, Quaternion.identity, transform).GetComponent<magnetField>();
+        newMagnet.carPoint = transform;
+        newMagnet.isPerm = true;
+        newMagnet.lifetime = 1;
+        newMagnet.setSize(1.95f);
+        newMagnet.getHolo = true;
+    }
+
+    public void startBeginBoost(int targScore, float scoremph)
+    {
+        beginBoost = true;
+        beginBoostTarget = targScore;
+        beginBoostTime = 0.75f;
+        beginBoostScoreMPH = scoremph;
+    }
+
+    void doBeginBoost()
+    {
+        if (!(startPos == transform.position.x && controller.scoreShowing && controller.textNum >= 10))
+        {
+            transform.position += new Vector3(3 * (moveTime) * Time.deltaTime, 0, 0);
+            if (startPos - transform.position.x < 0)
+            {
+                transform.position = new Vector3(startPos, transform.position.y, 0);
+                targetPos = transform.position;
+                inPos = true;
+            }
+        }
+
+        float endTime = 0.75f;
+        if (controller.score > beginBoostTarget - 50)
+        {
+            tempMPH = startMph + getValueScale(beginBoostTime, 0, endTime, 200 - startMph);
+            controller.updateTint(new Color32(255, 0, 0, (byte)getValueScale(beginBoostTime, 0, endTime, 250)));
+            beginBoostTime -= Time.deltaTime;
+            if (tempMPH < startMph)
+            {
+                controller.scoremph = startMph;
+            }
+            else
+            {
+                controller.scoremph = tempMPH;
+            }
+        }
+        else
+        {
+            tempMPH = 250;
+            controller.scoremph = beginBoostScoreMPH;
+            controller.updateTint(new Color32(255, 0, 0, 200));
+        }
+        controller.mph = tempMPH;
+        if (beginBoostTime < 0)
+        {
+            endbeginBoost();
+        }
+    }
+
+    void endbeginBoost()
+    {
+        beginBoost = false;
     }
 
     void activateShield()
@@ -782,11 +875,12 @@ public class playerCar : MonoBehaviour
 
     void hitCar(Collider2D collision)
     {
+        cars carHit = collision.GetComponent<cars>();
         if (!inTeleport || tapped)
         {
             if (shieldReady)
             {
-                if (!collision.GetComponent<cars>().isDisabled)
+                if (!carHit.isDisabled)
                 {
                     if (!inShield)
                     {
@@ -802,9 +896,9 @@ public class playerCar : MonoBehaviour
             }
             else if (ramOn)
             {
-                if (!collision.GetComponent<cars>().isDisabled)
+                if (!carHit.isDisabled)
                 {
-                    if (!ram.justCars || collision.GetComponent<cars>().isCar)
+                    if (!ram.justCars || carHit.isCar)
                     {
                         if (!ram.headOn || Mathf.Abs(transform.position.y - collision.transform.position.y) < 0.25f)
                         {
@@ -813,68 +907,91 @@ public class playerCar : MonoBehaviour
                         }
                         else
                         {
-                            lethalHit(collision);
+                            takeHit(collision, carHit.hitPoint);
                         }
                     }
                     else
                     {
-                        lethalHit(collision);
+                        takeHit(collision, carHit.hitPoint);
                     }
                 }
             }
             else if(boosting && boost.hitProt)
             {
-                if (!collision.GetComponent<cars>().isDisabled) {
+                if (!carHit.isDisabled) {
 
                     disableCar(collision, 2.15f);
                     boost.takeBoost();
                 }
-            } else if (collision.GetComponent<cars>().isTiny && !collision.GetComponent<cars>().isDisabled)
+            } else if (carHit.isTiny && !carHit.isDisabled)
             {
                 disableCar(collision, 7.5f);
             }
             else if (rocketLanding)
             {
-                collision.GetComponent<cars>().makeDestroyed();
+                carHit.makeDestroyed();
+            } else if (beginBoost)
+            {
+                disableCar(collision, 2.15f);
             }
+            else if (autoShield)
+            {
+                useAutoShield();
+            } 
             else
             {
-                if (!collision.GetComponent<cars>().isDisabled) { lethalHit(collision); }
+                if (!carHit.isDisabled) { takeHit(collision, carHit.hitPoint); }
             }
         }
         else
         {
-            collision.GetComponent<cars>().makeDestroyed();
+            carHit.makeDestroyed();
             if (!destroyObstacle)
             {
                 crash();
-                controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
+                controller.bannedLanes.Add(carHit.lane);
             }
         }
     }
 
-    void lethalHit(Collider2D collision)
+    void takeHit(Collider2D collision, int hitPoint)
     {
-        controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
+        hits -= hitPoint;
+        if(hits <= 0)
+        {
+            lethalHit(collision);
+        }
+
         if (collision.transform.position.y == transform.position.y)
         {
             collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(-0.75f, 0.75f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
         }
         else if (collision.transform.position.y < transform.position.y)
         {
+            float forceFactor = (collision.transform.position.y - transform.position.y) * 1.5f;
+            collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(forceFactor * 0.75f, forceFactor * 1.25f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
+        }
+        else if (collision.transform.position.y > transform.position.y)
+        {
+            float forceFactor = (collision.transform.position.y - transform.position.y) * 1.5f;
+            collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(forceFactor * 0.75f, forceFactor * 1.25f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
+        }
+    }
+
+    void lethalHit(Collider2D collision)
+    {
+        controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
+        if (collision.transform.position.y < transform.position.y)
+        {
             changeOrder(-1);
             controller.bannedLanes.Add(collision.GetComponent<cars>().lane - 1);
             AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
-            float forceFactor = (collision.transform.position.y - transform.position.y) * 1.5f;
-            collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(forceFactor * 0.75f, forceFactor * 1.25f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
         }
         else if (collision.transform.position.y > transform.position.y)
         {
             changeOrder(1);
             controller.bannedLanes.Add(collision.GetComponent<cars>().lane + 1);
             AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
-            float forceFactor = (collision.transform.position.y - transform.position.y) * 1.5f;
-            collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(forceFactor * 0.75f, forceFactor * 1.25f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
         }
         crash(); //what happens when the player crashes
     }
@@ -891,7 +1008,10 @@ public class playerCar : MonoBehaviour
 
     void hitBarrier(Collider2D collision)
     {
-        forceSlide(false, turnMulti);
+        if (transform.position.y > 0)
+        {
+            forceSlide(false, turnMulti);
+        }
     }
 
     void hitCone(Collider2D collision)
@@ -1007,6 +1127,7 @@ public class playerCar : MonoBehaviour
         upMph = calcUpMPH(carTypeSave, wheelSave);
         moveTime = calcmoveTime(carTypeSave, wheelSave);
         smokeMulitplyer = calcSmokeMulitplyer(tintSave);
+        hits = 1;
     }
 
     public float calcStartMPH(int carTypeSave)

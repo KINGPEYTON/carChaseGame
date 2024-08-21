@@ -25,6 +25,7 @@ public class police_Car : cars
         speedMin = 14;
         speedMax = 27;
         forceMass = 0.75f;
+        hitPoint = 1;
 
         speed = Random.Range(speedMin, speedMax);
         controller = GameObject.Find("contoller").GetComponent<main>();

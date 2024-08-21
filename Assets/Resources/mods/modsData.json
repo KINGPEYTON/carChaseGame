@@ -12,7 +12,7 @@
             "gameName": "Gas Petal",
             "rarity": 1,
             "description": "Doubles the start MPH.",
-            "cost": 5000
+            "cost": 500
         },
         {
             "idName": "obstacles",
@@ -40,7 +40,7 @@
             "gameName": "CoinFest",
             "rarity": 2,
             "description": "Greatly increases the spawn rate of coins in the match.",
-            "cost": 5000
+            "cost": 500
         },
         {
             "idName": "influencer",
@@ -61,7 +61,7 @@
             "gameName": "MegaMagnet",
             "rarity": 3,
             "description": "All Coins are holo and gravitate towards the player.",
-            "cost": 5000
+            "cost": 500
         },
         {
             "idName": "faster",

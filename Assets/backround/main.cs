@@ -45,6 +45,7 @@ public class main : MonoBehaviour
     public List<GameObject> coinList;
 
     public float coinSpawnMultiplier;
+    public bool allHolo;
     public bool isBigCoinhuna;
 
     public bool laserOn;
@@ -66,9 +67,11 @@ public class main : MonoBehaviour
     public powerUpManager pwManage;
     public bool powerupActive;
     public float powerupTimer;
+    public float powerupMultiplier;
     public float powerupTime;
 
     public boostManager modMang;
+    public bool modActive;
 
     public GameObject road; //road gameobject to spawn
     public GameObject roadPart; //road gameobject to spawn
@@ -151,6 +154,8 @@ public class main : MonoBehaviour
 
     public bool senseVision;
     public sense enhancedSense;
+
+    public float obstaclesMultiplyer;
 
     public List<GameObject> carsList;
     public List<float> carsOdds;
@@ -268,9 +273,10 @@ public class main : MonoBehaviour
         totalCoins = PlayerPrefs.GetInt("coins", 0); //sets high score to the one saved
 
         carTimerMultiplyer = 1;
-        coinSpawnMultiplier = 1;
+        obstaclesMultiplyer = 1;
+        coinSpawnMultiplier = 1; 
 
-        largeCarOdds = 0.05f;
+         largeCarOdds = 0.05f;
         specalCarOdds = 0.01f;
 
         carTime = 80;
@@ -529,7 +535,7 @@ public class main : MonoBehaviour
 
     void spawnManhole()
     {
-        manholeTimer += Time.deltaTime * mph; //timer to spawn new road guard 
+        manholeTimer += Time.deltaTime * mph * obstaclesMultiplyer; //timer to spawn new road guard 
         if (manholeTimer > manholeSpawn)
         {
             int manholeLayer = 0;
@@ -700,7 +706,7 @@ public class main : MonoBehaviour
     {
         if (!inConstruction)
         {
-            if (topLane) { constructionTimer -= Time.deltaTime * mph; }
+            if (topLane) { constructionTimer -= Time.deltaTime * mph * obstaclesMultiplyer; }
             if (constructionTimer < 0)
             {
                 inConstruction = true;
@@ -889,11 +895,48 @@ public class main : MonoBehaviour
 
     void spawnBridgePillar()
     {
-        if (frontBuildingLast.position.x < 5)
+        try
+        {
+            if (frontBuildingLast.position.x < 5)
+            {
+                if (buildingFrontList < 1)
+                {
+                    GameObject newBuilding = Instantiate(bridgePillar, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    frontBuildingLast = newBuilding.transform;
+                    frontBuildingDist = 7.5f;
+                    buildingFrontList++;
+                }
+                else
+                {
+                    if (frontBillboardList < 2)
+                    {
+                        GameObject bboard = Instantiate(bridgeBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        bboard.GetComponent<billboard>().setSkin(bridgeBillboardSkin);
+                        frontBuildingLast = bboard.transform;
+                        frontBuildingDist = 9.5f;
+                        billboards.Add(bboard);
+                        buildingFrontList = 0;
+                        frontBillboardList++;
+                    }
+                    else
+                    {
+                        GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        bboard.GetComponent<billboard>().setSkin(bridgeBigBillboardSkin);
+                        frontBuildingLast = bboard.transform;
+                        frontBuildingDist = 9.5f;
+                        bboard.GetComponent<billboard>().isBigBillboard = true;
+                        billboards.Add(bboard);
+                        buildingFrontList = 0;
+                        frontBillboardList = 0;
+                    }
+                }
+            }
+        }
+        catch
         {
             if (buildingFrontList < 1)
             {
-                GameObject newBuilding = Instantiate(bridgePillar, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                GameObject newBuilding = Instantiate(bridgePillar, new Vector3(13, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                 frontBuildingLast = newBuilding.transform;
                 frontBuildingDist = 7.5f;
                 buildingFrontList++;
@@ -902,7 +945,7 @@ public class main : MonoBehaviour
             {
                 if (frontBillboardList < 2)
                 {
-                    GameObject bboard = Instantiate(bridgeBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    GameObject bboard = Instantiate(bridgeBillboard, new Vector3(13 + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                     bboard.GetComponent<billboard>().setSkin(bridgeBillboardSkin);
                     frontBuildingLast = bboard.transform;
                     frontBuildingDist = 9.5f;
@@ -912,7 +955,7 @@ public class main : MonoBehaviour
                 }
                 else
                 {
-                    GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(13 + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                     bboard.GetComponent<billboard>().setSkin(bridgeBigBillboardSkin);
                     frontBuildingLast = bboard.transform;
                     frontBuildingDist = 9.5f;
@@ -927,9 +970,19 @@ public class main : MonoBehaviour
 
     void spawnBridgeSupport()
     {
-        if (buildingLast.position.x < 11)
+        try
         {
-            Transform newSupport = Instantiate(bridgeSupport, new Vector3(buildingLast.position.x + buildingDist, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform; //spawns new backround building
+            if (buildingLast.position.x < 11)
+            {
+                Transform newSupport = Instantiate(bridgeSupport, new Vector3(buildingLast.position.x + buildingDist, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform; //spawns new backround building
+                buildingLast = newSupport;
+                buildingDist = 1.5f;
+                buildingList++;
+            }
+        }
+        catch
+        {
+            Transform newSupport = Instantiate(bridgeSupport, new Vector3(13, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform; //spawns new backround building
             buildingLast = newSupport;
             buildingDist = 1.5f;
             buildingList++;
@@ -940,7 +993,7 @@ public class main : MonoBehaviour
     {
         if (!powerupActive)
         {
-            powerupTimer += Time.deltaTime * mph;
+            powerupTimer += Time.deltaTime * mph * powerupMultiplier;
             if (powerupTimer > powerupTime)
             {
                 float newLane = 0;
@@ -989,7 +1042,7 @@ public class main : MonoBehaviour
 
     void spawnGameCar()
     {
-        carTimer += (Time.deltaTime * mph) * carTimerMultiplyer; // time that spawns a new car that speeds up depending on the speed of the game (mph)
+        carTimer += (Time.deltaTime * mph) * carTimerMultiplyer * obstaclesMultiplyer; // time that spawns a new car that speeds up depending on the speed of the game (mph)
         if (carTimer > carTime)
         {
             float specalCar = Random.Range(0.0f, 1.0f);
@@ -1359,6 +1412,52 @@ public class main : MonoBehaviour
         if(modMang.currSelect > 0)
         {
             modMang.useMod();
+            modActive = true;
+            startMod();
+        }
+    }
+
+    void startMod()
+    {
+        switch (modMang.currSelect)
+        {
+            case 1:
+                upMPHmod = 2;
+                break;
+            case 2:
+                startMPHmod = 2;
+                break;
+            case 3:
+                obstaclesMultiplyer = 0.6f;
+                break;
+            case 4:
+                playerCar.startBeginBoost(1000, 600);
+                break;
+            case 5:
+                playerCar.autoShield = true;
+                break;
+            case 6:
+                coinSpawnMultiplier = 2.25f;
+                break;
+            case 7:
+                powerupMultiplier = 2.15f;
+                break;
+            case 8:
+                playerCar.startBeginBoost(4000, 1100);
+                break;
+            case 9:
+                allHolo = true;
+                playerCar.makePermMagnet();
+                break;
+            case 10:
+                playerCar.turnMulti *= 1.5f;
+                break;
+            case 11:
+                playerCar.hits += 5;
+                break;
+            case 12:
+                playerCar.startBeginBoost(8000, 1750);
+                break;
         }
     }
 
@@ -1448,15 +1547,25 @@ public class main : MonoBehaviour
     public void endCoinhuna()
     {
         isBigCoinhuna = false;
-        foreach (GameObject co in coinList)
+        if (!allHolo)
         {
-            coins c = co.GetComponent<coins>();
-            if (!c.isHolo)
+            foreach (GameObject co in coinList)
             {
-                c.makingNormal = true;
+                coins c = co.GetComponent<coins>();
+                if (!c.isHolo)
+                {
+                    c.makingNormal = true;
+                }
             }
         }
-        coinSpawnMultiplier = 1;
+        if (modMang.currSelect == 6)
+        {
+            coinSpawnMultiplier = 2.25f;
+        }
+        else
+        {
+            coinSpawnMultiplier = 1;
+        }
     }
 
     void makeCarTiny(GameObject tinyCar, bool doInstant)

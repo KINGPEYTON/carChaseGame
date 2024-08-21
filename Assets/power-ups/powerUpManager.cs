@@ -55,7 +55,7 @@ public class powerUpManager : MonoBehaviour
         getIcons();
         getPowerupOdds();
 
-        //createPowerup(4, new Vector3(8, -1.65f, 0));
+        //createPowerup(9, new Vector3(9, -1.65f, 0));
     }
 
     public void collectPowerUp(string id, int level)
@@ -176,7 +176,7 @@ public class powerUpManager : MonoBehaviour
                         activateShield(15, true, false);
                         break;
                     case 2:
-                        activateShield(15, false, false);
+                        activateShield(15, false, true);
                         break;
                 }
                 break;

@@ -5,6 +5,7 @@ using UnityEngine;
 public class magnetField : MonoBehaviour
 {
     public float lifetime;
+    public bool isPerm;
     public Transform carPoint;
     public float sizeScale;
     public bool getHolo;
@@ -23,7 +24,10 @@ public class magnetField : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        lifetime -= Time.deltaTime;
+        if (!isPerm)
+        {
+            lifetime -= Time.deltaTime;
+        }
         if (lifetime < 0)
         {
             Destroy(gameObject);

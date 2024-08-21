@@ -26,6 +26,7 @@ public class maniac_van : cars
         speedMin = 15;
         speedMax = 23;
         forceMass = 0.95f;
+        hitPoint = 1;
 
         startSpeed = Random.Range(speedMin, speedMax);
         controller = GameObject.Find("contoller").GetComponent<main>();

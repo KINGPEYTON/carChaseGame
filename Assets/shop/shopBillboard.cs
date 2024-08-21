@@ -1342,6 +1342,7 @@ public class shopBillboard : MonoBehaviour
 
         if(modIconCurr != null)
         {
+            addAmmountElements(modIconCurr.GetComponent<modShopIcon>().id);
             Destroy(modIconCurr);
         }
     }
@@ -1504,13 +1505,38 @@ public class shopBillboard : MonoBehaviour
         }
     }
 
+    public void addAmmountElements(int id)
+    {
+        int cost = modManage.modCosts[id];
+        modManage.addMod(id);
+        int ammount = modManage.inventory[id];
+        modBuyText.text = ammount.ToString();
+
+        if (ammount >= 99)
+        {
+            modBuyBackround.color = new Color32(5, 5, 5, 255);
+        }
+        else
+        {
+            modBuyBackround.color = new Color32(100, 100, 100, 255);
+        }
+
+        if (cost < controller.totalCoins && ammount < 100)
+        {
+            modBuyButton.GetComponent<Image>().color = new Color32(0, 255, 150, 255);
+        }
+        else
+        {
+            modBuyButton.GetComponent<Image>().color = new Color32(115, 175, 150, 255);
+        }
+    }
+
     public void buyMod()
     {
         int cost = modManage.modCosts[itemID];
         int ammount = modManage.inventory[itemID];
         if (cost < controller.totalCoins && ammount < 100)
         {
-            modManage.addMod(itemID);
             controller.totalCoins -= cost;
             PlayerPrefs.SetInt("coins", controller.totalCoins); //saves the total coins
             updateCoinText();

@@ -66,7 +66,7 @@ public class coins : MonoBehaviour
             sr.color = new Color32(255, 200, 200, 255);
 
         }
-        else if (controller.isBigCoinhuna)
+        else if (controller.isBigCoinhuna || controller.allHolo)
         {
             makeHolo();
         }

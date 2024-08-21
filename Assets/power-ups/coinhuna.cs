@@ -24,7 +24,7 @@ public class coinhuna : MonoBehaviour
         controller = GameObject.Find("contoller").GetComponent<main>();
 
         lifetime = time;
-        controller.coinSpawnMultiplier = spawnRate;
+        controller.coinSpawnMultiplier *= spawnRate;
         controller.isBigCoinhuna = true;
         if (makeCoinsHolo)
         {

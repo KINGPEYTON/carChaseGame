@@ -68,7 +68,7 @@ public class sense : MonoBehaviour
 
         fadeTime = 1.5f;
         createOutlines();
-        pCar.turnMulti = turnMulti;
+        pCar.turnMulti *= turnMulti;
         pCar.changeHitBox(hitBoxSize);
 
         controller.carTimer -= 60;

@@ -12,6 +12,8 @@ public class cars : MonoBehaviour
     public int lane; //lane of car
     public bool isCar;
 
+    public int hitPoint;
+
     public bool switchUp;
     public bool switchDown;
     public GameObject turnUp;
@@ -74,6 +76,8 @@ public class cars : MonoBehaviour
         {
             newCarLane();
         }
+
+        hitPoint = 1;
 
         turnTime = 1.75f;
         switchLane(blinkTime);

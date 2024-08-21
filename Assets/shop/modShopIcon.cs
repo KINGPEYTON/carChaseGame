@@ -49,7 +49,7 @@ public class modShopIcon : MonoBehaviour
         transform.localScale = new Vector3(startSize.x, startSize.y, 1) - calcPos(size, new Vector3(0, 0, 0));
         if (targetTimer > targetTime)
         {
-            sBoard.setAmmountElements(id);
+            sBoard.addAmmountElements(id);
             Destroy(gameObject);
         }
     }

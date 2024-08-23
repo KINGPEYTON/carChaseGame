@@ -10,11 +10,10 @@ public class playerCar : MonoBehaviour
     public float startMph; // the mph the car will start at
     public float upMph; //how fast the car will speed up
     public float moveTime; // the time it shoul take the player car to switch lanes
-    public float smokeMulitplyer;
     public int hits;
+    public int hitsStart;
 
     public Sprite bodySprite;
-    public Sprite crashSprite;
     public Sprite windowSprite;
     public Color windowTint;
     public Sprite wheelSprite;
@@ -28,6 +27,7 @@ public class playerCar : MonoBehaviour
     public SpriteRenderer livery;
     public SpriteRenderer wheelF;
     public SpriteRenderer wheelB;
+    public ParticleSystem crashSmoke;
 
     public bool tapped;
     public float firstTapPoint;
@@ -823,7 +823,6 @@ public class playerCar : MonoBehaviour
 
     public void crash()
     {
-        body.sprite = crashSprite; //car crashed
         controller.gameOver(); //sets the game to its game over state
         AudioSource.PlayClipAtPoint(crash1, new Vector3 (0,0,-10), controller.masterVol * controller.sfxVol);
 
@@ -894,6 +893,24 @@ public class playerCar : MonoBehaviour
                     disableCar(collision, 3.5f);
                 }
             }
+            else if(boosting && boost.hitProt)
+            {
+                if (!carHit.isDisabled) {
+
+                    disableCar(collision, 2.15f);
+                    boost.takeBoost();
+                }
+            } else if (carHit.isTiny && !carHit.isDisabled)
+            {
+                disableCar(collision, 7.5f);
+            }
+            else if (rocketLanding)
+            {
+                carHit.makeDestroyed();
+            } else if (beginBoost)
+            {
+                disableCar(collision, 2.15f);
+            }
             else if (ramOn)
             {
                 if (!carHit.isDisabled)
@@ -916,28 +933,6 @@ public class playerCar : MonoBehaviour
                     }
                 }
             }
-            else if(boosting && boost.hitProt)
-            {
-                if (!carHit.isDisabled) {
-
-                    disableCar(collision, 2.15f);
-                    boost.takeBoost();
-                }
-            } else if (carHit.isTiny && !carHit.isDisabled)
-            {
-                disableCar(collision, 7.5f);
-            }
-            else if (rocketLanding)
-            {
-                carHit.makeDestroyed();
-            } else if (beginBoost)
-            {
-                disableCar(collision, 2.15f);
-            }
-            else if (autoShield)
-            {
-                useAutoShield();
-            } 
             else
             {
                 if (!carHit.isDisabled) { takeHit(collision, carHit.hitPoint); }
@@ -957,6 +952,10 @@ public class playerCar : MonoBehaviour
     void takeHit(Collider2D collision, int hitPoint)
     {
         hits -= hitPoint;
+        if(hits < hitsStart)
+        {
+            crashSmoke.emissionRate = getValueScale(hitsStart - hits, 0, hitsStart, hitsStart * 3);
+        }
         if(hits <= 0)
         {
             lethalHit(collision);
@@ -980,20 +979,28 @@ public class playerCar : MonoBehaviour
 
     void lethalHit(Collider2D collision)
     {
-        controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
-        if (collision.transform.position.y < transform.position.y)
+        if (autoShield)
         {
-            changeOrder(-1);
-            controller.bannedLanes.Add(collision.GetComponent<cars>().lane - 1);
-            AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            useAutoShield();
         }
-        else if (collision.transform.position.y > transform.position.y)
+        else
         {
-            changeOrder(1);
-            controller.bannedLanes.Add(collision.GetComponent<cars>().lane + 1);
-            AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            crashSmoke.emissionRate = 24;
+            controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
+            if (collision.transform.position.y < transform.position.y)
+            {
+                changeOrder(-1);
+                controller.bannedLanes.Add(collision.GetComponent<cars>().lane - 1);
+                AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            }
+            else if (collision.transform.position.y > transform.position.y)
+            {
+                changeOrder(1);
+                controller.bannedLanes.Add(collision.GetComponent<cars>().lane + 1);
+                AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            }
+            crash(); //what happens when the player crashes
         }
-        crash(); //what happens when the player crashes
     }
 
     void disableCar(Collider2D collision, float multiplyer)
@@ -1029,7 +1036,7 @@ public class playerCar : MonoBehaviour
 
     void hitSmoke(Collider2D collision)
     {
-        float smokeLevel = collision.GetComponent<manhole>().getSmokeValue() * smokeMulitplyer;
+        float smokeLevel = collision.GetComponent<manhole>().getSmokeValue();
         if (smokeLevel > 500)
         {
             smokeLevel = 500;
@@ -1075,10 +1082,10 @@ public class playerCar : MonoBehaviour
 
     private void setOrder(int lane)
     {
-        body.sortingOrder = 2 + lane;
-        window.sortingOrder = 2 + lane;
-        wheelF.sortingOrder = 2 + lane;
-        wheelB.sortingOrder = 2 + lane;
+        body.sortingOrder = 3 + lane;
+        window.sortingOrder = 3 + lane;
+        wheelF.sortingOrder = 3 + lane;
+        wheelB.sortingOrder = 3 + lane;
         livery.sortingOrder = 3 + lane;
         if (ramOn) { ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
         if (controller.laserOn) { carLaser.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
@@ -1094,7 +1101,6 @@ public class playerCar : MonoBehaviour
         int liveryColorSave = PlayerPrefs.GetInt("liveryColorTint", 0); //grabes the id of the tint the player last used
 
         bodySprite = pManager.bodies[carTypeSave][bodySave];
-        crashSprite = pManager.crashes[carTypeSave][bodySave];
         wheelSprite = pManager.wheels[wheelSave];
         windowSprite = pManager.windows[carTypeSave];
         windowTint = pManager.windowColors[tintSave];
@@ -1104,6 +1110,8 @@ public class playerCar : MonoBehaviour
 
         wheelB.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[carTypeSave].wheelB, pManager.carPartsData.carTypes[carTypeSave].wheelHight, 0);
         wheelF.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[carTypeSave].wheelF, pManager.carPartsData.carTypes[carTypeSave].wheelHight, 0);
+        livery.transform.localScale = new Vector3(pManager.carPartsData.carTypes[carTypeSave].scale, pManager.carPartsData.carTypes[carTypeSave].scale, 1);
+        livery.transform.localPosition = new Vector3(0, pManager.carPartsData.carTypes[carTypeSave].liveryHight, 0);
 
         setCarStats(carTypeSave, wheelSave, tintSave);
         setPlayerCustomazation();
@@ -1126,8 +1134,8 @@ public class playerCar : MonoBehaviour
         startMph = calcStartMPH(carTypeSave);
         upMph = calcUpMPH(carTypeSave, wheelSave);
         moveTime = calcmoveTime(carTypeSave, wheelSave);
-        smokeMulitplyer = calcSmokeMulitplyer(tintSave);
-        hits = 1;
+        hits = calcHealth(carTypeSave);
+        hitsStart = hits;
     }
 
     public float calcStartMPH(int carTypeSave)
@@ -1145,9 +1153,9 @@ public class playerCar : MonoBehaviour
         return pManager.carPartsData.carTypes[carTypeSave].moveTime + pManager.carPartsData.wheelTypes[wheelSave].moveTime;
     }
 
-    public float calcSmokeMulitplyer(int tintSave)
+    public int calcHealth(int carTypeSave)
     {
-        return 1 - pManager.carPartsData.windowTints[tintSave].screenEffect;
+        return pManager.carPartsData.carTypes[carTypeSave].hits;
     }
 
     float getValueScale(float val, float min, float max, float scale)

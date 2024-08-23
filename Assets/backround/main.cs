@@ -274,9 +274,10 @@ public class main : MonoBehaviour
 
         carTimerMultiplyer = 1;
         obstaclesMultiplyer = 1;
-        coinSpawnMultiplier = 1; 
+        coinSpawnMultiplier = 1;
+        powerupMultiplier = 1;
 
-         largeCarOdds = 0.05f;
+        largeCarOdds = 0.05f;
         specalCarOdds = 0.01f;
 
         carTime = 80;
@@ -1441,6 +1442,7 @@ public class main : MonoBehaviour
                 break;
             case 7:
                 powerupMultiplier = 2.15f;
+                powerupTime = 0;
                 break;
             case 8:
                 playerCar.startBeginBoost(4000, 1100);

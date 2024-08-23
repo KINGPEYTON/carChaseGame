@@ -2,43 +2,60 @@
     "carTypes": [
         {
             "typeName": "Cool Sport",
+            "idName": "sport",
             "startMPH": 30,
             "speedUp": 0.5,
             "moveTime": 0.85,
+            "hits": 1,
             "wheelHight": -0.5,
             "wheelF": 2.15,
             "wheelB": -2.05,
+            "pivotY": 0.5,
+            "pivotX": 0.5,
+            "liveryHight": 0.0,
+            "scale": 1,
             "cost": 1000,
             "bodies": [
                 {
                     "bodyColor": "White",
+                    "colorID": "white",
                     "cost": 0
                 },
                 {
                     "bodyColor": "Orange",
+                    "colorID": "orange",
                     "cost": 300
                 },
                 {
                     "bodyColor": "Purple",
+                    "colorID": "purple",
                     "cost": 300
                 },
                 {
                     "bodyColor": "Red",
+                    "colorID": "red",
                     "cost": 400
                 },
                 {
                     "bodyColor": "Aqua",
+                    "colorID": "aqua",
                     "cost": 400
                 },
                 {
                     "bodyColor": "Green",
+                    "colorID": "green",
                     "cost": 500
                 },
                 {
                     "bodyColor": "Blue",
+                    "colorID": "blue",
                     "cost": 500
                 }
             ],
+            "displayWheelY": -3.6,
+            "displayWheelX1": 13.1,
+            "displayWheelX2": -11.3,
+            "displayWheelScale": 5.5,
             "ramX": 4,
             "ramY": -0.3,
             "boostX": -3.4,
@@ -51,43 +68,126 @@
         },
         {
             "typeName": "Retro",
+            "idName": "retro",
             "startMPH": 20,
             "speedUp": 0.75,
             "moveTime": 1,
+            "hits": 1,
             "wheelHight": -0.65,
             "wheelF": 1.9,
             "wheelB": -1.6,
+            "liveryHight": 0.0,
+            "pivotY": 0.5,
+            "pivotX": 0.5,
+            "scale": 1,
             "cost": 1000,
             "bodies": [
                 {
                     "bodyColor": "Maroon",
+                    "colorID": "maroon",
                     "cost": 0
                 },
                 {
                     "bodyColor": "Sky",
+                    "colorID": "sky",
                     "cost": 300
                 },
                 {
                     "bodyColor": "Marine",
+                    "colorID": "marine",
                     "cost": 300
                 },
                 {
                     "bodyColor": "Pink",
+                    "colorID": "pink",
                     "cost": 400
                 },
                 {
                     "bodyColor": "Violet",
+                    "colorID": "violet",
                     "cost": 400
                 },
                 {
                     "bodyColor": "Navy",
+                    "colorID": "navy",
                     "cost": 500
                 },
                 {
                     "bodyColor": "Watermellon",
+                    "colorID": "watermellon",
                     "cost": 500
                 }
             ],
+            "displayWheelY": -4.9,
+            "displayWheelX1": 11.7,
+            "displayWheelX2": -9.1,
+            "displayWheelScale": 5,
+            "ramX": 4,
+            "ramY": -0.3,
+            "boostX": -3.4,
+            "boostY": -0.5,
+            "rocketX": -3.0,
+            "rocketY": -1.0,
+            "rocketX2": 5.0,
+            "laserX": -1,
+            "laserY": 0
+        },
+        {
+            "typeName": "Truck",
+            "idName": "trailer",
+            "startMPH": 25,
+            "speedUp": 0.35,
+            "moveTime": 1.3,
+            "hits": 2,
+            "wheelHight": -0.6,
+            "wheelF": 3.57,
+            "wheelB": -3.8,
+            "liveryHight": 0.95,
+            "pivotY": 0.3,
+            "pivotX": 0.5,
+            "scale": 1.6,
+            "cost": 1000,
+            "bodies": [
+                {
+                    "bodyColor": "White",
+                    "colorID": "white",
+                    "cost": 0
+                },
+                {
+                    "bodyColor": "Red",
+                    "colorID": "red",
+                    "cost": 300
+                },
+                {
+                    "bodyColor": "Marine",
+                    "colorID": "marine",
+                    "cost": 300
+                },
+                {
+                    "bodyColor": "Pink",
+                    "colorID": "pink",
+                    "cost": 400
+                },
+                {
+                    "bodyColor": "Rust",
+                    "colorID": "rust",
+                    "cost": 400
+                },
+                {
+                    "bodyColor": "Blue",
+                    "colorID": "blue",
+                    "cost": 500
+                },
+                {
+                    "bodyColor": "Synth",
+                    "colorID": "synth",
+                    "cost": 500
+                }
+            ],
+            "displayWheelY": -5.8,
+            "displayWheelX1": 12.5,
+            "displayWheelX2": -12.7,
+            "displayWheelScale": 4,
             "ramX": 4,
             "ramY": -0.3,
             "boostX": -3.4,
@@ -102,12 +202,14 @@
     "wheelTypes": [
         {
             "wheelName": "Basic",
+            "idName": "basic",
             "speedUp": 0.0,
             "moveTime": 0,
             "cost": 1000
         },
         {
             "wheelName": "Sport",
+            "idName": "sport",
             "speedUp": 0.10,
             "moveTime": -0.25,
             "cost": 1000
@@ -116,7 +218,7 @@
     "windowTints": [
         {
             "tintColor": "Shiny",
-            "screenEffect": 0.00,
+            "idName": "shiny",
             "ColorR": 215,
             "ColorB": 227,
             "ColorG": 244,
@@ -124,7 +226,7 @@
         },
         {
             "tintColor": "Light",
-            "screenEffect": 0.05,
+            "idName": "light",
             "ColorR": 229,
             "ColorB": 229,
             "ColorG": 229,
@@ -132,7 +234,7 @@
         },
         {
             "tintColor": "Gray",
-            "screenEffect": 0.15,
+            "idName": "gray",
             "ColorR": 175,
             "ColorB": 175,
             "ColorG": 175,
@@ -140,7 +242,7 @@
         },
         {
             "tintColor": "Blue",
-            "screenEffect": 0.10,
+            "idName": "Blue",
             "ColorR": 79,
             "ColorB": 140,
             "ColorG": 244,
@@ -148,7 +250,7 @@
         },
         {
             "tintColor": "Navy",
-            "screenEffect": 0.20,
+            "idName": "navy",
             "ColorR": 17,
             "ColorB": 76,
             "ColorG": 158,
@@ -156,7 +258,7 @@
         },
         {
             "tintColor": "Dark",
-            "screenEffect": 0.30,
+            "idName": "dark",
             "ColorR": 81,
             "ColorB": 81,
             "ColorG": 81,
@@ -166,191 +268,244 @@
     "liveryTypes": [
         {
             "liveryName": "None",
+            "idName": "none",
             "cost": 1000
         },
         {
             "liveryName": "Splatter",
+            "idName": "splatter",
             "cost": 1000
         },
         {
             "liveryName": "Tiger",
+            "idName": "tiger",
             "cost": 1000
         }
     ],
     "liveryColors": [
         {
             "liveryColor": "Navy",
+            "idName": "Navy",
             "ColorR": 5,
             "ColorB": 48,
             "ColorG": 109,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Sky",
+            "idName": "sky",
             "ColorR": 79,
             "ColorB": 140,
             "ColorG": 244,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Maroon",
+            "idName": "maroon",
             "ColorR": 140,
             "ColorB": 5,
             "ColorG": 5,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Red",
+            "idName": "red",
             "ColorR": 255,
             "ColorB": 0,
             "ColorG": 0,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Magenta",
+            "idName": "magenta",
             "ColorR": 255,
             "ColorB": 0,
             "ColorG": 228,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Green",
+            "idName": "green",
             "ColorR": 27,
             "ColorB": 188,
             "ColorG": 27,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Violet",
+            "idName": "Violet",
             "ColorR": 175,
             "ColorB": 100,
             "ColorG": 255,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Blue",
+            "idName": "blue",
             "ColorR": 0,
             "ColorB": 64,
             "ColorG": 247,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Neon",
+            "idName": "neon",
             "ColorR": 48,
             "ColorB": 255,
             "ColorG": 38,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Pink",
+            "idName": "pink",
             "ColorR": 253,
             "ColorB": 116,
             "ColorG": 255,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Aqua",
+            "idName": "aqua",
             "ColorR": 0,
             "ColorB": 235,
             "ColorG": 235,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Yellow",
+            "idName": "yellow",
             "ColorR": 255,
             "ColorB": 238,
             "ColorG": 0,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Orange",
+            "idName": "orange",
             "ColorR": 242,
             "ColorB": 114,
             "ColorG": 10,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Purple",
+            "idName": "purple",
             "ColorR": 100,
             "ColorB": 0,
             "ColorG": 236,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Marine",
+            "idName": "marine",
             "ColorR": 0,
             "ColorB": 100,
             "ColorG": 100,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Forest",
+            "idName": "forest",
             "ColorR": 9,
             "ColorB": 102,
             "ColorG": 9,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Wooden",
+            "idName": "wooden",
             "ColorR": 137,
             "ColorB": 88,
             "ColorG": 44,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Gold",
+            "idName": "gold",
             "ColorR": 220,
             "ColorB": 185,
             "ColorG": 0,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Silver",
+            "idName": "silver",
             "ColorR": 200,
             "ColorB": 200,
             "ColorG": 200,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Rust",
+            "idName": "rust",
             "ColorR": 183,
             "ColorB": 74,
             "ColorG": 14,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Sand",
+            "idName": "sand",
             "ColorR": 200,
             "ColorB": 200,
             "ColorG": 100,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Snow",
+            "idName": "snow",
             "ColorR": 242,
             "ColorB": 242,
             "ColorG": 242,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Void",
+            "idName": "void",
             "ColorR": 25,
             "ColorB": 25,
             "ColorG": 25,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Smog",
+            "idName": "smog",
             "ColorR": 125,
             "ColorB": 125,
             "ColorG": 125,
+            "ColorA": 255,
             "cost": 1000
         },
         {
             "liveryColor": "Dark",
+            "idName": "dark",
             "ColorR": 75,
             "ColorB": 75,
             "ColorG": 75,
+            "ColorA": 255,
             "cost": 1000
         }
     ]

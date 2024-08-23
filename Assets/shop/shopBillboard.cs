@@ -27,7 +27,6 @@ public class shopBillboard : MonoBehaviour
     public Transform sideTransform;
     public GameObject signs;
     public GameObject speedUI;
-    public GameObject playerDisplay;
 
     public float targetZoom;
     public float zoomSpeed;
@@ -57,34 +56,34 @@ public class shopBillboard : MonoBehaviour
     public playerCar playerCar;
 
     public int displayCarType;
-    public SpriteRenderer displayBody;
-    public SpriteRenderer displayWheelF;
-    public SpriteRenderer displayWheelB;
-    public SpriteRenderer displayWindow;
-    public SpriteRenderer displayLivery;
-    public SpriteMask displayMask;
+    public Image displayBody;
+    public Image displayWheelF;
+    public Image displayWheelB;
+    public Image displayWindow;
+    public Image displayLivery;
+    public Image displayMask;
 
     public float displayStartMPH;
     public float displayUpMPH;
     public float displayMoveTime;
-    public float displaySmokeMulitplyer;
+    public float displayHealth;
 
     public float displayStartMPHMin;
     public float displayUpMPHMin;
     public float displayMoveTimeMin;
-    public float displaySmokeMulitplyerMin;
+    public float displayHealthMin;
     public float displayStartMPHMax;
     public float displayUpMPHMax;
     public float displayMoveTimeMax;
-    public float displaySmokeMulitplyerMax;
+    public float displayHealthMax;
     public GameObject displayStartMPHBar;
     public GameObject displayUpMPHBar;
     public GameObject displayMoveTimeBar;
-    public GameObject displaySmokeMulitplyerBar;
+    public GameObject displayHealthBar;
     public GameObject displayStartMPHBarChange;
     public GameObject displayUpMPHBarChange;
     public GameObject displayMoveTimeBarChange;
-    public GameObject displaySmokeMulitplyerBarChange;
+    public GameObject displayHealthBarChange;
 
     public Transform shopCategoryTransform;
     public Transform shopItemsTransform;
@@ -337,7 +336,6 @@ public class shopBillboard : MonoBehaviour
             buttonCoverImage.SetActive(true);
             playerCoverPage.SetActive(false);
             powerupCoverPage.SetActive(false);
-            playerDisplay.SetActive(false);
             setMenuUI(false);
             statics.SetActive(true);
             staticTimer = 1f;
@@ -364,7 +362,6 @@ public class shopBillboard : MonoBehaviour
     {
         mainCoverPage.SetActive(true);
         playerCoverPage.SetActive(false);
-        playerDisplay.SetActive(false);
         powerupCoverPage.SetActive(false);
         uiCoverPage.SetActive(false);
         boostsCoverPage.SetActive(false);
@@ -375,7 +372,6 @@ public class shopBillboard : MonoBehaviour
     {
         mainCoverPage.SetActive(false);
         playerCoverPage.SetActive(true);
-        playerDisplay.SetActive(true);
         powerupCoverPage.SetActive(false);
         uiCoverPage.SetActive(false);
         boostsCoverPage.SetActive(false);
@@ -389,7 +385,6 @@ public class shopBillboard : MonoBehaviour
     {
         mainCoverPage.SetActive(false);
         playerCoverPage.SetActive(false);
-        playerDisplay.SetActive(false);
         powerupCoverPage.SetActive(true);
         uiCoverPage.SetActive(false);
         boostsCoverPage.SetActive(false);
@@ -404,7 +399,6 @@ public class shopBillboard : MonoBehaviour
     {
         mainCoverPage.SetActive(false);
         playerCoverPage.SetActive(false);
-        playerDisplay.SetActive(false);
         powerupCoverPage.SetActive(false);
         uiCoverPage.SetActive(true);
         boostsCoverPage.SetActive(false);
@@ -417,7 +411,6 @@ public class shopBillboard : MonoBehaviour
     {
         mainCoverPage.SetActive(false);
         playerCoverPage.SetActive(false);
-        playerDisplay.SetActive(false);
         powerupCoverPage.SetActive(false);
         uiCoverPage.SetActive(false);
         boostsCoverPage.SetActive(true);
@@ -441,7 +434,6 @@ public class shopBillboard : MonoBehaviour
         zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
         buttonCoverImage.SetActive(false);
         setMenuUI(true);
-        playerDisplay.SetActive(false);
 
         statics.SetActive(true);
         staticTimer = 1f;
@@ -484,7 +476,7 @@ public class shopBillboard : MonoBehaviour
                 }
                 else
                 {
-                    if (buyItem(pManager.carPartsData.carTypes[itemID].cost, pManager.carTypeUnlocks, pManager.carNames[itemID] + "Type"))
+                    if (buyItem(pManager.carPartsData.carTypes[itemID].cost, pManager.carTypeUnlocks, pManager.carIDs[itemID] + "type"))
                     {
                         PlayerPrefs.SetInt("playerCarType", itemID); //saves the player car type
                         PlayerPrefs.SetInt("playerBody", 0); //saves the new high score
@@ -500,7 +492,7 @@ public class shopBillboard : MonoBehaviour
                 }
                 else
                 {
-                    if (buyItem(pManager.carPartsData.windowTints[itemID].cost, pManager.windowUnlocks, pManager.windowNames[itemID] + "Window"))
+                    if (buyItem(pManager.carPartsData.windowTints[itemID].cost, pManager.windowUnlocks, pManager.windowIDs[itemID] + "window"))
                     {
                         PlayerPrefs.SetInt("windowTint", itemID); //saves the new high score
                         didEquip = true;
@@ -514,7 +506,7 @@ public class shopBillboard : MonoBehaviour
                     didEquip = true;
                 }
                 else {
-                    if(buyItem(pManager.carPartsData.carTypes[PlayerPrefs.GetInt("playerCarType", 0)].bodies[itemID].cost, pManager.bodyUnlocks[PlayerPrefs.GetInt("playerCarType", 0)], pManager.carNames[PlayerPrefs.GetInt("playerCarType", 0)] + pManager.bodyNames[PlayerPrefs.GetInt("playerCarType", 0)][itemID] + "Body"))
+                    if(buyItem(pManager.carPartsData.carTypes[PlayerPrefs.GetInt("playerCarType", 0)].bodies[itemID].cost, pManager.bodyUnlocks[PlayerPrefs.GetInt("playerCarType", 0)], pManager.carIDs[PlayerPrefs.GetInt("playerCarType", 0)] + pManager.bodyIDs[PlayerPrefs.GetInt("playerCarType", 0)][itemID] + "body"))
                     {
                         PlayerPrefs.SetInt("playerBody", itemID); //saves the new high score
                         didEquip = true;
@@ -529,7 +521,7 @@ public class shopBillboard : MonoBehaviour
                 }
                 else
                 {
-                    if (buyItem(pManager.carPartsData.wheelTypes[itemID].cost, pManager.wheelUnlocks, pManager.wheelNames[itemID] + "Wheel"))
+                    if (buyItem(pManager.carPartsData.wheelTypes[itemID].cost, pManager.wheelUnlocks, pManager.wheelIds[itemID] + "wheel"))
                     {
                         PlayerPrefs.SetInt("wheelBody", itemID); //saves the new high score
                         didEquip = true;
@@ -544,7 +536,7 @@ public class shopBillboard : MonoBehaviour
                 }
                 else
                 {
-                    if (buyItem(pManager.carPartsData.liveryTypes[itemID].cost, pManager.liveryUnlocks, pManager.liveryNames[itemID] + "livery"))
+                    if (buyItem(pManager.carPartsData.liveryTypes[itemID].cost, pManager.liveryUnlocks, pManager.liveryIDs[itemID] + "livery"))
                     {
                         PlayerPrefs.SetInt("liveryTint", itemID); //saves the new high score
                         didEquip = true;
@@ -559,7 +551,7 @@ public class shopBillboard : MonoBehaviour
                 }
                 else
                 {
-                    if (buyItem(pManager.carPartsData.liveryColors[itemID].cost, pManager.liveryColorUnlocks, pManager.liveryColorNames[itemID] + "Color"))
+                    if (buyItem(pManager.carPartsData.liveryColors[itemID].cost, pManager.liveryColorUnlocks, pManager.liveryColorIDs[itemID] + "color"))
                     {
                         PlayerPrefs.SetInt("liveryColorTint", itemID); //saves the new high score
                         didEquip = true;
@@ -619,7 +611,7 @@ public class shopBillboard : MonoBehaviour
         Debug.Log("no coins yet");
     }
 
-    public void selectPlayerCustomizationItem(int buttonID, SpriteRenderer toChange, Sprite spriteChange, int cost, bool unlocked)
+    public void selectPlayerCustomizationItem(int buttonID, Image toChange, Sprite spriteChange, int cost, bool unlocked)
     {
         selectPlayerItemButtonFunc(buttonID);
 
@@ -630,7 +622,7 @@ public class shopBillboard : MonoBehaviour
         selectItemEquipFunc(cost, unlocked);
     }
 
-    public void selectPlayerCustomizationItem(int buttonID, SpriteRenderer toChange, SpriteRenderer toChange2, Sprite spriteChange, int cost, bool unlocked)
+    public void selectPlayerCustomizationItem(int buttonID, Image toChange, Image toChange2, Sprite spriteChange, int cost, bool unlocked)
     {
         selectPlayerItemButtonFunc(buttonID);
 
@@ -640,7 +632,7 @@ public class shopBillboard : MonoBehaviour
         selectItemEquipFunc(cost, unlocked);
     }
 
-    public void selectPlayerCustomizationItem(int buttonID, SpriteRenderer toChange, Color colorChange, int cost, bool unlocked)
+    public void selectPlayerCustomizationItem(int buttonID, Image toChange, Color colorChange, int cost, bool unlocked)
     {
         selectPlayerItemButtonFunc(buttonID);
 
@@ -756,7 +748,7 @@ public class shopBillboard : MonoBehaviour
         getDisplayCarStats();
     }
 
-    public void activatePlayerButtons(List<Sprite> iconList, List<string> nameList, SpriteRenderer toChange, int currSelect, carPart[] cost, List<bool> activeList)
+    public void activatePlayerButtons(List<Sprite> iconList, List<string> nameList, Image toChange, int currSelect, carPart[] cost, List<bool> activeList)
     {
         int numButtons = iconList.Count;
         foreach (Button i in itemButtonList)
@@ -775,7 +767,7 @@ public class shopBillboard : MonoBehaviour
         activatePlayerButtonsFunc(currSelect);
     }
 
-    public void activatePlayerButtons(List<Sprite> iconList, List<string> nameList, SpriteRenderer toChange, SpriteRenderer toChange2, int currSelect, carPart[] cost, List<bool> activeList)
+    public void activatePlayerButtons(List<Sprite> iconList, List<string> nameList, Image toChange, Image toChange2, int currSelect, carPart[] cost, List<bool> activeList)
     {
         int numButtons = iconList.Count;
         foreach (Button i in itemButtonList)
@@ -794,7 +786,7 @@ public class shopBillboard : MonoBehaviour
         activatePlayerButtonsFunc(currSelect);
     }
 
-    public void activatePlayerButtons(List<Color> iconList, List<string> nameList, Sprite icon, SpriteRenderer toChange, int currSelect, carPart[] cost, List<bool> activeList)
+    public void activatePlayerButtons(List<Color> iconList, List<string> nameList, Sprite icon, Image toChange, int currSelect, carPart[] cost, List<bool> activeList)
     {
         int numButtons = iconList.Count;
         foreach (Button i in itemButtonList)
@@ -854,7 +846,7 @@ public class shopBillboard : MonoBehaviour
         equipbutton.colors = cb2;
     }
 
-    Button createButton(Sprite img, string text, int id, SpriteRenderer toChange, int cost, bool unlocked)
+    Button createButton(Sprite img, string text, int id, Image toChange, int cost, bool unlocked)
     {
         Button newButton = Instantiate(itemButton, shopItemsTransform).GetComponent<Button>();
         newButton.onClick.AddListener(() => selectPlayerCustomizationItem(id, toChange, img, cost, unlocked));
@@ -862,7 +854,7 @@ public class shopBillboard : MonoBehaviour
         return newButton;
     }
 
-    Button createButton(Sprite img, string text, int id, SpriteRenderer toChange, SpriteRenderer toChange2, int cost, bool unlocked)
+    Button createButton(Sprite img, string text, int id, Image toChange, Image toChange2, int cost, bool unlocked)
     {
         Button newButton = Instantiate(itemButton, shopItemsTransform).GetComponent<Button>();
         newButton.onClick.AddListener(() => selectPlayerCustomizationItem(id, toChange, toChange2, img, cost, unlocked));
@@ -871,7 +863,7 @@ public class shopBillboard : MonoBehaviour
         return newButton;
     }
 
-    Button createButton(Sprite img, string text, int id, SpriteRenderer toChange, Color col, int cost, bool unlocked)
+    Button createButton(Sprite img, string text, int id, Image toChange, Color col, int cost, bool unlocked)
     {
         Button newButton = Instantiate(itemButton, shopItemsTransform).GetComponent<Button>();
         newButton.onClick.AddListener(() => selectPlayerCustomizationItem(id, toChange, col, cost, unlocked));
@@ -950,8 +942,11 @@ public class shopBillboard : MonoBehaviour
         displayWindow.sprite = pManager.windows[typeID];
         displayMask.sprite = pManager.liveryMask[typeID];
 
-        displayWheelB.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[typeID].wheelB, pManager.carPartsData.carTypes[typeID].wheelHight, 0);
-        displayWheelF.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[typeID].wheelF, pManager.carPartsData.carTypes[typeID].wheelHight, 0);
+        displayWheelF.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[typeID].displayWheelX1, pManager.carPartsData.carTypes[typeID].displayWheelY, 0);
+        displayWheelB.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[typeID].displayWheelX2, pManager.carPartsData.carTypes[typeID].displayWheelY, 0);
+        float scale = pManager.carPartsData.carTypes[typeID].displayWheelScale;
+        displayWheelF.rectTransform.sizeDelta = new Vector2(10, scale);
+        displayWheelB.rectTransform.sizeDelta = new Vector2(10, scale);
     }
 
     void getDisplayCarStats()
@@ -959,12 +954,12 @@ public class shopBillboard : MonoBehaviour
         displayStartMPH = playerCar.startMph;
         displayUpMPH = playerCar.upMph;
         displayMoveTime = playerCar.moveTime;
-        displaySmokeMulitplyer = playerCar.smokeMulitplyer;
+        displayHealth = playerCar.hits;
 
         float startBarVal = getValueScale(displayStartMPH, displayStartMPHMin, displayStartMPHMax, 0.5f);
         float upBarVal = getValueScale(displayUpMPH, displayUpMPHMin, displayUpMPHMax, 0.5f);
         float moveBarVal = getValueScale(displayMoveTime, displayMoveTimeMin, displayMoveTimeMax, 0.5f);
-        float smokeBarVal = getValueScale(displaySmokeMulitplyer, displaySmokeMulitplyerMin, displaySmokeMulitplyerMax, 0.5f);
+        float healthBarVal = getValueScale(displayHealth, displayHealthMin, displayHealthMax, 0.5f);
 
         displayStartMPHBar.transform.localScale = new Vector3(startBarVal, 0.5f, 0.5f);
         displayStartMPHBarChange.transform.localScale = new Vector3(startBarVal, 0.5f, 0.5f);
@@ -972,8 +967,8 @@ public class shopBillboard : MonoBehaviour
         displayUpMPHBarChange.transform.localScale = new Vector3(upBarVal, 0.5f, 0.5f);
         displayMoveTimeBar.transform.localScale = new Vector3(moveBarVal, 0.5f, 0.5f);
         displayMoveTimeBarChange.transform.localScale = new Vector3(moveBarVal, 0.5f, 0.5f);
-        displaySmokeMulitplyerBar.transform.localScale = new Vector3(smokeBarVal, 0.5f, 0.5f);
-        displaySmokeMulitplyerBarChange.transform.localScale = new Vector3(smokeBarVal, 0.5f, 0.5f);
+        displayHealthBar.transform.localScale = new Vector3(healthBarVal, 0.5f, 0.5f);
+        displayHealthBarChange.transform.localScale = new Vector3(healthBarVal, 0.5f, 0.5f);
     }
 
     void showDisplayCarStatsChange(int typeID)
@@ -1015,24 +1010,15 @@ public class shopBillboard : MonoBehaviour
                         displayMoveTimeBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcmoveTime(typeID, PlayerPrefs.GetInt("wheelBody", 0)), displayMoveTimeMin, displayMoveTimeMax, 0.5f), 0.5f, 0.5f);
                         displayMoveTimeBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
                     }
-                }
-                else
-                {
-                    getDisplayCarStats();
-                }
-                break;
-            case 1:
-                if (typeID != PlayerPrefs.GetInt("windowTint", 0))
-                {
-                    if (playerCar.calcSmokeMulitplyer(typeID) > playerCar.smokeMulitplyer)
+                    if (playerCar.calcHealth(typeID) < playerCar.hits)
                     {
-                        displaySmokeMulitplyerBar.transform.localScale = new Vector3(getValueScale(playerCar.calcSmokeMulitplyer(typeID), displaySmokeMulitplyerMin, displaySmokeMulitplyerMax, 0.5f), 0.5f, 0.5f);
-                        displaySmokeMulitplyerBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+                        displayHealthBar.transform.localScale = new Vector3(getValueScale(playerCar.calcHealth(typeID), displayHealthMin, displayHealthMax, 0.5f), 0.5f, 0.5f);
+                        displayHealthBarChange.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
                     }
                     else
                     {
-                        displaySmokeMulitplyerBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcSmokeMulitplyer(typeID), displaySmokeMulitplyerMin, displaySmokeMulitplyerMax, 0.5f), 0.5f, 0.5f);
-                        displaySmokeMulitplyerBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
+                        displayHealthBarChange.transform.localScale = new Vector3(getValueScale(playerCar.calcHealth(typeID), displayHealthMin, displayHealthMax, 0.5f), 0.5f, 0.5f);
+                        displayHealthBarChange.GetComponent<Image>().color = new Color32(0, 255, 0, 255);
                     }
                 }
                 else
@@ -1626,12 +1612,12 @@ public class shopBillboard : MonoBehaviour
     {
         displayStartMPHMin = 15;
         displayStartMPHMax = 60;
-        displayUpMPHMin = 0.45f;
-        displayUpMPHMax = 1;
+        displayUpMPHMin = 0.3f;
+        displayUpMPHMax = 1.4f;
         displayMoveTimeMin = 1.2f;
         displayMoveTimeMax = 0.25f;
-        displaySmokeMulitplyerMin = 1.2f;
-        displaySmokeMulitplyerMax = 0.2f;
+        displayHealthMin = 0.5f;
+        displayHealthMax = 3.5f;
     }
 
     void addCoins(int ammount)

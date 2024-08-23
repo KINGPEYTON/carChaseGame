@@ -8,24 +8,29 @@ public class playerManager : MonoBehaviour
     public TextAsset carPartsJSON;
 
     public List<string> carNames;
+    public List<string> carIDs;
     public List<Sprite> carIcon;
 
     public List<string> wheelNames;
+    public List<string> wheelIds;
     public List<Sprite> wheels;
 
     public List<List<string>> bodyNames = new List<List<string>>();
+    public List<List<string>> bodyIDs = new List<List<string>>();
     public List<List<Sprite>> bodies = new List<List<Sprite>>();
-    public List<List<Sprite>> crashes = new List<List<Sprite>>();
 
     public List<Sprite> windows;
     public List<string> windowNames;
+    public List<string> windowIDs;
     public List<Color> windowColors;
 
     public List<Sprite> livery;
     public List<Sprite> liveryMask;
     public List<string> liveryNames;
+    public List<string> liveryIDs;
     public List<Color> liveryColors;
     public List<string> liveryColorNames;
+    public List<string> liveryColorIDs;
 
     public List<bool> carTypeUnlocks;
     public List<List<bool>> bodyUnlocks = new List<List<bool>>();
@@ -55,64 +60,56 @@ public class playerManager : MonoBehaviour
 
         for(int f = 0; f < carNames.Count; f++)
         {
-            getCarTypeAssets(carNames[f], "player/cars/"+ carNames[f], f);
+            getCarTypeAssets(carIDs[f], "player/cars/"+ carIDs[f], f);
         }
-        getCarAssets(wheels, wheelNames, " Wheel", "player/wheels");
-        getCarAssets(livery, liveryNames, " Livery", "player/livery");
+        getCarAssets(wheels, wheelIds, "wheel ", "player/wheels");
+        getCarAssets(livery, liveryIDs, "livery ", "player/livery");
 
         intro = true;
     }
 
-    private void getCarTypeAssets(string name, string path, int ind)
+    private void getCarTypeAssets(string id, string path, int ind)
     {
-        Texture2D SpriteTexture = Resources.Load<Texture2D>(path + "/" + name + " - window");
-        Sprite windo = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0.5f, 0.5f), 100);
+        float xPiv = carPartsData.carTypes[ind].pivotX;
+        float yPiv = carPartsData.carTypes[ind].pivotY;
+        Texture2D SpriteTexture = Resources.Load<Texture2D>(path + "/" + id + " window");
+        Sprite windo = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(xPiv, yPiv), 100);
         windows.Add(windo);
 
-        Texture2D iconTexture = Resources.Load<Texture2D>(path + "/" + name + " - icon");
+        Texture2D iconTexture = Resources.Load<Texture2D>(path + "/" + id + " icon");
         Sprite shopIcon = Sprite.Create(iconTexture, new Rect(0, 0, iconTexture.width, iconTexture.height), new Vector2(0.5f, 0.5f), 100);
         carIcon.Add(shopIcon);
 
-        Texture2D maskOutlineTexture = Resources.Load<Texture2D>(path + "/" + name + " - outline");
-        Sprite maskOutline = Sprite.Create(maskOutlineTexture, new Rect(0, 0, maskOutlineTexture.width, maskOutlineTexture.height), new Vector2(0.5f, 0.5f), 100);
+        Texture2D maskOutlineTexture = Resources.Load<Texture2D>(path + "/" + id + " outline");
+        Sprite maskOutline = Sprite.Create(maskOutlineTexture, new Rect(0, 0, maskOutlineTexture.width, maskOutlineTexture.height), new Vector2(xPiv, yPiv), 100);
         liveryMask.Add(maskOutline);
-
-        List<Sprite> newBodySprites = new List<Sprite>();
-        List<string> newBodyNames = new List<string>();
-        getCarStuff(newBodySprites, newBodyNames, path + "/body");
 
         List<bool> newBodyUnlock = new List<bool>();
         newBodyUnlock.Add(true);
-        for (int i = 1; i < newBodyNames.Count; i++)
+        for (int i = 1; i < bodyIDs.Count; i++)
         {
-            newBodyUnlock.Add(PlayerPrefs.GetInt(carNames[ind] + newBodyNames[i], 0) != 0);
+            newBodyUnlock.Add(PlayerPrefs.GetInt(carIDs[ind] + bodyIDs[i], 0) != 0);
         }
 
-        getCarAssets(bodies[ind], bodyNames[ind], " " + name, path + "/body");
-        getCarAssets(crashes[ind], bodyNames[ind], " Crashed " + name, path + "/crashed");
+        getBodyAssets(bodies[ind], bodyIDs[ind], id + " ", path + "/body", xPiv, yPiv);
     }
 
-    private void getCarStuff(List<Sprite> carParts, List<string> carPartNames, string path)
-    {
-        var carBodyList = Resources.LoadAll(path, typeof(Texture2D));
-
-        for (int i = 0; i < carBodyList.Length; i++)
-        {
-            Texture2D itemTexture = carBodyList[i] as Texture2D;
-            Sprite item = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(0.5f, 0.5f), 100);
-            string name = carBodyList[i].name;
-            string color = name.Substring(name.IndexOf(" - ") + 3);
-            carParts.Add(item);
-            carPartNames.Add(color);
-        }
-    }
-
-    private void getCarAssets(List<Sprite> carParts, List<string> carPartNames, string addOn, string path)
+    private void getCarAssets(List<Sprite> carParts, List<string> carPartNames, string prefix, string path)
     {
         for (int i = 0; i < carPartNames.Count; i++)
         {
-            Texture2D itemTexture = Resources.Load<Texture2D>(path + "/" + carPartNames[i] + addOn);
+            Texture2D itemTexture = Resources.Load<Texture2D>(path + "/" + prefix + carPartNames[i]);
             Sprite item = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(0.5f, 0.5f), 100);
+            carParts.Add(item);
+        }
+    }
+
+    private void getBodyAssets(List<Sprite> carParts, List<string> carPartNames, string prefix, string path, float xPivot, float yPivot)
+    {
+        for (int i = 0; i < carPartNames.Count; i++)
+        {
+            Texture2D itemTexture = Resources.Load<Texture2D>(path + "/" + prefix + carPartNames[i]);
+            Sprite item = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(xPivot, yPivot), 100);
             carParts.Add(item);
         }
     }
@@ -123,20 +120,22 @@ public class playerManager : MonoBehaviour
         foreach (carTypesReader carType in carDataInJson.carTypes)
         {
             carNames.Add(carType.typeName);
-            carTypeUnlocks.Add(PlayerPrefs.GetInt(carType.typeName + "Type", 0) != 0);
+            carIDs.Add(carType.idName);
+            carTypeUnlocks.Add(PlayerPrefs.GetInt(carType.idName + "type", 0) != 0);
         }
         carTypeUnlocks[0] = true;
 
         for (int i = 0; i < carNames.Count; i++)
         {
             bodies.Add(new List<Sprite>());
-            crashes.Add(new List<Sprite>());
             bodyNames.Add(new List<string>());
+            bodyIDs.Add(new List<string>());
             bodyUnlocks.Add(new List<bool>());
             foreach (carBodyReader bodySkin in carDataInJson.carTypes[i].bodies)
             {
                 bodyNames[i].Add(bodySkin.bodyColor);
-                bodyUnlocks[i].Add(PlayerPrefs.GetInt(carNames[i] + bodySkin.bodyColor + "Body", 0) != 0);
+                bodyIDs[i].Add(bodySkin.colorID);
+                bodyUnlocks[i].Add(PlayerPrefs.GetInt(carIDs[i] + bodySkin.colorID + "body", 0) != 0);
             }
             bodyUnlocks[i][0] = true;
         }
@@ -144,30 +143,34 @@ public class playerManager : MonoBehaviour
         foreach (carWheelReader wheelType in carDataInJson.wheelTypes)
         {
             wheelNames.Add(wheelType.wheelName);
-            wheelUnlocks.Add(PlayerPrefs.GetInt(wheelType.wheelName + "Wheel", 0) != 0);
+            wheelIds.Add(wheelType.idName);
+            wheelUnlocks.Add(PlayerPrefs.GetInt(wheelType.idName + "wheel", 0) != 0);
         }
         wheelUnlocks[0] = true;
 
         foreach (carWindowReader windowTint in carDataInJson.windowTints)
         {
             windowNames.Add(windowTint.tintColor);
+            windowIDs.Add(windowTint.idName);
             windowColors.Add(new Color32(windowTint.ColorR, windowTint.ColorB, windowTint.ColorG, 255));
-            windowUnlocks.Add(PlayerPrefs.GetInt(windowTint.tintColor + "Window", 0) != 0);
+            windowUnlocks.Add(PlayerPrefs.GetInt(windowTint.idName + "window", 0) != 0);
         }
         windowUnlocks[0] = true;
 
         foreach (carLiveryReader liveryType in carDataInJson.liveryTypes)
         {
             liveryNames.Add(liveryType.liveryName);
-            liveryUnlocks.Add(PlayerPrefs.GetInt(liveryType.liveryName + "livery", 0) != 0);
+            liveryIDs.Add(liveryType.idName);
+            liveryUnlocks.Add(PlayerPrefs.GetInt(liveryType.idName + "livery", 0) != 0);
         }
         liveryUnlocks[0] = true;
 
         foreach (carLiveryColorReader liveryColor in carDataInJson.liveryColors)
         {
             liveryColorNames.Add(liveryColor.liveryColor);
-            liveryColors.Add(new Color32(liveryColor.ColorR, liveryColor.ColorB, liveryColor.ColorG, 255));
-            liveryColorUnlocks.Add(PlayerPrefs.GetInt(liveryColor.liveryColor + "Color", 0) != 0);
+            liveryColorIDs.Add(liveryColor.idName);
+            liveryColors.Add(new Color32(liveryColor.ColorR, liveryColor.ColorB, liveryColor.ColorG, liveryColor.ColorA));
+            liveryColorUnlocks.Add(PlayerPrefs.GetInt(liveryColor.idName + "color", 0) != 0);
         }
         liveryColorUnlocks[0] = true;
 
@@ -234,12 +237,19 @@ public class carTypesReader : carPart
 {
     //these variables are case sensitive and must match the strings "firstName" and "lastName" in the JSON.
     public string typeName;
+    public string idName;
     public float startMPH;
     public float speedUp;
     public float moveTime;
+    public int hits;
     public float wheelHight;
     public float wheelF;
     public float wheelB;
+    public float liveryHight;
+    public float pivotX;
+    public float pivotY;
+
+    public float scale;
 
     public float ramX;
     public float ramY;
@@ -251,6 +261,11 @@ public class carTypesReader : carPart
     public float laserX;
     public float laserY;
 
+    public float displayWheelY;
+    public float displayWheelX1;
+    public float displayWheelX2;
+    public float displayWheelScale;
+
     public carBodyReader[] bodies;
 }
 
@@ -258,12 +273,14 @@ public class carTypesReader : carPart
 public class carBodyReader : carPart
 {
     public string bodyColor;
+    public string colorID;
 }
 
 [System.Serializable]
 public class carWheelReader : carPart
 {
     public string wheelName;
+    public string idName;
     public float speedUp;
     public float moveTime;
 }
@@ -272,7 +289,7 @@ public class carWheelReader : carPart
 public class carWindowReader : carPart
 {
     public string tintColor;
-    public float screenEffect;
+    public string idName;
     public byte ColorR;
     public byte ColorG;
     public byte  ColorB;
@@ -282,13 +299,16 @@ public class carWindowReader : carPart
 public class carLiveryReader : carPart
 {
     public string liveryName;
+    public string idName;
 }
 
 [System.Serializable]
 public class carLiveryColorReader : carPart
 {
     public string liveryColor;
+    public string idName;
     public byte ColorR;
     public byte ColorG;
     public byte ColorB;
+    public byte ColorA;
 }

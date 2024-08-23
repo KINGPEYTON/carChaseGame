@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1440
     height: 790
   m_ShowMode: 4
-  m_Title: Console
+  m_Title: Simulator
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 151110
+  controlID: 80
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 151111
+  controlID: 81
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 151112
+  controlID: 20
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -189,8 +189,8 @@ MonoBehaviour:
     y: 0
     width: 257.5
     height: 515
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -215,8 +215,8 @@ MonoBehaviour:
     y: 0
     width: 811
     height: 515
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 12}
   m_Panes:
   - {fileID: 14}
@@ -272,8 +272,8 @@ MonoBehaviour:
     y: 0
     width: 371.5
     height: 740
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 20}
   m_Panes:
   - {fileID: 20}
@@ -383,9 +383,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: d6640000
-      m_LastClickedID: 25814
-      m_ExpandedIDs: fcacf5ff18bef5ff0ad6f5ff2805f6ff0417f6ff8034f6ff286ef6ff0607f7fffe86f7ff22a5f7ffe08cf8ff6ad1f8ff6e54f9ff0455f9ff1058f9ff1659f9ff1086fbffd48ffbff24f3fbff2afdfbff2efdfbff32fdfbff3a05fcff3e05fcff5c05fcff6005fcff7e17fcff047ffcff147ffcff807ffcff7a8cfcff7e8cfcffae8cfcffb48cfcffbe8cfcff201ffdffc207feffca07feff362bfeffaa2bfefff498feff5e9afeffe441fffff464ffff1465ffff1c65ffffc495ffffd8a6ffffdaa6ffffdca6ffffd2aaffffd6acfffff8aeffff7cb5ffff0acbffff1ecbffffeef2ffff64f8ffff20fbfffff4ffffff6c5a0000bc5a0000e05b0000606100007e61000092610000546200001e630000546500007c650000c0e11000
+      m_SelectedIDs: cc640000
+      m_LastClickedID: 25804
+      m_ExpandedIDs: 2cfbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -667,7 +667,7 @@ MonoBehaviour:
       containerId: overlay-container--right
       floating: 0
       collapsed: 0
-      displayed: 0
+      displayed: 1
       snapOffset: {x: 0, y: 25}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
@@ -752,9 +752,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 4.686783, y: 3.8024023, z: 0.012101049}
+    m_Target: {x: -8.858559, y: -1.074246, z: -0.013330334}
     speed: 2
-    m_Value: {x: 4.686783, y: 3.8024023, z: 0.012101049}
+    m_Value: {x: -8.858559, y: -1.074246, z: -0.013330334}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -804,9 +804,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 2.1521268
+    m_Target: 4.6952653
     speed: 2
-    m_Value: 2.1521268
+    m_Value: 4.6952653
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1090,7 +1090,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 25224
+  m_LastSelectedObjectID: 25804
 --- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1136,7 +1136,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/shop
+    - Assets
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1144,16 +1144,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 60
   m_LastFolders:
-  - Assets/shop
+  - Assets
   m_LastFoldersGridSize: 60
   m_LastProjectPath: /Users/peypey/Documents/Projects/Apps/Don't Crash Bro/carChaseGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 316}
-    m_SelectedIDs: 6a890000
-    m_LastClickedID: 35178
-    m_ExpandedIDs: 00000000d6880000dc880000668900009689000000ca9a3b
+    scrollPos: {x: 0, y: 79}
+    m_SelectedIDs: 8c8a0000
+    m_LastClickedID: 35468
+    m_ExpandedIDs: 00000000308a0000328a0000348a0000368a0000388a00003a8a00003c8a00003e8a0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1181,7 +1181,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000d6880000dc880000668900009689000000ca9a3b
+    m_ExpandedIDs: 00000000308a0000328a0000348a0000368a0000388a00003a8a00003c8a00003e8a0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1206,8 +1206,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: d6640000
-    m_LastClickedInstanceID: 25814
+    m_SelectedInstanceIDs: b8640000
+    m_LastClickedInstanceID: 25784
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000665b0000505b0000265c0000e45e000056690000b66000004060000006ca0000f2630000286d00008a7f000000000000
     m_RenameOverlay:

@@ -157,9 +157,7 @@ public class main : MonoBehaviour
 
     public float obstaclesMultiplyer;
 
-    public List<GameObject> carsList;
-    public List<float> carsOdds;
-    public List<float> carsCurrOdds;
+    public carsManager caManager;
     public int carList; //how many cars have spawned since the last bus
     public float carTimer;
     public float carTime;
@@ -247,6 +245,7 @@ public class main : MonoBehaviour
         menuSound = GameObject.Find("ambience").GetComponent<AudioSource>();
         pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
         modMang = GameObject.Find("modsManager").GetComponent<boostManager>();
+        caManager = GameObject.Find("carsManager").GetComponent<carsManager>();
 
         masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
@@ -297,9 +296,6 @@ public class main : MonoBehaviour
         menuSound.Play();
 
         setRoadOdds();
-        setCarOdds(carsOdds, carsCurrOdds, carsList);
-        setCarOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList);
-        setCarOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList);
         setBackBuildingOdds();
         setFrontBuildingOdds();
         setFarBuildingOdds();
@@ -309,6 +305,11 @@ public class main : MonoBehaviour
         {
             startTutorial();
         }
+
+        caManager.spawnRegularCar(new Vector3(0, 0.65f, 0), GameObject.Find("cars").transform);
+        caManager.spawnRegularCar(new Vector3(6, -4.35f, 0), GameObject.Find("cars").transform);
+        caManager.spawnRegularCar(new Vector3(12, -0.6f, 0), GameObject.Find("cars").transform);
+        caManager.spawnRegularCar(new Vector3(-6.5f, -3.1f, 0), GameObject.Find("cars").transform);
     }
 
     // Update is called once per frame
@@ -1073,7 +1074,7 @@ public class main : MonoBehaviour
         if (carTimer > 100)
         {
             float newLane = (Random.Range(0, -2) * 5.0f) + 0.65f;
-            Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+            caManager.spawnRegularCar(new Vector3(12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
             carTimer = 0;
         }
     }
@@ -1081,77 +1082,43 @@ public class main : MonoBehaviour
     void spawnMenuCar()
     {
         float carTime = 1.0f;
-        if(!inTutorial || tutorialSteps < 3)
+        if (!inTutorial || tutorialSteps < 3)
         {
             carTime = 1.75f;
         }
         carTimer += Time.deltaTime; //timer to spawn a new car after game is over
         if (carTimer > carTime)
         {
-            GameObject newCar = this.gameObject;
-            if (!isOver)
+            cars newCar = null;
+            float newLane = 0;
+            if (topLane)
             {
-                float newLane = 0;
-                if (topLane)
-                {
-                    newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
-                }
-                else
-                {
-                    newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
-                }
-                float specalCar = Random.Range(0.0f, 1.0f);
-                if (specalCar > largeCarOdds + specalCarOdds)
-                {
-                    newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(-12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-                    largeCarOdds += 0.1f;
-                    specalCarOdds += 0.00175f;
-                }
-                else if (specalCar > largeCarOdds)
-                {
-                    newCar = Instantiate(policeCar, new Vector3(-12, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-                    specalCarOdds = 0.01f;
-                }
-                else
-                {
-                    newCar = Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-                    largeCarOdds = 0.05f;
-                }
-                carTimer = 0;
+                newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
             }
             else
             {
-                if (carList < 3)
-                {
-                    float newLane = 0;
-                    if (topLane)
-                    {
-                        newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
-                    }
-                    else
-                    {
-                        newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
-                    }
-                    newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform); //spawn new car in a random lane behind the player
-                    carList++;
-                }
-                else
-                {
-                    float newLane = 0;
-                    if (topLane)
-                    {
-                        newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
-                    }
-                    else
-                    {
-                        newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
-                    }
-                    newCar = Instantiate(overBus, new Vector3(-14, newLane, 0), Quaternion.identity, GameObject.Find("Extra").transform); //spawn new car in a random lane behind the player
-                    carList = 0;
-                }
+                newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
             }
+            float specalCar = Random.Range(0.0f, 1.0f);
+            if (specalCar > largeCarOdds + specalCarOdds)
+            {
+                newCar = caManager.spawnRegularCar(new Vector3(-12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                largeCarOdds += 0.1f;
+                specalCarOdds += 0.00175f;
+            }
+            else if (specalCar > largeCarOdds)
+            {
+                newCar = caManager.spawnPoliceCar(new Vector3(-12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                specalCarOdds = 0.01f;
+            }
+            else
+            {
+                newCar = caManager.spawnLargeCar(new Vector3(-14, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                largeCarOdds = 0.05f;
+            }
+            carTimer = 0;
 
-            newCar.GetComponent<cars>().setLane();
+            newCar.setLane();
 
             if (!inTutorial && newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
             {
@@ -1174,7 +1141,7 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        GameObject newCar = Instantiate(getCarFromOdds(carsOdds, carsCurrOdds, carsList), new Vector3(carPlace, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = caManager.spawnRegularCar(new Vector3(carPlace, newLane, 0), GameObject.Find("cars").transform).gameObject;  //spawn new car in a random lane before going on screen
         checkCarEffects(newCar);
     }
 
@@ -1189,7 +1156,7 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        GameObject newCar = Instantiate(getCarFromOdds(carsLargeOdds, carsLargeCurrOdds, carsLargeList), new Vector3(carPlace + 1, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = caManager.spawnLargeCar(new Vector3(carPlace + 1, newLane, 0), GameObject.Find("cars").transform).gameObject;  //spawn new car in a random lane before going on screen
         checkCarEffects(newCar);
     }
 
@@ -1204,7 +1171,7 @@ public class main : MonoBehaviour
         {
             newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
         }
-        GameObject newCar = Instantiate(getCarFromOdds(carsSpecialOdds, carsSpecialCurrOdds, carsSpecialList), new Vector3(carPlace + 13, newLane, 0), Quaternion.identity, GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+        GameObject newCar = caManager.spawnSpecialCar(new Vector3(carPlace + 13, newLane, 0), GameObject.Find("cars").transform).gameObject;  //spawn new car in a random lane before going on screen
         checkCarEffects(newCar);
     }
 
@@ -1240,25 +1207,6 @@ public class main : MonoBehaviour
         {
             billboards.Remove(billboards.ToArray()[0]);
         }
-    }
-
-    public GameObject getCarFromOdds(List<float> oddsList, List<float> currOddsList, List<GameObject> carList)
-    {
-        float newCarOdds = Random.Range(0.0f, 1.0f);
-        float oddsAccum = 0.0f;
-
-        for (int i = 0; i < oddsList.Count; i++)
-        {
-            oddsAccum += currOddsList[i];
-            if (oddsAccum > newCarOdds)
-            {
-                changeOdds(i, oddsList, currOddsList);
-                return carList[i];
-            }
-        }
-
-        changeOdds(0, oddsList, currOddsList);
-        return carList[0];
     }
 
     Sprite getbuildingFromOdds(List<float> buildingsOddsList, List<float> buildingsCurrOddsList, List<Sprite> buildingSkinsList)
@@ -1630,26 +1578,6 @@ public class main : MonoBehaviour
     {
         radioVol = newVol;
         PlayerPrefs.SetFloat("radioVol", radioVol); //saves the radio volume level
-    }
-
-    private void setCarOdds(List<float> oddsList, List<float> currOddsList, List<GameObject> carList)
-    {
-        for (int i = 0; i < carList.Count; i++)
-        {
-            float addOdds = carList[i].GetComponent<cars>().odds;
-            oddsList.Add(addOdds);
-            currOddsList.Add(addOdds);
-        }
-    }
-
-    private void setSpecialCarOdds()
-    {
-        for (int i = 0; i < carsList.Count; i++)
-        {
-            float addOdds = carsSpecialList[i].GetComponent<cars>().odds;
-            carsSpecialOdds.Add(addOdds);
-            carsCurrOdds.Add(addOdds);
-        }
     }
 
     private void setBackBuildingOdds()

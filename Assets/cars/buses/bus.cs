@@ -9,11 +9,6 @@ public class bus : cars
 
     void OnEnable()
     {
-        blinkTime = -1;
-        speedMin = 10;
-        speedMax = 14;
-        odds = 0;
-        forceMass = 1.35f;
         adOBJ.GetComponent<SpriteRenderer>().sprite = ads[Random.Range(0, ads.Length)]; //set the ad to a random one at spawn
     }
 }

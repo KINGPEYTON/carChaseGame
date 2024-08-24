@@ -4844,7 +4844,7 @@ GameObject:
   - component: {fileID: 4155396503624009453}
   - component: {fileID: 4574768777709730579}
   m_Layer: 0
-  m_Name: construction arrow
+  m_Name: construction
   m_TagString: car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

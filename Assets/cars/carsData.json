@@ -1,0 +1,138 @@
+﻿{
+    "normal": [
+        {
+            "idName": "regular",
+            "hitPoint": 1,
+            "blinkTime": -1,
+            "speedMin": 12,
+            "speedMax": 18,
+            "odds": 0.35,
+            "isCar": 1,
+            "forceMass": 0.75
+        },
+        {
+            "idName": "suv",
+            "hitPoint": 1,
+            "blinkTime": 15,
+            "speedMin": 11,
+            "speedMax": 16,
+            "odds": 0.25,
+            "isCar": 1,
+            "forceMass": 0.8
+        },
+        {
+            "idName": "minivan",
+            "hitPoint": 1,
+            "blinkTime": 20,
+            "speedMin": 10,
+            "speedMax": 14,
+            "odds": 0.2,
+            "isCar": 1,
+            "forceMass": 0.65
+        },
+        {
+            "idName": "pickup",
+            "hitPoint": 1,
+            "blinkTime": 8,
+            "speedMin": 9,
+            "speedMax": 14,
+            "odds": 0.15,
+            "isCar": 1,
+            "forceMass": 0.85
+        },
+        {
+            "idName": "sport",
+            "hitPoint": 1,
+            "blinkTime": 1,
+            "speedMin": 18,
+            "speedMax": 23,
+            "odds": 0.05,
+            "isCar": 1,
+            "forceMass": 0.7
+        }
+    ],
+    "large": [
+        {
+            "idName": "bus",
+            "hitPoint": 2,
+            "blinkTime": -1,
+            "speedMin": 10,
+            "speedMax": 14,
+            "odds": 0.35,
+            "isCar": 0,
+            "forceMass": 1.35
+        },
+        {
+            "idName": "cement",
+            "hitPoint": 2,
+            "blinkTime": -1,
+            "speedMin": 8,
+            "speedMax": 13,
+            "odds": 0.1,
+            "isCar": 0,
+            "forceMass": 1.4
+        },
+        {
+            "idName": "dumptruck",
+            "hitPoint": 2,
+            "blinkTime": -1,
+            "speedMin": 11,
+            "speedMax": 12,
+            "odds": 0.1,
+            "isCar": 0,
+            "forceMass": 1.15
+        },
+        {
+            "idName": "flatbed",
+            "hitPoint": 2,
+            "blinkTime": -1,
+            "speedMin": 12,
+            "speedMax": 17,
+            "odds": 0.15,
+            "isCar": 0,
+            "forceMass": 1.25
+        },
+        {
+            "idName": "semi",
+            "hitPoint": 2,
+            "blinkTime": -1,
+            "speedMin": 10,
+            "speedMax": 16,
+            "odds": 0.2,
+            "isCar": 0,
+            "forceMass": 1.85
+        }
+    ],
+    "special": [
+        {
+            "idName": "police",
+            "hitPoint": 1,
+            "blinkTime": 0,
+            "speedMin": 14,
+            "speedMax": 27,
+            "odds": 0.85,
+            "isCar": 0,
+            "forceMass": "0.75f"
+        },
+        {
+            "idName": "maniac",
+            "hitPoint": 1,
+            "blinkTime": 0,
+            "speedMin": 15,
+            "speedMax": 23,
+            "odds": 0.13,
+            "isCar": 1,
+            "forceMass": 0.95
+        },
+        {
+            "idName": "chase",
+            "hitPoint": 1,
+            "blinkTime": 0,
+            "speedMin": 15,
+            "speedMax": 23,
+            "odds": 0.02,
+            "isCar": 1,
+            "forceMass": 0.95
+        }
+    ]
+}

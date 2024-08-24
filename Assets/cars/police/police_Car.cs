@@ -21,11 +21,8 @@ public class police_Car : cars
         if (chasingVan)
         {
             siren.Play();
+            GameObject.Find("carsManager").GetComponent<carsManager>();
         }
-        speedMin = 14;
-        speedMax = 27;
-        forceMass = 0.75f;
-        hitPoint = 1;
 
         speed = Random.Range(speedMin, speedMax);
         controller = GameObject.Find("contoller").GetComponent<main>();
@@ -37,7 +34,6 @@ public class police_Car : cars
         normalVal = 0.45f;
 
         turnTime = 0.75f;
-        isCar = false;
 
         speedLimit = 80;
 

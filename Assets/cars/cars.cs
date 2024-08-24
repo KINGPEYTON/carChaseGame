@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class cars : MonoBehaviour
 {
-    public main controller;
-
+    public string idName;
     public Sprite[] skins; //array of car skins
+
+    public main controller;
 
     public float speed; //speed of thr car
     public int lane; //lane of car

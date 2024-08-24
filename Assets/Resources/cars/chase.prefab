@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 7011756260574576112}
   - component: {fileID: 5941282167688137653}
   m_Layer: 0
-  m_Name: van chase
+  m_Name: chase
   m_TagString: car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

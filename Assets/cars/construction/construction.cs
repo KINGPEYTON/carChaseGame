@@ -69,7 +69,7 @@ public class construction : cars
                 }
                 else if (carTimer > carTime)
                 {
-                    cars c = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(12, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
+                    cars c = controller.caManager.spawnRegularCar(new Vector3(12, transform.position.y, 0), GameObject.Find("cars").transform).GetComponent<cars>();
                     c.makeTraffic(Random.Range(10, 15.5f));
                     carTimer -= carTime;
                     controller.carTimer -= 25;
@@ -96,16 +96,16 @@ public class construction : cars
         inSight = true;
         for (int i = 0; i < 3; i++)
         {
-            cars c = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 2.5f - (i * 3), transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
+            cars c = controller.caManager.spawnRegularCar(new Vector3(transform.position.x - 2.5f - (i * 3), transform.position.y, 0), GameObject.Find("cars").transform).GetComponent<cars>();
             c.makeTraffic(0);
             controller.checkCarEffects(c.gameObject);
         }
-        cars ca = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 14.5f, transform.position.y, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
+        cars ca = controller.caManager.spawnRegularCar(new Vector3(transform.position.x - 14.5f, transform.position.y, 0), GameObject.Find("cars").transform).GetComponent<cars>();
         ca.makeTraffic(7.5f);
         controller.checkCarEffects(ca.gameObject);
         for (int i = 0; i < 8; i++)
         {
-            cars cr = Instantiate(controller.getCarFromOdds(controller.carsOdds, controller.carsCurrOdds, controller.carsList), new Vector3(transform.position.x - 11.5f + (i * 3.5f), transform.position.y + 1.25f, 0), Quaternion.identity, GameObject.Find("cars").transform).GetComponent<cars>();
+            cars cr = controller.caManager.spawnRegularCar(new Vector3(transform.position.x - 11.5f + (i * 3.5f), transform.position.y + 1.25f, 0), GameObject.Find("cars").transform).GetComponent<cars>();
             cr.makeTraffic(0);
             controller.checkCarEffects(cr.gameObject);
         }

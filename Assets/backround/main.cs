@@ -144,9 +144,20 @@ public class main : MonoBehaviour
     public Transform guardLast;
     public float guardDist = 3.25f;
 
+    public worldManager worldM;
+    public GameObject[] funSigns;
+    public float signTimer;
+    public float signTime;
+
     public GameObject[] milestoneSigns;
     public GameObject milestoneBigSign;
     public int milestone;
+    public bool topSign;
+
+    public GameObject exitSign;
+    public int exitNum;
+    public bool exitNumUp;
+    public GameObject bridgeSign;
 
     public List<GameObject> carsInGame;
     public bool inTinyCars;
@@ -246,6 +257,7 @@ public class main : MonoBehaviour
         pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
         modMang = GameObject.Find("modsManager").GetComponent<boostManager>();
         caManager = GameObject.Find("carsManager").GetComponent<carsManager>();
+        worldM = GameObject.Find("worldManager").GetComponent<worldManager>();
 
         masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
@@ -284,6 +296,7 @@ public class main : MonoBehaviour
         powerupTime = Random.Range(450, 1600);
 
         milestone = 0;
+        signTime = 110;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
 
         topLaneTimer = Random.Range(500, 3000);
@@ -310,6 +323,11 @@ public class main : MonoBehaviour
         caManager.spawnRegularCar(new Vector3(6, -4.35f, 0), GameObject.Find("cars").transform);
         caManager.spawnRegularCar(new Vector3(12, -0.6f, 0), GameObject.Find("cars").transform);
         caManager.spawnRegularCar(new Vector3(-6.5f, -3.1f, 0), GameObject.Find("cars").transform);
+
+        exitNum = Random.Range(0, 100);
+        if(exitNum < 30) { exitNumUp = true; }
+        else if(exitNum > 70) { exitNumUp = false; }
+        else { exitNumUp = Random.Range(0, 2) != 0; }
     }
 
     // Update is called once per frame
@@ -420,9 +438,17 @@ public class main : MonoBehaviour
         scoreBlimp.transform.localPosition += blimpSpeed * Time.deltaTime; // updates blimp position
 
         //makes milestone sign
-        if (score > (milestone + 210))
+        if (score > (milestone + 175))
         {
-            setMilestone();
+            createSign(0);
+        }
+
+        //makes fun sign
+        signTimer -= Time.deltaTime * mph;
+        if (signTimer < 0)
+        {
+            createSign(1);
+            signTimer = signTime * Random.Range(0.85f, 1.15f);
         }
 
         menuSound.volume = masterVol;
@@ -637,7 +663,7 @@ public class main : MonoBehaviour
             {
                 if (buildingList < 6)
                 {
-                    buildings newBuilding = Instantiate(building, new Vector3(buildingLast.position.x + buildingDist, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                    buildings newBuilding = Instantiate(building, new Vector3(buildingLast.position.x + buildingDist, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
                     newBuilding.setSkin(getbuildingFromOdds(buildingsOdds, buildingsCurrOdds, buildingSkins));
                     buildingLast = newBuilding.gameObject.transform;
                     buildingList++;
@@ -645,7 +671,7 @@ public class main : MonoBehaviour
                 }
                 else
                 {
-                    billboard bboard = Instantiate(backBillboard, new Vector3(buildingLast.position.x + buildingDist + 0.35f, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<billboard>(); //spawns new backround building
+                    billboard bboard = Instantiate(backBillboard, new Vector3(buildingLast.position.x + buildingDist + 0.35f, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<billboard>(); //spawns new backround building
                     bboard.isBigBillboard = true;
                     bboard.GetComponent<buildings>().setSkin(getbuildingFromOdds(backBillboardSkins));
                     buildingLast = bboard.gameObject.transform;
@@ -656,7 +682,7 @@ public class main : MonoBehaviour
         }
         catch
         {
-            buildings newBuilding = Instantiate(building, new Vector3(12, 0.25f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+            buildings newBuilding = Instantiate(building, new Vector3(12, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
             newBuilding.setSkin(getbuildingFromOdds(buildingsOdds, buildingsCurrOdds, buildingSkins));
             buildingLast = newBuilding.gameObject.transform;
             buildingList++;
@@ -734,6 +760,8 @@ public class main : MonoBehaviour
                 if (topLaneTime <= 0)
                 {
                     Instantiate(exitLine, new Vector3(guardLast.position.x + 8.85f, 0.225f, 0), Quaternion.identity, GameObject.Find("roads").transform);
+                    createSign(2);
+                    if (exitNumUp) { exitNum++; } else { exitNum--; }
                     Instantiate(exitText, new Vector3(guardLast.position.x + 4.0f, 0.55f, 0), Quaternion.identity, GameObject.Find("roads").transform);
                     Instantiate(guard2, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(guard, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
@@ -769,6 +797,7 @@ public class main : MonoBehaviour
                         Transform newLine = Instantiate(topLaneWhiteLine, new Vector3(guardLast.position.x + 1.7f, 0, 0), Quaternion.identity).transform;
                         topLaneLineLast = newLine;
                         increseExitCount(exitText, 0);
+                        createSign(2);
                     }
                 }
 
@@ -854,6 +883,7 @@ public class main : MonoBehaviour
                 frontBuildingDist = 10;
                 buildingDist = 10;
                 Instantiate(bridgeStartConnector, new Vector3(guardLast.position.x -1, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                createSign(3);
                 Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + 1.5f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
                 guardLast = newBar;
                 guardDist = 4.3665f;
@@ -1464,19 +1494,92 @@ public class main : MonoBehaviour
         Instantiate(inventoryUI);
     }
 
-    public void setMilestone()
+    public void createSign(int type)
+    {
+        float pos = 0;
+        Transform trans = null;
+        if (topSign){ pos = -150; trans = GameObject.Find("Signs Bottom").transform; }
+        else
+        {
+            if (topLane)
+            {
+                if (topLaneTime < 245)
+                {
+                    pos = 60;
+                }
+                else
+                {
+                    pos = 20;
+                }
+            }
+            else
+            {
+                if (topLaneTime < 10)
+                {
+                    pos = 20;
+                }
+                else
+                {
+                    pos = 60;
+                }
+            }
+            trans = GameObject.Find("Signs Top").transform;
+        }
+
+        if (type == 0)
+        {
+            setMilestone(trans, new Vector3(500, pos, 0));
+        }
+        else if (type == 1)
+        {
+            setFunSign(trans, new Vector3(500, pos, 0));
+        }
+        else if (type == 2)
+        {
+            setExitSign(GameObject.Find("Signs Top").transform, new Vector3(500, 60, 0));
+        }
+        else if (type == 3)
+        {
+            setBridgeSign(trans, new Vector3(500, pos, 0));
+        }
+        topSign = !topSign;
+    }
+
+    private void setMilestone(Transform par, Vector3 pos)
     {
         milestone += 250;
 
-        GameObject sign = this.gameObject;
-        if (milestone % 1000 == 0) {
-            sign = Instantiate(milestoneBigSign, GameObject.Find("Signs").transform);
+        signs sign = null;
+        if (milestone % 1000 == 0)
+        {
+            sign = Instantiate(milestoneBigSign, par).GetComponent<signs>();
         }
         else
         {
-            sign = Instantiate(milestoneSigns[Random.Range(0, milestoneSigns.Length)], GameObject.Find("Signs").transform);
+            sign = Instantiate(milestoneSigns[Random.Range(0, milestoneSigns.Length)], par).GetComponent<signs>();
         }
-        sign.GetComponentInChildren<TextMeshProUGUI>().text = milestone + "m";
+        sign.transform.localPosition = pos;
+        sign.setMilestoneText(milestone);
+    }
+
+    private void setFunSign(Transform par, Vector3 pos)
+    {
+        signs sign = Instantiate(funSigns[Random.Range(0, funSigns.Length)], par).GetComponent<signs>();
+        sign.transform.localPosition = pos;
+    }
+
+    private void setExitSign(Transform par, Vector3 pos)
+    {
+        signs sign = Instantiate(exitSign, par).GetComponent<signs>();
+        sign.transform.localPosition = pos;
+        sign.exitSign(worldM.exitNums[exitNum], worldM.stNames[exitNum]);
+    }
+
+    private void setBridgeSign(Transform par, Vector3 pos)
+    {
+        signs sign = Instantiate(bridgeSign, par).GetComponent<signs>();
+        sign.transform.localPosition = pos;
+        sign.setBridgeText(worldM.getBridgeName());
     }
 
     public void collectCoin(int ammount)

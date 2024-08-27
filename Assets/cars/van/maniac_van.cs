@@ -19,6 +19,7 @@ public class maniac_van : cars
 
     public GameObject coins;
     public float coinTimer;
+    public bool isChase;
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +40,14 @@ public class maniac_van : cars
         partyBeatTime = 0.422f;
         party.sprite = partySkins[Random.Range(0, partySkins.Length)];
         musicPlayer.volume = controller.musicVol * controller.masterVol * 0.85f;
-        isCar = true;
+        isCar = false;
+
+        if (isChase)
+        {
+            police_Car po = controller.caManager.spawnPoliceCar(new Vector3(transform.position.x-10, transform.position.y, 0), transform).GetComponent<police_Car>();
+            po.vanOBJ = this;
+            po.chasingVan = true;
+        }
 
         if (controller.senseVision) { createOuline(controller.enhancedSense); }
     }

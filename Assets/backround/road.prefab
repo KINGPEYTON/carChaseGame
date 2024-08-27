@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4375731346093529532}
   - component: {fileID: 4498668074172425153}
-  - component: {fileID: 4703873317813250227}
+  - component: {fileID: 9145556363789870097}
   m_Layer: 0
   m_Name: road
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.275, y: 0.275, z: 0.19642858}
+  m_LocalScale: {x: 0.275, y: 0.275, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -9
+  m_SortingOrder: -6
   m_Sprite: {fileID: 21300000, guid: fb39ac2a21b7441d1ab01fcacacefbc1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4703873317813250227
+--- !u!114 &9145556363789870097
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

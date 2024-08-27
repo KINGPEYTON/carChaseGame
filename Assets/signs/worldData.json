@@ -1,0 +1,423 @@
+﻿{
+    "exitSigns": [
+        {
+            "exitNum": 1,
+            "streetName": "1k St."
+        },
+        {
+            "exitNum": 2,
+            "streetName": "Welcome Ave."
+        },
+        {
+            "exitNum": 3,
+            "streetName": "Green St."
+        },
+        {
+            "exitNum": 4,
+            "streetName": "Wong Ave."
+        },
+        {
+            "exitNum": 5,
+            "streetName": "Boiler Ave."
+        },
+        {
+            "exitNum": 6,
+            "streetName": "Dutch Ave."
+        },
+        {
+            "exitNum": 7,
+            "streetName": "Osiris Blvd."
+        },
+        {
+            "exitNum": 8,
+            "streetName": "Japan St."
+        },
+        {
+            "exitNum": 9,
+            "streetName": "Piston Ave."
+        },
+        {
+            "exitNum": 10,
+            "streetName": "John Ave."
+        },
+        {
+            "exitNum": 11,
+            "streetName": "Yodel St."
+        },
+        {
+            "exitNum": 12,
+            "streetName": "Broken Blvd."
+        },
+        {
+            "exitNum": 13,
+            "streetName": "Frighten St."
+        },
+        {
+            "exitNum": 14,
+            "streetName": "Trevor Ave."
+        },
+        {
+            "exitNum": 15,
+            "streetName": "Hamilton Ave."
+        },
+        {
+            "exitNum": 16,
+            "streetName": "Haille Ave."
+        },
+        {
+            "exitNum": 17,
+            "streetName": "Mayfield St."
+        },
+        {
+            "exitNum": 18,
+            "streetName": "Traffic Expy."
+        },
+        {
+            "exitNum": 19,
+            "streetName": "Turkey Ave."
+        },
+        {
+            "exitNum": 20,
+            "streetName": "Meta Ave."
+        },
+        {
+            "exitNum": 21,
+            "streetName": "Democracy Ave."
+        },
+        {
+            "exitNum": 22,
+            "streetName": "Fascist St."
+        },
+        {
+            "exitNum": 23,
+            "streetName": "Bane Blvd."
+        },
+        {
+            "exitNum": 24,
+            "streetName": "New York Ave."
+        },
+        {
+            "exitNum": 25,
+            "streetName": "Napoleon Ave."
+        },
+        {
+            "exitNum": 26,
+            "streetName": "Pilot St."
+        },
+        {
+            "exitNum": 27,
+            "streetName": "Dragon Ave."
+        },
+        {
+            "exitNum": 28,
+            "streetName": "Mercury St."
+        },
+        {
+            "exitNum": 29,
+            "streetName": "Alaska Ave."
+        },
+        {
+            "exitNum": 30,
+            "streetName": "Uganda Ave."
+        },
+        {
+            "exitNum": 31,
+            "streetName": "Talkative St."
+        },
+        {
+            "exitNum": 32,
+            "streetName": "Mauna Kea Ave."
+        },
+        {
+            "exitNum": 33,
+            "streetName": "Zues Ave."
+        },
+        {
+            "exitNum": 34,
+            "streetName": "Paris St."
+        },
+        {
+            "exitNum": 35,
+            "streetName": "Circle St."
+        },
+        {
+            "exitNum": 36,
+            "streetName": "Maui Ave."
+        },
+        {
+            "exitNum": 37,
+            "streetName": "Googol St."
+        },
+        {
+            "exitNum": 38,
+            "streetName": "Mongol Ave."
+        },
+        {
+            "exitNum": 39,
+            "streetName": "Liberty St."
+        },
+        {
+            "exitNum": 40,
+            "streetName": "Normal Ave."
+        },
+        {
+            "exitNum": 41,
+            "streetName": "Istanbul Ave."
+        },
+        {
+            "exitNum": 42,
+            "streetName": "Byzantium Ave."
+        },
+        {
+            "exitNum": 43,
+            "streetName": "Dirt Block St."
+        },
+        {
+            "exitNum": 44,
+            "streetName": "Vote Ave."
+        },
+        {
+            "exitNum": 45,
+            "streetName": "Greek St."
+        },
+        {
+            "exitNum": 46,
+            "streetName": "Super St."
+        },
+        {
+            "exitNum": 47,
+            "streetName": "Borgia Blvd."
+        },
+        {
+            "exitNum": 48,
+            "streetName": "Flame Ave."
+        },
+        {
+            "exitNum": 49,
+            "streetName": "Hopeless St."
+        },
+        {
+            "exitNum": 50,
+            "streetName": "Mid Blvd."
+        },
+        {
+            "exitNum": 51,
+            "streetName": "Magic Ave."
+        },
+        {
+            "exitNum": 52,
+            "streetName": "Cololopo Ave."
+        },
+        {
+            "exitNum": 53,
+            "streetName": "September St."
+        },
+        {
+            "exitNum": 54,
+            "streetName": "Evergreen Terrace"
+        },
+        {
+            "exitNum": 55,
+            "streetName": "Silk Rd."
+        },
+        {
+            "exitNum": 56,
+            "streetName": "Pirate St."
+        },
+        {
+            "exitNum": 57,
+            "streetName": "Freedom Blvd."
+        },
+        {
+            "exitNum": 58,
+            "streetName": "Sickle St."
+        },
+        {
+            "exitNum": 59,
+            "streetName": "Nancy Ave."
+        },
+        {
+            "exitNum": 60,
+            "streetName": "Frances St."
+        },
+        {
+            "exitNum": 61,
+            "streetName": "Da Way Pkwy."
+        },
+        {
+            "exitNum": 62,
+            "streetName": "Freya Ave."
+        },
+        {
+            "exitNum": 63,
+            "streetName": "Moneysign Ave."
+        },
+        {
+            "exitNum": 64,
+            "streetName": "Rickroll Ave."
+        },
+        {
+            "exitNum": 65,
+            "streetName": "Ra St."
+        },
+        {
+            "exitNum": 66,
+            "streetName": "Order Ave."
+        },
+        {
+            "exitNum": 67,
+            "streetName": "Cheese St."
+        },
+        {
+            "exitNum": 68,
+            "streetName": "Tuna Ave."
+        },
+        {
+            "exitNum": 69,
+            "streetName": "[redacted]"
+        },
+        {
+            "exitNum": 70,
+            "streetName": "Odin Ave."
+        },
+        {
+            "exitNum": 71,
+            "streetName": "Happy St."
+        },
+        {
+            "exitNum": 72,
+            "streetName": "Alpha Ave."
+        },
+        {
+            "exitNum": 73,
+            "streetName": "Beta St."
+        },
+        {
+            "exitNum": 74,
+            "streetName": "Sigma Blvd."
+        },
+        {
+            "exitNum": 75,
+            "streetName": "Taco Ave."
+        },
+        {
+            "exitNum": 76,
+            "streetName": "Murrica Ave."
+        },
+        {
+            "exitNum": 77,
+            "streetName": "Pineapple Ave."
+        },
+        {
+            "exitNum": 78,
+            "streetName": "Maybe St."
+        },
+        {
+            "exitNum": 79,
+            "streetName": "Ukulele Ave."
+        },
+        {
+            "exitNum": 80,
+            "streetName": "Cook St."
+        },
+        {
+            "exitNum": 81,
+            "streetName": "Prime Ave."
+        },
+        {
+            "exitNum": 82,
+            "streetName": "Einstein Ave."
+        },
+        {
+            "exitNum": 83,
+            "streetName": "Plankton Ave."
+        },
+        {
+            "exitNum": 84,
+            "streetName": "Real Hero Ave."
+        },
+        {
+            "exitNum": 85,
+            "streetName": "Samples St."
+        },
+        {
+            "exitNum": 86,
+            "streetName": "Strange Ave."
+        },
+        {
+            "exitNum": 87,
+            "streetName": "Hector Ave."
+        },
+        {
+            "exitNum": 88,
+            "streetName": "Moon Ave."
+        },
+        {
+            "exitNum": 89,
+            "streetName": "Russel St."
+        },
+        {
+            "exitNum": 90,
+            "streetName": "Football Ave."
+        },
+        {
+            "exitNum": 91,
+            "streetName": "Filament Fwy."
+        },
+        {
+            "exitNum": 92,
+            "streetName": "Kingdom Ave."
+        },
+        {
+            "exitNum": 93,
+            "streetName": "Roman Ave."
+        },
+        {
+            "exitNum": 94,
+            "streetName": "Austin St."
+        },
+        {
+            "exitNum": 95,
+            "streetName": "Bostin Ave."
+        },
+        {
+            "exitNum": 96,
+            "streetName": "Undecided Ave."
+        },
+        {
+            "exitNum": 97,
+            "streetName": "Stone St."
+        },
+        {
+            "exitNum": 98,
+            "streetName": "They St."
+        },
+        {
+            "exitNum": 99,
+            "streetName": "The Outer Crossing."
+        }
+    ],
+    "bridgeNames": [
+        {
+            "bridgeName": "Battle of Crashopolis Memorial Bridge"
+        },
+        {
+            "bridgeName": "Crashopolis Bay Bridge"
+        },
+        {
+            "bridgeName": "Crashopolis Crashers 2021 World Champions Bridge"
+        },
+        {
+            "bridgeName": "Johnathan Oltragarch People's Bridge"
+        },
+        {
+            "bridgeName": "Cityview Bridge"
+        },
+        {
+            "bridgeName": "Corporate Sponsors Needed Bridge"
+        },
+        {
+            "bridgeName": "Oltragarch Financial Bridge"
+        }
+    ]
+}

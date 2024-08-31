@@ -11,6 +11,7 @@ public class speedometer : MonoBehaviour
     public TextMeshProUGUI speedText;
     public TextMeshProUGUI coinText;
     public Image speedMeter;
+    public Image speedBackround;
     public ParticleSystem smoke;
 
     public float startSpeed;
@@ -35,6 +36,7 @@ public class speedometer : MonoBehaviour
     public float iconHueTimer;
 
     public float endTextTimer;
+    public float endTimer;
 
     public float coinTextTimer;
 
@@ -154,8 +156,32 @@ public class speedometer : MonoBehaviour
             endTextTimer = 0;
         }
         endTextTimer += Time.deltaTime;
-        coinText.text = controller.coins.ToString();
-        smoke.enableEmission = true;
+        if(endTimer > 1)
+        {
+            fadeOBJ(200 - getValueScale(endTimer, 1, 3, 200));
+        }
+        endTimer += Time.deltaTime;
+        if(endTimer >= 3)
+        {
+            fadeOBJ(0);
+        }
+
+    }
+
+    void fadeOBJ(float value)
+    {
+        GetComponent<Image>().color = new Color32(255, 255, 255, (byte)value);
+        speedText.color = new Color32(255, 0, 0, (byte)value);
+        coinText.color = new Color32(30, 215, 255, (byte)value);
+        speedMeter.color = new Color32((byte)speedMeter.color.r, (byte)speedMeter.color.g, (byte)speedMeter.color.b, (byte)value);
+        speedBackround.color = new Color32(255, 255, 255, (byte)value);
+        speed1.color = new Color32(255, 255, 255, (byte)value);
+        speed2.color = new Color32(255, 255, 255, (byte)value);
+        speed3.color = new Color32(255, 255, 255, (byte)value);
+        speed4.color = new Color32(255, 255, 255, (byte)value);
+        speed5.color = new Color32(255, 255, 255, (byte)value);
+        speed6.color = new Color32(255, 255, 255, (byte)value);
+        speed7.color = new Color32(255, 255, 255, (byte)value);
     }
 
     void mphText()

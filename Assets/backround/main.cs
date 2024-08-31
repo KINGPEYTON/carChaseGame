@@ -207,6 +207,7 @@ public class main : MonoBehaviour
     public construction constructionOBJ;
     public GameObject constructionArrow;
     public float constructionTimer;
+    public GameObject workSign;
 
     public bool topLane;
     public float topLaneTime;
@@ -1498,32 +1499,35 @@ public class main : MonoBehaviour
     {
         float pos = 0;
         Transform trans = null;
-        if (topSign){ pos = -150; trans = GameObject.Find("Signs Bottom").transform; }
-        else
+        if (type < 2)
         {
-            if (topLane)
-            {
-                if (topLaneTime < 245)
-                {
-                    pos = 60;
-                }
-                else
-                {
-                    pos = 20;
-                }
-            }
+            if (topSign) { pos = -95; trans = GameObject.Find("Signs Bottom").transform; }
             else
             {
-                if (topLaneTime < 10)
+                if (topLane)
                 {
-                    pos = 20;
+                    if (topLaneTime < 245)
+                    {
+                        pos = 60;
+                    }
+                    else
+                    {
+                        pos = 20;
+                    }
                 }
                 else
                 {
-                    pos = 60;
+                    if (topLaneTime < 10)
+                    {
+                        pos = 20;
+                    }
+                    else
+                    {
+                        pos = 60;
+                    }
                 }
+                trans = GameObject.Find("Signs Top").transform;
             }
-            trans = GameObject.Find("Signs Top").transform;
         }
 
         if (type == 0)
@@ -1540,7 +1544,11 @@ public class main : MonoBehaviour
         }
         else if (type == 3)
         {
-            setBridgeSign(trans, new Vector3(500, pos, 0));
+            setBridgeSigns();
+        }
+        else if (type == 4)
+        {
+            setWorkSign(GameObject.Find("Signs Bottom").transform, new Vector3(500, -95, 0));
         }
         topSign = !topSign;
     }
@@ -1575,11 +1583,21 @@ public class main : MonoBehaviour
         sign.exitSign(worldM.exitNums[exitNum], worldM.stNames[exitNum]);
     }
 
-    private void setBridgeSign(Transform par, Vector3 pos)
+    private void setBridgeSigns()
     {
-        signs sign = Instantiate(bridgeSign, par).GetComponent<signs>();
+        string bName = worldM.getBridgeName();
+        signs sign1 = Instantiate(bridgeSign, GameObject.Find("Signs Bottom").transform).GetComponent<signs>();
+        sign1.transform.localPosition = new Vector3(500, -95, 0);
+        sign1.setBridgeText(bName);
+        signs sign2 = Instantiate(bridgeSign, GameObject.Find("Signs Top").transform).GetComponent<signs>();
+        sign2.transform.localPosition = new Vector3(500, 60, 0);
+        sign2.setBridgeText(bName);
+    }
+
+    private void setWorkSign(Transform par, Vector3 pos)
+    {
+        signs sign = Instantiate(workSign, par).GetComponent<signs>();
         sign.transform.localPosition = pos;
-        sign.setBridgeText(worldM.getBridgeName());
     }
 
     public void collectCoin(int ammount)

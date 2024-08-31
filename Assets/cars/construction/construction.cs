@@ -36,6 +36,7 @@ public class construction : cars
 
         controller.bannedLanes.Add(lane);
         carTime = 55;
+        controller.createSign(4);
     }
 
     // Update is called once per frame

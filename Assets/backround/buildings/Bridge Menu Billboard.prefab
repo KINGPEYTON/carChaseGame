@@ -359,8 +359,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   myButton: {fileID: 4559564055494720260}
+  mainCamera: {fileID: 0}
+  inZoom: 0
+  targetZoom: 1.5
+  startZoom: 0
+  zoomTime: 0
+  startPos: {x: 0, y: 0, z: 0}
+  targPos: {x: 0, y: 0, z: 0}
   statics: {fileID: 6613631147227639603}
-  staticTimer: -134.28291
+  inStatic: 0
+  inCameraPos: 0
+  endTimer: 0
   backround: {fileID: 7204134502240103953}
   colorDir: 1
   colorVar: 83.24734

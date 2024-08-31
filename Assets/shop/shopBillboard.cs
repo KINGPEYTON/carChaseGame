@@ -25,7 +25,10 @@ public class shopBillboard : MonoBehaviour
     public GameObject parantOBJ;
     public GameObject areYouSureToCreate;
     public Transform sideTransform;
-    public GameObject signs;
+    public GameObject menuSigns;
+    public Button startSign;
+    public Button modSign;
+    public Button settingsSign;
     public GameObject speedUI;
 
     public float targetZoom;
@@ -246,6 +249,11 @@ public class shopBillboard : MonoBehaviour
                     mainCamera.enabled = true;
                     sideCamera.enabled = false;
                     canStart = true;
+                    setMenuUI(true);
+                }
+                else
+                {
+                    menuSigns.SetActive(false);
                 }
             }
         }
@@ -261,6 +269,11 @@ public class shopBillboard : MonoBehaviour
                     mainCamera.enabled = true;
                     sideCamera.enabled = false;
                     canStart = true;
+                    setMenuUI(true);
+                }
+                else
+                {
+                    menuSigns.SetActive(false);
                 }
             }
         }
@@ -278,6 +291,11 @@ public class shopBillboard : MonoBehaviour
                         mainCamera.enabled = true;
                         sideCamera.enabled = false;
                         canStart = true;
+                        setMenuUI(true);
+                    }
+                    else
+                    {
+                        menuSigns.SetActive(false);
                     }
                 }
             }
@@ -293,6 +311,11 @@ public class shopBillboard : MonoBehaviour
                         mainCamera.enabled = true;
                         sideCamera.enabled = false;
                         canStart = true;
+                        setMenuUI(true);
+                    }
+                    else
+                    {
+                        menuSigns.SetActive(false);
                     }
                 }
             }
@@ -315,7 +338,9 @@ public class shopBillboard : MonoBehaviour
 
     void setMenuUI(bool val)
     {
-        signs.SetActive(val);
+        startSign.interactable = val;
+        modSign.interactable = val;
+        settingsSign.interactable = val;
         speedUI.SetActive(val);
     }
 
@@ -433,7 +458,7 @@ public class shopBillboard : MonoBehaviour
         targetZoom = 5;
         zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
         buttonCoverImage.SetActive(false);
-        setMenuUI(true);
+        menuSigns.SetActive(true);
 
         statics.SetActive(true);
         staticTimer = 1f;

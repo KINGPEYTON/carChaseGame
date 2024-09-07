@@ -14,6 +14,7 @@ public class main : MonoBehaviour
     public bool inStartup;
     public float score;
     public float highScore;
+    public bool newHighScore;
 
     public float upMPHmod;
     public float startMPHmod;
@@ -1124,11 +1125,25 @@ public class main : MonoBehaviour
             float newLane = 0;
             if (topLane)
             {
-                newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+                if (topLaneTime < 240)
+                {
+                    newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+                }
+                else
+                {
+                    newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+                }
             }
             else
             {
-                newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+                if (topLaneTime < 10)
+                {
+                    newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+                }
+                else
+                {
+                    newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+                }
             }
             float specalCar = Random.Range(0.0f, 1.0f);
             if (specalCar > largeCarOdds + specalCarOdds)
@@ -1300,7 +1315,7 @@ public class main : MonoBehaviour
     {
         if (!scoreShowing)
         {
-            string scoretxt = scoreText.text = "Don't Crash Bro";
+            string scoretxt = scoreText.text = " Crashopolis";
             scoreText.text = scoretxt.Substring(textNum);
 
             if (textNum >= scoretxt.Length - 1)
@@ -1325,9 +1340,9 @@ public class main : MonoBehaviour
 
         textTimer += Time.deltaTime;
 
-        if (textTimer >= 0.10f)
+        if (textTimer >= 0.1f)
         {
-            textTimer = 0;
+            textTimer -= 0.1f;
             textNum++;
         }
     }
@@ -1351,6 +1366,7 @@ public class main : MonoBehaviour
         if (score > highScore) { //check if theres a new high score
             highScore = score; // sets the new high score
             PlayerPrefs.SetInt("highscore", (int)highScore); //saves the new high score
+            newHighScore = true;
         }
 
         isOver = true;
@@ -1483,10 +1499,11 @@ public class main : MonoBehaviour
         }
     }
 
-    public void settingsButton()
+    public void settingsButton(Button sign)
     {
         AudioSource.PlayClipAtPoint(clickSound, transform.position, masterVol * sfxVol);
-        Instantiate(settingsUI);
+        settingsMenu sm = Instantiate(settingsUI).GetComponent<settingsMenu>();
+        sm.prevButton = sign;
     }
 
     public void inventoryButton()

@@ -29,6 +29,21 @@ public class menuBillboard : MonoBehaviour
     public bool colorDir;
     public float colorVar;
 
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI highScoreText;
+    public Image newHighScore;
+    public TextMeshProUGUI coinText;
+    public TextMeshProUGUI totalCoinText;
+    public TextMeshProUGUI factText;
+    public string funFact;
+
+    public float scoreTime;
+    public float highScoreTime;
+    public float coinTime;
+    public float coinTotalTime;
+    public float factTime;
+    public float newScoreTime;
+
     public AudioClip staticSound;
 
     // Start is called before the first frame update
@@ -56,6 +71,8 @@ public class menuBillboard : MonoBehaviour
                 blockSigns.Add(newSign);
             }
         }
+
+        setTexts();
     }
 
     // Update is called once per frame
@@ -72,15 +89,13 @@ public class menuBillboard : MonoBehaviour
                 inZoom = true;
                 endTimer = 0;
             }
-        } else if (inZoom)
+        }
+        else
         {
-            Vector3 dis = new Vector3(targPos.x - startPos.x, targPos.y - startPos.y, 0);
-            mainCamera.transform.position = calcPos(dis, startPos, endTimer, zoomTime);
-            mainCamera.orthographicSize = startZoom - getValueScale(getValueRanged(endTimer, 0, zoomTime), 0, zoomTime, startZoom - targetZoom);
-            fadeSigns(255 - getValueScale(getValueRanged(endTimer, 0, zoomTime), 0, zoomTime, 200));
-            if (endTimer > zoomTime)
+            textAni();
+            if (inZoom)
             {
-                inZoom = false;
+                cameraZoom();
             }
         }
 
@@ -104,10 +119,90 @@ public class menuBillboard : MonoBehaviour
         }
     }
 
+    void cameraZoom()
+    {
+        Vector3 dis = new Vector3(targPos.x - startPos.x, targPos.y - startPos.y, 0);
+        mainCamera.transform.position = calcPos(dis, startPos, endTimer, zoomTime);
+        mainCamera.orthographicSize = startZoom - getValueScale(getValueRanged(endTimer, 0, zoomTime), 0, zoomTime, startZoom - targetZoom);
+        fadeSigns(255 - getValueScale(getValueRanged(endTimer, 0, zoomTime), 0, zoomTime, 200));
+        if (endTimer > zoomTime)
+        {
+            inZoom = false;
+        }
+    }
+
+    void textAni()
+    {
+        if (endTimer > scoreTime)
+        {
+            scoreText.text = (int)controller.score + "m";
+        }
+        else
+        {
+            scoreText.text = ((int)getValueScale(endTimer, 0, scoreTime, (int)controller.score)) + "m";
+        }
+
+        if (endTimer > highScoreTime)
+        {
+            highScoreText.text = (int)controller.highScore + "m";
+        }
+        else
+        {
+            highScoreText.text = ((int)getValueScale(endTimer, 0, highScoreTime, (int)controller.highScore)) + "m";
+        }
+
+        if (endTimer > coinTime)
+        {
+            coinText.text = controller.coins.ToString();
+        }
+        else
+        {
+            coinText.text = ((int)getValueScale(endTimer, 0, coinTime, controller.coins)).ToString();
+        }
+
+        if (endTimer > coinTotalTime)
+        {
+            totalCoinText.text = controller.totalCoins.ToString();
+        }
+        else
+        {
+            totalCoinText.text = ((int)getValueScale(endTimer, 0, coinTotalTime, controller.totalCoins)).ToString();
+        }
+
+        if (endTimer > factTime)
+        {
+            factText.text = funFact;
+        }
+        else
+        {
+            factText.text = funFact.Substring(0, ((int)getValueScale(endTimer, 0, factTime, funFact.Length - 1)));
+        }
+
+    }
+
+    void setTexts()
+    {
+        scoreTime = zoomTime;
+        highScoreTime = zoomTime + 0.5f;
+        coinTime = zoomTime;
+        coinTotalTime = zoomTime + 0.25f;
+        factTime = zoomTime - 0.25f;
+        funFact = controller.worldM.getFunFact();
+        if (controller.newHighScore)
+        {
+            newHighScore.color = new Color32(255, 255, 255, 255);
+            highScoreText.color = new Color32(80, 255, 140, 255);
+            scoreTime = highScoreTime;
+        }
+    }
+
     public void click()
     {
-        AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol  * controller.sfxVol);
-        controller.newGame();
+        if (!inStatic)
+        {
+            AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            controller.newGame();
+        }
     }
 
     void fadeSigns(float value)

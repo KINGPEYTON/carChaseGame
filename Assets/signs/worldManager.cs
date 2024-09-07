@@ -13,6 +13,9 @@ public class worldManager : MonoBehaviour
     public List<string> bridgeNames;
     public List<string> bridgeCurr;
 
+    public List<string> funFacts;
+    public List<string> funFactsCurr;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -35,19 +38,30 @@ public class worldManager : MonoBehaviour
         bridgeCurr.RemoveAt(0);
         if(bridgeCurr.Count == 0)
         {
-            fillBridgeNameList();
+            fillStringList(bridgeCurr, bridgeNames);
         }
         return s;
     }
 
-    private void fillBridgeNameList()
+    public string getFunFact()
     {
-        bridgeCurr.Clear();
-        foreach (string s in bridgeNames)
+        string s = funFactsCurr[0];
+        funFactsCurr.RemoveAt(0);
+        if (funFactsCurr.Count == 0)
         {
-            bridgeCurr.Add(s);
+            fillStringList(funFactsCurr, funFacts);
         }
-        ShuffleList(bridgeCurr);
+        return s;
+    }
+
+    private void fillStringList(List<string> fillList, List<string> takeList)
+    {
+        fillList.Clear();
+        foreach (string s in takeList)
+        {
+            fillList.Add(s);
+        }
+        ShuffleList(fillList);
     }
 
     private void ShuffleList<T>(IList<T> list)
@@ -75,7 +89,12 @@ public class worldManager : MonoBehaviour
         {
             bridgeNames.Add(br.bridgeName);
         }
-        fillBridgeNameList();
+        fillStringList(bridgeCurr, bridgeNames);
+        foreach (funFactData br in worldDataInJson.funFacts)
+        {
+            funFacts.Add(br.fact);
+        }
+        fillStringList(funFactsCurr, funFacts);
         return worldDataInJson;
     }
 }
@@ -85,6 +104,7 @@ public class worldReader
 {
     public exitSignData[] exitSigns;
     public bridgeSignData[] bridgeNames;
+    public funFactData[] funFacts; 
 }
 
 [System.Serializable]
@@ -98,4 +118,10 @@ public class exitSignData
 public class bridgeSignData
 {
     public string bridgeName;
+}
+
+[System.Serializable]
+public class funFactData
+{
+    public string fact;
 }

@@ -11,6 +11,7 @@ public class youSure : MonoBehaviour {
 	public main controller;
 
 	public methodType methodToCall;
+	public Button prevButton;
 
 	public string message;
 	public TextMeshProUGUI displayMessage;
@@ -37,6 +38,7 @@ public class youSure : MonoBehaviour {
 		curPos = -400.0f;
 
 		speedTime = 5000f;
+		makeInteractable(false);
 	}
 
 	// Update is called once per frame
@@ -91,6 +93,7 @@ public class youSure : MonoBehaviour {
 	public void yes(){
 		SimpleMethod(methodToCall);
 		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+		makeInteractable(true);
 
 		Destroy(gameObject);
 	}
@@ -99,5 +102,15 @@ public class youSure : MonoBehaviour {
 		inPos = true;
 		targetPos = -600;
 		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+		makeInteractable(true);
 	}
+
+	void makeInteractable(bool side)
+    {
+		if(prevButton != null)
+        {
+			prevButton.interactable = side;
+
+		}
+    }
 }

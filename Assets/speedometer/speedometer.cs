@@ -12,6 +12,7 @@ public class speedometer : MonoBehaviour
     public TextMeshProUGUI coinText;
     public Image speedMeter;
     public Image speedBackround;
+    public Image pwTimeBackround;
     public ParticleSystem smoke;
 
     public float startSpeed;
@@ -173,8 +174,9 @@ public class speedometer : MonoBehaviour
         GetComponent<Image>().color = new Color32(255, 255, 255, (byte)value);
         speedText.color = new Color32(255, 0, 0, (byte)value);
         coinText.color = new Color32(30, 215, 255, (byte)value);
-        speedMeter.color = new Color32((byte)speedMeter.color.r, (byte)speedMeter.color.g, (byte)speedMeter.color.b, (byte)value);
+        speedMeter.color = new Color32((byte)(speedMeter.color.r * 255), (byte)(speedMeter.color.g * 255), (byte)(speedMeter.color.b * 255), (byte)value);
         speedBackround.color = new Color32(255, 255, 255, (byte)value);
+        pwTimeBackround.color = new Color32(255, 255, 255, (byte)value);
         speed1.color = new Color32(255, 255, 255, (byte)value);
         speed2.color = new Color32(255, 255, 255, (byte)value);
         speed3.color = new Color32(255, 255, 255, (byte)value);

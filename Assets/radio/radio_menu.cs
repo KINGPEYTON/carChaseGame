@@ -16,6 +16,9 @@ public class radio_menu : MonoBehaviour
     public float prevRadio;
     public float targetRadio;
 
+    public float artistDisplayTimer;
+    public float songDisplayTimer;
+
     public List<Sprite> volIcons;
     public Image volIcon;
     public Slider vol;
@@ -55,7 +58,8 @@ public class radio_menu : MonoBehaviour
                 songText.text = radioText(manager.radioNames[manager.radioID][manager.radioList[manager.radioID]]);
 
                 stationText.text = radioNames[manager.radioID].Substring(0, targetRadio.ToString().Length + (int)((radioNames[manager.radioID].Length - targetRadio.ToString().Length) * (0 - radioChangeTimer))) + (char)Random.Range(33, 64);
-            }else
+            }
+            else
             {
                 stationText.text = radioNames[manager.radioID];
                 songText.text = radioText(manager.radioNames[manager.radioID][manager.radioList[manager.radioID]]);
@@ -69,9 +73,10 @@ public class radio_menu : MonoBehaviour
         }
 
         barTimer += Time.unscaledDeltaTime;
-        if (barTimer > 0.85f-(vol.value*0.75f))
+        if (barTimer > 0.15f)
         {
             updateBars();
+            barTimer -= 0.15f;
         }
     }
 
@@ -97,13 +102,15 @@ public class radio_menu : MonoBehaviour
         radioChangeTimer = time/2.5f;
         targetRadio = getRadio();
         songText.text = "";
+        artistDisplayTimer = 0;
+        songDisplayTimer = 0;
     }
 
     public void volChange()
     {
         //manager.controller.changeRadioVol(vol.value);
 
-        volIcon.sprite = volIcons[(int)((1-vol.value)*4)];
+        volIcon.sprite = volIcons[(int)((1-vol.value)*3)];
 
         manager.updateVol(vol.value);
     }
@@ -114,13 +121,28 @@ public class radio_menu : MonoBehaviour
         string artist = text.Substring(0, split);
         string name = text.Substring(split+3);
 
-        if (artist.Length >= 19)
+        float extraLenArtist = (artist.Length - 19) * 0.25f;
+        float extraLenSong = (name.Length - 19) * 0.25f;
+
+        if (extraLenArtist > 0)
         {
-            artist = artist.Substring(0, 17) + "...";
+            int startArtist = (int)getValueScale(getValueRanged(artistDisplayTimer - 2.5f, 0, extraLenArtist), 0, extraLenArtist, artist.Length - 19);
+            artist = artist.Substring(startArtist, 19);
+            artistDisplayTimer += Time.unscaledDeltaTime;
+            if(artistDisplayTimer > 4 + extraLenArtist)
+            {
+                artistDisplayTimer = 0;
+            }
         }
-        if (name.Length >= 20)
+        if (extraLenSong > 0)
         {
-            name = name.Substring(0, 18) + "...";
+            int startSong = (int)getValueScale(getValueRanged(songDisplayTimer - 2, 0, extraLenSong), 0, extraLenSong, name.Length - 19);
+            name = name.Substring(startSong, 19);
+            songDisplayTimer += Time.unscaledDeltaTime;
+            if (songDisplayTimer > 5 + extraLenSong)
+            {
+                songDisplayTimer = 0;
+            }
         }
 
         if (radioChangeTimer > -1)
@@ -299,8 +321,6 @@ public class radio_menu : MonoBehaviour
                 bars5[i].SetActive(false);
             }
         }
-
-        barTimer = 0;
     }
 
     public float getRadio()
@@ -313,5 +333,17 @@ public class radio_menu : MonoBehaviour
         {
             return 98.5f;
         }
+    }
+
+    float getValueScale(float val, float min, float max, float scale)
+    {
+        return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
+    }
+
+    float getValueRanged(float val, float min, float max)
+    {
+        float newVal = val;
+        if (newVal > max) { newVal = max; } else if (val < min) { newVal = min; }
+        return newVal;
     }
 }

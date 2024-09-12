@@ -34,6 +34,7 @@ public class menuBillboard : MonoBehaviour
     public Image newHighScore;
     public TextMeshProUGUI coinText;
     public TextMeshProUGUI totalCoinText;
+    public TextMeshProUGUI speedText;
     public TextMeshProUGUI factText;
     public string funFact;
 
@@ -41,6 +42,7 @@ public class menuBillboard : MonoBehaviour
     public float highScoreTime;
     public float coinTime;
     public float coinTotalTime;
+    public float speedTime;
     public float factTime;
     public float newScoreTime;
 
@@ -145,6 +147,21 @@ public class menuBillboard : MonoBehaviour
         if (endTimer > highScoreTime)
         {
             highScoreText.text = (int)controller.highScore + "m";
+            if (controller.newHighScore)
+            {
+                if (endTimer > highScoreTime + newScoreTime)
+                {
+                    newHighScore.transform.localScale = new Vector3(1, 1, 1);
+                    newHighScore.color = new Color32(255, 255, 255, 255);
+                }
+                else
+                {
+                    float scaleVal = 3 - getValueScale(endTimer, highScoreTime, highScoreTime + newScoreTime, 2);
+                    newHighScore.transform.localScale = new Vector3(scaleVal, scaleVal, 1);
+                    byte a = (byte)getValueScale(endTimer, highScoreTime, highScoreTime + newScoreTime, 255);
+                    newHighScore.color = new Color32(255, 255, 255, a); 
+                }
+            }
         }
         else
         {
@@ -163,6 +180,15 @@ public class menuBillboard : MonoBehaviour
         if (endTimer > coinTotalTime)
         {
             totalCoinText.text = controller.totalCoins.ToString();
+        }
+        else
+        {
+            speedText.text = ((int)getValueScale(endTimer, 0, speedTime, controller.topMPH)).ToString();
+        }
+
+        if (endTimer > speedTime)
+        {
+            speedText.text = controller.topMPH.ToString();
         }
         else
         {
@@ -186,11 +212,12 @@ public class menuBillboard : MonoBehaviour
         highScoreTime = zoomTime + 0.5f;
         coinTime = zoomTime;
         coinTotalTime = zoomTime + 0.25f;
+        speedTime = zoomTime - 0.15f;
         factTime = zoomTime - 0.25f;
         funFact = controller.worldM.getFunFact();
+        newScoreTime = 0.5f;
         if (controller.newHighScore)
         {
-            newHighScore.color = new Color32(255, 255, 255, 255);
             highScoreText.color = new Color32(80, 255, 140, 255);
             scoreTime = highScoreTime;
         }

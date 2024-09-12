@@ -45,6 +45,7 @@ public class maniac_van : cars
         if (isChase)
         {
             police_Car po = controller.caManager.spawnPoliceCar(new Vector3(transform.position.x-10, transform.position.y, 0), transform).GetComponent<police_Car>();
+            po.transform.localScale = new Vector3(1, 1, 1);
             po.vanOBJ = this;
             po.chasingVan = true;
         }

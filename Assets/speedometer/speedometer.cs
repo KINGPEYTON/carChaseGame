@@ -13,7 +13,6 @@ public class speedometer : MonoBehaviour
     public Image speedMeter;
     public Image speedBackround;
     public Image pwTimeBackround;
-    public ParticleSystem smoke;
 
     public float startSpeed;
     public float maxSpeed;
@@ -39,7 +38,7 @@ public class speedometer : MonoBehaviour
     public float endTextTimer;
     public float endTimer;
 
-    public float coinTextTimer;
+    public bool startAni;
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +48,7 @@ public class speedometer : MonoBehaviour
         startSpeed = controller.playerCar.startMph;
         maxSpeed = startSpeed + ((1 / controller.playerCar.upMph) * 77.0f);
 
-        smoke.enableEmission = false;
+        fadeOBJ(0);
 
         endTextTimer = 1;
     }
@@ -61,10 +60,18 @@ public class speedometer : MonoBehaviour
         {
             mphText();
 
-            if (coinTextTimer < 1.5)
+            if (!startAni)
             {
-                coinText.text = ((int)((controller.totalCoins / 1.5) * (1.5 - coinTextTimer))).ToString();
-                coinTextTimer += Time.deltaTime;
+                if (controller.mph < controller.playerCar.startMph)
+                {
+                    coinText.text = ((int)(controller.totalCoins - getValueScale(getValueRanged(controller.mph, 0, controller.playerCar.startMph), 0, controller.playerCar.startMph, controller.totalCoins))).ToString();
+                    fadeOBJ(getValueScale(getValueRanged(controller.mph, 0, controller.playerCar.startMph), 0, controller.playerCar.startMph, 200));
+                }
+                else
+                {
+                    fadeOBJ(200);
+                    startAni = true;
+                }
             }
             else
             {
@@ -245,6 +252,13 @@ public class speedometer : MonoBehaviour
     float getValueScale(float val, float min, float max, float scale)
     {
         return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
+    }
+
+    float getValueRanged(float val, float min, float max)
+    {
+        float newVal = val;
+        if (newVal > max) { newVal = max; } else if (val < min) { newVal = min; }
+        return newVal;
     }
 
     public void finishPowerup()

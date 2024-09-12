@@ -21,6 +21,12 @@ public class settingsMenu : MonoBehaviour
     public float settingsTargetPos;
     public float settingsCurPos;
 
+    public float endTime;
+    public float coverTime;
+    public float mainTime;
+    public float exitTime;
+    public float settingsTime;
+
     public Scrollbar settingsSlider;
     public float settingsSliderMultiplyer;
     public float slideTargetPos;
@@ -29,7 +35,7 @@ public class settingsMenu : MonoBehaviour
     public bool inPos;
     public float coverColor;
 
-    public float speedTime;
+    public float speedTimer;
 
     public AudioClip clickSound;
 
@@ -48,21 +54,28 @@ public class settingsMenu : MonoBehaviour
         inPos = false;
         coverColor = 0;
 
-        speedTime = 5000f;
-
         settingsTargetPos = 1137;
         exitTargetPos = 2257;
-        mainTargetPos = 542;
+        mainTargetPos = 450;
 
         settingsCurPos = -1750;
         exitCurPos = 5500;
         mainCurPos = -3500;
 
+        endTime = 0.65f;
+        coverTime = 0.5f;
+        settingsTime = 0.4f;
+        exitTime = 0.6f;
+        mainTime = 0.8f;
+
         settingsSliderMultiplyer = -2000;
 
         masterVol.value = contoller.masterVol;
+        masterVol.handleRect.GetComponent<Image>().color = new Color32((byte)(255-getValueScale(contoller.masterVol, 0, 1, 255)), 255, 255, 255);
         sfxVol.value = contoller.sfxVol;
+        sfxVol.handleRect.GetComponent<Image>().color = new Color32((byte)(255 - getValueScale(contoller.sfxVol, 0, 1, 255)), 255, (byte)(255 - getValueScale(contoller.sfxVol, 0, 1, 64)), 255);
         musicVol.value = contoller.musicVol;
+        musicVol.handleRect.GetComponent<Image>().color = new Color32((byte)(255 - getValueScale(contoller.musicVol, 0, 1, 255)), (byte)(255 - getValueScale(contoller.musicVol, 0, 1, 64)), 255, 255);
 
         if (contoller.inTutorial)
         {
@@ -75,101 +88,49 @@ public class settingsMenu : MonoBehaviour
     {
         if (!inPos)
         {
-            if (coverColor < 175)
-            {
-                cover.color = new Color32(36, 36, 36, (byte)coverColor);
-                coverColor += (Time.unscaledDeltaTime * (speedTime / 20));
-            }
-            else if (coverColor > 175)
-            {
-                coverColor = 175;
-                cover.color = new Color32(36, 36, 36, (byte)coverColor);
-            }
-            if (scrollableSigns.transform.position.y < mainTargetPos)
-            {
-                scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0);
-                settingsSlider.gameObject.transform.position = new Vector3(1389, mainCurPos - 575, 0);
-                mainCurPos += (Time.unscaledDeltaTime * speedTime);
-            }
-            else if (scrollableSigns.transform.position.y > mainTargetPos)
-            {
-                mainCurPos = 542;
-                scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0);
-                settingsSlider.gameObject.transform.position = new Vector3(1389, mainCurPos-475, 0);
-            }
-            if (exitSign.transform.position.x > exitTargetPos)
-            {
-                exitSign.transform.position = new Vector3(exitCurPos, 670, 0);
-                exitCurPos -= (Time.unscaledDeltaTime * speedTime);
-            }
-            else if (exitSign.transform.position.x < exitTargetPos)
-            {
-                exitCurPos = 2257;
-                exitSign.transform.position = new Vector3(exitCurPos, 670, 0);
-            }
-            if (settingsSign.transform.position.x < settingsTargetPos)
-            {
-                settingsSign.transform.position = new Vector3(settingsCurPos, 672f, 0);
-                settingsCurPos += (Time.unscaledDeltaTime * speedTime);
-            }
-            else if (settingsSign.transform.position.x < settingsTargetPos)
-            {
-                settingsCurPos = 1137;
-                settingsSign.transform.position = new Vector3(settingsCurPos, 672, 0);
-            }
-
-
-            if (slideCurPos > slideTargetPos)
-            {
-                scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0); ;
-                slideCurPos -= (Time.unscaledDeltaTime * (speedTime/100));
-                if(Mathf.Abs(slideCurPos - slideTargetPos) < 500)
-                {
-                    slideCurPos = slideTargetPos;
-                }
-            } else if (slideCurPos < slideTargetPos)
-            {
-                scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0); ;
-                slideCurPos += (Time.unscaledDeltaTime * (speedTime/100));
-                if (Mathf.Abs(slideCurPos - slideTargetPos) < 500)
-                {
-                    slideCurPos = slideTargetPos;
-                }
-            }
+            getInPos();
         }
         else
         {
-            if (coverColor > 0)
-            {
-                cover.color = new Color32(36, 36, 36, (byte)coverColor);
-                coverColor -= (Time.unscaledDeltaTime * (speedTime / 10));
-            }
-            else
-            {
-                cover.color = new Color32(36, 36, 36, 0);
-            }
-
-            if (settingsSign.transform.position.x > settingsTargetPos)
-            {
-                scrollableSigns.transform.position = new Vector3(1389 + slideCurPos, mainCurPos, 0);
-                settingsSlider.gameObject.transform.position = new Vector3(1389, mainCurPos - 575, 0);
-                mainCurPos -= (Time.unscaledDeltaTime * speedTime);
-                exitSign.transform.position = new Vector3(exitCurPos, 670, 0);
-                exitCurPos += (Time.unscaledDeltaTime * speedTime);
-                settingsSign.transform.position = new Vector3(settingsCurPos, 672, 0);
-                settingsCurPos -= (Time.unscaledDeltaTime * speedTime);
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            exitPos();
         }
     }
+
+    void getInPos()
+    {
+        speedTimer += Time.unscaledDeltaTime;
+        cover.color = new Color32(36, 36, 36, (byte)getValueScale(getValueRanged(speedTimer, 0, coverTime), 0, coverTime, 175));
+        scrollableSigns.transform.position = new Vector3(1389, mainCurPos - getValueScale(getValueRanged(speedTimer, 0, mainTime), 0, mainTime, mainCurPos - mainTargetPos), 0);
+        exitSign.transform.position = new Vector3(exitCurPos - getValueScale(getValueRanged(speedTimer, 0, exitTime), 0, exitTime, exitCurPos - exitTargetPos), 450, 0);
+        settingsSign.transform.position = new Vector3(settingsCurPos - getValueScale(getValueRanged(speedTimer, 0, settingsTime), 0, settingsTime, settingsCurPos - settingsTargetPos), 475, 0);
+    }
+
+    void exitPos()
+    {
+        speedTimer += Time.unscaledDeltaTime;
+        cover.color = new Color32(36, 36, 36, (byte)(175 - getValueScale(getValueRanged(speedTimer, 0, endTime), 0, endTime, 175)));
+        scrollableSigns.transform.position = new Vector3(1389, mainTargetPos + getValueScale(getValueRanged(speedTimer, 0, endTime), 0, endTime, mainCurPos - mainTargetPos), 0);
+        exitSign.transform.position = new Vector3(exitTargetPos + getValueScale(getValueRanged(speedTimer, 0, endTime), 0, endTime, exitCurPos - exitTargetPos), 450, 0);
+        settingsSign.transform.position = new Vector3(settingsTargetPos + getValueScale(getValueRanged(speedTimer, 0, endTime), 0, endTime, settingsCurPos - settingsTargetPos), 475, 0);
+        if (speedTimer > endTime)
+        {
+            exitSettings();
+        }
+    }
+
+    void exitSettings()
+    {
+        Destroy(gameObject);
+    }
+    
 
     public void exit()
     {
         inPos = true;
-        settingsTargetPos = -600;
+        speedTimer = 0;
+        settingsCurPos = -1750;
+        exitCurPos = 4000;
+        mainCurPos = -1750;
         AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
         settingsSlider.gameObject.SetActive(false);
         prevButton.interactable = true;
@@ -185,14 +146,17 @@ public class settingsMenu : MonoBehaviour
         if (volBar == masterVol)
         {
             contoller.changeMasterVol(volBar.value);
+            masterVol.handleRect.GetComponent<Image>().color = new Color32((byte)(255 - getValueScale(volBar.value, 0, 1, 255)), 255, 255, 255);
         }
         else if(volBar == sfxVol)
         {
             contoller.changeSfxVol(volBar.value);
+            sfxVol.handleRect.GetComponent<Image>().color = new Color32((byte)(255 - getValueScale(volBar.value, 0, 1, 255)), 255, (byte)(255 - getValueScale(volBar.value, 0, 1, 64)), 255);
         }
         else if(volBar == musicVol)
         {
             contoller.changeMusicVol(volBar.value);
+            musicVol.handleRect.GetComponent<Image>().color = new Color32((byte)(255 - getValueScale(volBar.value, 0, 1, 255)), (byte)(255 - getValueScale(volBar.value, 0, 1, 64)), 255, 255);
         } else
         {
             Debug.Log("You Fucked Up Bud");
@@ -209,5 +173,17 @@ public class settingsMenu : MonoBehaviour
         }
 
         PlayerPrefs.SetInt("tutorialStep", 0);
+    }
+
+    float getValueScale(float val, float min, float max, float scale)
+    {
+        return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
+    }
+
+    float getValueRanged(float val, float min, float max)
+    {
+        float newVal = val;
+        if (newVal > max) { newVal = max; } else if (val < min) { newVal = min; }
+        return newVal;
     }
 }

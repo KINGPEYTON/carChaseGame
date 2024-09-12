@@ -122,7 +122,7 @@ public class pauseMenu : MonoBehaviour
 
     public void menu()
     {
-        youSure areYouSure = Instantiate(areYouSureToCreate, gameObject.transform).GetComponent<youSure>();
+        youSure areYouSure = Instantiate(areYouSureToCreate, new Vector3(0,-1000,0), Quaternion.identity, gameObject.transform).GetComponent<youSure>();
         areYouSure.methodToCall = manuMethod;
         areYouSure.prevButton = menuSign.GetComponent<Button>();
         areYouSure.message = "Are you sure you want to exit to the main menu?";

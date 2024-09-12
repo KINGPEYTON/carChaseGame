@@ -46,9 +46,21 @@ public class shopBillboard : MonoBehaviour
     public GameObject statics;
     public float staticTimer;
     public bool inStatic;
+
     public Image backround;
-    public bool colorDir;
-    public float colorVar;
+    public Image shopTextBackround;
+    public Image shopTextOutline;
+    public float colorTimer;
+
+    public GameObject backCoin;
+    public Transform coinAni;
+    public float backCoinTimer;
+
+    public GameObject starGlimmer;
+    public Transform stars;
+    public float starTimer;
+
+    public Image frontCoinImage;
     public TextMeshProUGUI frontCoinText;
 
     public AudioClip staticSound;
@@ -150,12 +162,13 @@ public class shopBillboard : MonoBehaviour
         controller = GameObject.Find("contoller").GetComponent<main>();
         myButton = GetComponent<Button>();
         statics.SetActive(false);
-        colorVar = 100;
 
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
         pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
         modManage = GameObject.Find("modsManager").GetComponent<boostManager>();
         playerCar = GameObject.Find("playerCar").GetComponent<playerCar>();
+
+        updateCoinText();
 
         if (pManager.intro && false) // delete this to make the start animation again
         {
@@ -173,28 +186,9 @@ public class shopBillboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        backround.color = new Color32((byte)colorVar, 220, (byte)colorVar, 255);
-
-        if (colorDir)
-        {
-            colorVar += Time.deltaTime * 30;
-            if(colorVar > 150)
-            {
-                colorDir = false;
-            }
-        }
-        else
-        {
-            colorVar -= Time.deltaTime * 30;
-            if (colorVar < 30)
-            {
-                colorDir = true;
-            }
-        }
-
-        frontCoinText.text = controller.totalCoins.ToString();
-
-        staticTimer -= Time.deltaTime;
+        backroundColors();
+        
+        if (inStatic) { staticTimer -= Time.deltaTime; }
 
         if (controller.playing)
         {
@@ -230,6 +224,220 @@ public class shopBillboard : MonoBehaviour
             {
                 startAnimation(2);
             }
+        }
+    }
+
+    void backroundColors()
+    {
+        colorTimer += Time.deltaTime;
+
+        shopTextBackround.color = shopTextColor(6);
+        shopTextOutline.color = shopOutlineColor(12);
+        backround.color = shopBackroundColor(12);
+
+        displayCoins(1.5f);
+        backroundCoins(2);
+        backroundstars(0.25f);
+    }
+
+    void displayCoins(float cycleTime)
+    {
+        float sizeScale = 0.975f + getValueScale(Mathf.Abs(colorTimer % cycleTime - (cycleTime / 2)), 0, (cycleTime / 2), 0.065f);
+
+        shopTextBackround.transform.localScale = new Vector3(sizeScale, sizeScale, 1);
+        shopTextOutline.transform.localScale = new Vector3(sizeScale * 1.005f, (sizeScale) * 1.005f, 1);
+
+        coinTextColor(cycleTime);
+    }
+
+    void backroundCoins(float cycleTime)
+    {
+        backCoinTimer += Time.deltaTime;
+        if (backCoinTimer > cycleTime)
+        {
+            for (int i = -50; i < 50; i += 4)
+            {
+                Transform t = Instantiate(backCoin, coinAni).transform;
+                t.localPosition = new Vector3(i * 4, 22, 0);
+            }
+            backCoinTimer -= cycleTime;
+        }
+    }
+
+    void backroundstars(float cycleTime)
+    {
+        starTimer += Time.deltaTime;
+        if (starTimer > cycleTime)
+        {
+            Transform t = Instantiate(starGlimmer, stars).transform;
+            t.localPosition = new Vector3(Random.Range(-45, 10), Random.Range(-15, 5), 0);
+            starTimer -= cycleTime;
+        }
+    }
+
+    Color32 shopTextColor(float colorCycle)
+    {
+        float colorVarR = 0;
+        float colorVarG = 0;
+        float colorVarB = 0;
+        if (colorTimer % colorCycle < (colorCycle / 6) * 1)
+        {
+            colorVarR = 225 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 0, (colorCycle / 6) * 1, 30);
+            colorVarG = 225;
+            colorVarB = 255;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 2)
+        {
+            colorVarR = 255;
+            colorVarG = 225;
+            colorVarB = 255 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 1, (colorCycle / 6) * 2, 30);
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 3)
+        {
+            colorVarR = 255;
+            colorVarG = 225 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 2, (colorCycle / 6) * 3, 30);
+            colorVarB = 225;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 4)
+        {
+            colorVarR = 255 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 3, (colorCycle / 6) * 4, 30);
+            colorVarG = 255;
+            colorVarB = 225;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 5)
+        {
+            colorVarR = 225;
+            colorVarG = 255;
+            colorVarB = 225 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 4, (colorCycle / 6) * 5, 30);
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 6)
+        {
+            colorVarR = 225;
+            colorVarG = 255 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 5, (colorCycle / 6) * 6, 30);
+            colorVarB = 255;
+        }
+
+        return new Color32((byte)colorVarR, (byte)colorVarG, (byte)colorVarB, 255);
+    }
+
+    Color32 shopOutlineColor(float colorCycle)
+    {
+        float colorVarR = 0;
+        float colorVarG = 0;
+        float colorVarB = 0;
+        if (colorTimer % colorCycle < (colorCycle / 6) * 1)
+        {
+            colorVarR = 0 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 0, (colorCycle / 6) * 1, 255);
+            colorVarG = 0;
+            colorVarB = 255;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 2)
+        {
+            colorVarR = 255;
+            colorVarG = 0;
+            colorVarB = 255 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 1, (colorCycle / 6) * 2, 255);
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 3)
+        {
+            colorVarR = 255;
+            colorVarG = 0 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 2, (colorCycle / 6) * 3, 255);
+            colorVarB = 0;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 4)
+        {
+            colorVarR = 255 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 3, (colorCycle / 6) * 4, 255);
+            colorVarG = 255;
+            colorVarB = 0;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 5)
+        {
+            colorVarR = 0;
+            colorVarG = 255;
+            colorVarB = 0 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 4, (colorCycle / 6) * 5, 255);
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 6)
+        {
+            colorVarR = 0;
+            colorVarG = 255 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 5, (colorCycle / 6) * 6, 255);
+            colorVarB = 255;
+        }
+
+        return new Color32((byte)colorVarR, (byte)colorVarG, (byte)colorVarB, 255);
+    }
+
+    Color32 shopBackroundColor(float colorCycle)
+    {
+        float colorVarR = 0;
+        float colorVarG = 0;
+        float colorVarB = 0;
+        if (colorTimer % colorCycle < (colorCycle / 6) * 1)
+        {
+            colorVarR = 230 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 0, (colorCycle / 6) * 1, 80);
+            colorVarG = 230;
+            colorVarB = 150;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 2)
+        {
+            colorVarR = 150;
+            colorVarG = 230;
+            colorVarB = 150 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 1, (colorCycle / 6) * 2, 80);
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 3)
+        {
+            colorVarR = 150;
+            colorVarG = 230 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 2, (colorCycle / 6) * 3, 80);
+            colorVarB = 230;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 4)
+        {
+            colorVarR = 150 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 3, (colorCycle / 6) * 4, 80);
+            colorVarG = 150;
+            colorVarB = 230;
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 5)
+        {
+            colorVarR = 230;
+            colorVarG = 150;
+            colorVarB = 230 - getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 4, (colorCycle / 6) * 5, 80);
+        }
+        else if (colorTimer % colorCycle < (colorCycle / 6) * 6)
+        {
+            colorVarR = 230;
+            colorVarG = 150 + getValueScale(colorTimer % colorCycle, (colorCycle / 6) * 5, (colorCycle / 6) * 6, 80);
+            colorVarB = 150;
+        }
+
+        return new Color32((byte)colorVarR, (byte)colorVarG, (byte)colorVarB, 255);
+    }
+
+    void coinTextColor(float cycleTime)
+    {
+        if (inStatic || inStore)
+        {
+            frontCoinText.color = new Color32(0, 0, 0, 0);
+        }
+        else
+        {
+            if (controller.playing)
+            {
+                float a = 255 - getValueScale(getValueRanged(controller.mph, 0, playerCar.startMph), 0, playerCar.startMph, 255);
+                frontCoinText.color = new Color32(255, 255, 255, (byte)a);
+                frontCoinImage.color = new Color32(255, 255, 255, (byte)a);
+            }
+            else if (controller.isOver)
+            {
+                frontCoinText.color = new Color32(255, 255, 255, 0);
+                frontCoinImage.color = new Color32(255, 255, 255, 0);
+            }
+            else
+            {
+                frontCoinText.color = new Color32(255, 255, 255, 255);
+            }
+            Color32 topLeft = new Color32(150, (byte)(255 - getValueScale(Mathf.Abs(colorTimer % cycleTime - cycleTime / 2), 0, cycleTime / 2, 100)), 255, 255);
+            Color32 topRight = new Color32((byte)(155 + getValueScale(Mathf.Abs(colorTimer % cycleTime - cycleTime / 2), 0, cycleTime / 2, 100)), 155, 255, 255);
+            Color32 bottomLeft = new Color32(255, 155, (byte)(255 - getValueScale(Mathf.Abs(colorTimer % cycleTime - cycleTime / 2), 0, cycleTime / 2, 100)), 255);
+            Color32 bottomRight = new Color32(155, (byte)(150 + getValueScale(Mathf.Abs(colorTimer % cycleTime - cycleTime / 2), 0, cycleTime / 2, 100)), 255, 255);
+            frontCoinText.colorGradient = new TMPro.VertexGradient(topLeft, topRight, bottomLeft, bottomRight);
         }
     }
 
@@ -330,9 +538,7 @@ public class shopBillboard : MonoBehaviour
             shopButton.interactable = false;
             settingsButton.interactable = false;
             inventoryButton.interactable = false;
-            statics.SetActive(true);
             staticTimer = 1f;
-            AudioSource.PlayClipAtPoint(staticSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         }
     }
 
@@ -374,13 +580,14 @@ public class shopBillboard : MonoBehaviour
 
     public void updateCoinText()
     {
-    coinTextMain.text = controller.totalCoins.ToString();
-    coinTextPlayer.text = controller.totalCoins.ToString();
-    coinTextUI.text = controller.totalCoins.ToString();
-    coinTextBoost.text = controller.totalCoins.ToString();
-    coinTextPowerup.text = controller.totalCoins.ToString();
-    coinTextModShop.text = controller.totalCoins.ToString();
-    coinTextInventory.text = controller.totalCoins.ToString();
+        frontCoinText.text = controller.totalCoins.ToString();
+        coinTextMain.text = controller.totalCoins.ToString();
+        coinTextPlayer.text = controller.totalCoins.ToString();
+        coinTextUI.text = controller.totalCoins.ToString();
+        coinTextBoost.text = controller.totalCoins.ToString();
+        coinTextPowerup.text = controller.totalCoins.ToString();
+        coinTextModShop.text = controller.totalCoins.ToString();
+        coinTextInventory.text = controller.totalCoins.ToString();
     }
 
     public void openMainStoreScreen()
@@ -1631,6 +1838,13 @@ public class shopBillboard : MonoBehaviour
     float getValueScale(float val, float min, float max, float scale)
     {
         return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
+    }
+
+    float getValueRanged(float val, float min, float max)
+    {
+        float newVal = val;
+        if (newVal > max) { newVal = max; } else if (val < min) { newVal = min; }
+        return newVal;
     }
 
     void setBarConstraints()

@@ -16,15 +16,17 @@ public class youSure : MonoBehaviour {
 	public string message;
 	public TextMeshProUGUI displayMessage;
 
+	public Button yesButton;
+	public Button noButton;
 	public Image cover;
 	public GameObject sign;
 
 	public bool inPos;
 	public float targetPos;
 	public float curPos;
-	public float coverColor;
+	public float posTime;
 
-	public float speedTime;
+	public float speedTimer;
 
 	public AudioClip clickSound;
 
@@ -33,11 +35,10 @@ public class youSure : MonoBehaviour {
 		controller = GameObject.Find("contoller").GetComponent<main>();
 
 		inPos = false;
-		coverColor = 0;
-		targetPos = 642f;
-		curPos = -400.0f;
+		posTime = 0.45f;
+		targetPos = 500f;
+		curPos = -800.0f;
 
-		speedTime = 5000f;
 		makeInteractable(false);
 	}
 
@@ -45,44 +46,42 @@ public class youSure : MonoBehaviour {
 	void Update () {
 		displayMessage.text = message;
 
-        if (!inPos)
-        {
-			if(transform.position.y < targetPos)
-            {
-				transform.position = new Vector3(1389, curPos, 0);
-				curPos += (Time.unscaledDeltaTime * speedTime);
-			}
-            else
-            {
-				transform.position = new Vector3(1389, targetPos, 0);
-			}
+		if (!inPos)
+		{
+			getInPos();
+		}
+		else
+		{
+			exitPos();
+		}
+	}
 
-			if (coverColor < 175)
-            {
-				cover.color = new Color32(36, 36, 36, (byte)coverColor);
-				coverColor += (Time.unscaledDeltaTime * (speedTime/6));
-			}
-            else
-            {
+	void getInPos()
+	{
+		if (speedTimer < posTime)
+		{
+			cover.color = new Color32(36, 36, 36, (byte)getValueScale(speedTimer, 0, posTime, 175));
+			sign.transform.position = new Vector3(1389, curPos - getValueScale(speedTimer, 0, posTime, curPos - targetPos), 0);
+			speedTimer += Time.unscaledDeltaTime;
+			if (speedTimer > posTime)
+			{
+				yesButton.interactable = true;
+				noButton.interactable = true;
 				cover.color = new Color32(36, 36, 36, 175);
+				sign.transform.position = new Vector3(1389, targetPos, 0);
 			}
 		}
-        else
-        {
-			if (transform.position.y > targetPos)
-			{
-				transform.position = new Vector3(1389, curPos, 0);
-				curPos -= (Time.unscaledDeltaTime * speedTime);
-			}
-            else
-            {
-				Destroy(gameObject);
-			}
-			if (coverColor > 0)
-			{
-				cover.color = new Color32(36, 36, 36, (byte)coverColor);
-				coverColor -= (Time.unscaledDeltaTime * (speedTime/6));
-			}
+	}
+
+	void exitPos()
+	{
+
+		speedTimer += Time.unscaledDeltaTime;
+		cover.color = new Color32(36, 36, 36, (byte)(175 - getValueScale(getValueRanged(speedTimer, 0, posTime), 0, posTime, 175)));
+		sign.transform.position = new Vector3(1389, targetPos + getValueScale(getValueRanged(speedTimer, 0, posTime), 0, posTime, curPos - targetPos), 0);
+		if (speedTimer > posTime)
+		{
+			Destroy(gameObject);
 		}
 	}
 
@@ -92,15 +91,14 @@ public class youSure : MonoBehaviour {
 
 	public void yes(){
 		SimpleMethod(methodToCall);
-		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
-		makeInteractable(true);
-
-		Destroy(gameObject);
+		goAway();
 	}
 
-	public void no(){
+	public void goAway(){
 		inPos = true;
-		targetPos = -600;
+		speedTimer = 0;
+		yesButton.interactable = false;
+		noButton.interactable = false;
 		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
 		makeInteractable(true);
 	}
@@ -110,7 +108,18 @@ public class youSure : MonoBehaviour {
 		if(prevButton != null)
         {
 			prevButton.interactable = side;
-
 		}
-    }
+	}
+
+	float getValueScale(float val, float min, float max, float scale)
+	{
+		return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
+	}
+
+	float getValueRanged(float val, float min, float max)
+	{
+		float newVal = val;
+		if (newVal > max) { newVal = max; } else if (val < min) { newVal = min; }
+		return newVal;
+	}
 }

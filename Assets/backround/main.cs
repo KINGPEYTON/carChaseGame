@@ -11,6 +11,7 @@ public class main : MonoBehaviour
     public bool isOver;
     public float mph; //controls the speed of the game
     public float scoremph; //controls the speed of the scoreIncrese
+    public int topMPH;
     public bool inStartup;
     public float score;
     public float highScore;
@@ -146,7 +147,9 @@ public class main : MonoBehaviour
     public float guardDist = 3.25f;
 
     public worldManager worldM;
-    public GameObject[] funSigns;
+    public List<float> signOdds;
+    public List<float> signCurrOdds;
+    public List<GameObject> funSigns;
     public float signTimer;
     public float signTime;
 
@@ -267,7 +270,7 @@ public class main : MonoBehaviour
         radioVol = PlayerPrefs.GetFloat("radioVol", 1); //sets the radio volume to the one it was last on
 
         tutorialSteps = PlayerPrefs.GetInt("tutorialStep", 0); //sets the tutorial to the last step
-        if(tutorialSteps < 5)
+        if (tutorialSteps < 5) 
         {
             inTutorial = true;
         }
@@ -315,6 +318,7 @@ public class main : MonoBehaviour
         setFrontBuildingOdds();
         setFarBuildingOdds();
         setSkylineOdds();
+        setSignOdds();
 
         if (inTutorial && tutorialSteps == 0)
         {
@@ -356,6 +360,13 @@ public class main : MonoBehaviour
                     mph += playerCar.upMph * Time.deltaTime * 2.5f * upMPHmod;
                 }
                 if (mph > scoremph) { scoremph = mph; }
+                if((int)mph > topMPH)
+                {
+                    if (!(playerCar.boosting || playerCar.beginBoost))
+                    {
+                        topMPH = (int)mph;
+                    }
+                }
             }
 
             score += (scoremph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
@@ -1589,7 +1600,7 @@ public class main : MonoBehaviour
 
     private void setFunSign(Transform par, Vector3 pos)
     {
-        signs sign = Instantiate(funSigns[Random.Range(0, funSigns.Length)], par).GetComponent<signs>();
+        signs sign = Instantiate(getSignFromOdds(signOdds, signCurrOdds, funSigns), par).GetComponent<signs>();
         sign.transform.localPosition = pos;
     }
 
@@ -1615,6 +1626,25 @@ public class main : MonoBehaviour
     {
         signs sign = Instantiate(workSign, par).GetComponent<signs>();
         sign.transform.localPosition = pos;
+    }
+
+    GameObject getSignFromOdds(List<float> signOddsList, List<float> signCurrOddsList, List<GameObject> signSkinsList)
+    {
+        float newBuildingOdds = Random.Range(0.0f, 1.0f);
+        float oddsAccum = 0.0f;
+
+        for (int i = 0; i < signOddsList.Count; i++)
+        {
+            oddsAccum += signCurrOddsList[i];
+            if (oddsAccum > newBuildingOdds)
+            {
+                changeOdds(i, signOddsList, signCurrOddsList);
+                return signSkinsList[i];
+            }
+        }
+
+        changeOdds(0, signOddsList, signCurrOddsList);
+        return signSkinsList[0];
     }
 
     public void collectCoin(int ammount)
@@ -1767,11 +1797,21 @@ public class main : MonoBehaviour
 
     private void setRoadOdds()
     {
-        float[] roadOddsNew = { 0.25f, 0.3f, 0.25f, 0.2f};
+        float[] roadOddsNew = { 0.25f, 0.3f, 0.25f, 0.2f };
         for (int i = 0; i < roadSkins.Count; i++)
         {
             roadOdds.Add(roadOddsNew[i]);
             roadOddsCurr.Add(roadOddsNew[i]);
+        }
+    }
+
+    private void setSignOdds()
+    {
+        float[] signOddsNew = { 0.185f, 0.185f, 0.185f, 0.185f, 0.26f };
+        for (int i = 0; i < funSigns.Count; i++)
+        {
+            signOdds.Add(signOddsNew[i]);
+            signCurrOdds.Add(signOddsNew[i]);
         }
     }
 

@@ -73,10 +73,10 @@ public class radio_menu : MonoBehaviour
         }
 
         barTimer += Time.unscaledDeltaTime;
-        if (barTimer > 0.15f)
+        if (barTimer > 0.125f)
         {
             updateBars();
-            barTimer -= 0.15f;
+            barTimer -= 0.125f;
         }
     }
 

@@ -293,10 +293,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: d233cf05023de4cd48383ab9331debfa, type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: d233cf05023de4cd48383ab9331debfa, type: 3}
-    m_SelectedSprite: {fileID: 21300000, guid: 0f14afd3e21004dbe8c24703b56686c6, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: 0f14afd3e21004dbe8c24703b56686c6, type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: 26f7ef6aec9d44254a3aa3a06d84b109, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 26f7ef6aec9d44254a3aa3a06d84b109, type: 3}
+    m_SelectedSprite: {fileID: 21300000, guid: e5bfee6c0494447cfa7dd7fe18a299e9, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: e5bfee6c0494447cfa7dd7fe18a299e9, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -886,6 +886,8 @@ MonoBehaviour:
   radioChangeTimer: 0
   prevRadio: 0
   targetRadio: 0
+  artistDisplayTimer: 0
+  songDisplayTimer: 0
   volIcons:
   - {fileID: 21300000, guid: 887db58f53c424f9480f8f4914f995d3, type: 3}
   - {fileID: 21300000, guid: 2f3d452088fa046d0bed4d9a2a55b8be, type: 3}
@@ -1736,10 +1738,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: cfe2fedbbb09a45659ff283ac3904609, type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: cfe2fedbbb09a45659ff283ac3904609, type: 3}
-    m_SelectedSprite: {fileID: 21300000, guid: 80ca9f41aa12347bdb141f8ae701430c, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: 80ca9f41aa12347bdb141f8ae701430c, type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: 83ee609cf5060418fa2a5b666a4ccbff, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 83ee609cf5060418fa2a5b666a4ccbff, type: 3}
+    m_SelectedSprite: {fileID: 21300000, guid: 10e593425c0a84a90a9f12feabd62b07, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: 10e593425c0a84a90a9f12feabd62b07, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted

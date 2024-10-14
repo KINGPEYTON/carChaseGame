@@ -28,7 +28,16 @@ public class radio_menu : MonoBehaviour
     public List<GameObject> bars3;
     public List<GameObject> bars4;
     public List<GameObject> bars5;
-    public float barTimer;
+    public float bars1Timer;
+    public float bars2Timer;
+    public float bars3Timer;
+    public float bars4Timer;
+    public float bars5Timer;
+    public bool bars1Target;
+    public bool bars2Target;
+    public bool bars3Target;
+    public bool bars4Target;
+    public bool bars5Target;
 
     // Start is called before the first frame update
     void Start()
@@ -64,7 +73,6 @@ public class radio_menu : MonoBehaviour
                 stationText.text = radioNames[manager.radioID];
                 songText.text = radioText(manager.radioNames[manager.radioID][manager.radioList[manager.radioID]]);
             }
-
         }
         else
         {
@@ -72,12 +80,7 @@ public class radio_menu : MonoBehaviour
             stationText.text = "Off";
         }
 
-        barTimer += Time.unscaledDeltaTime;
-        if (barTimer > 0.125f)
-        {
-            updateBars();
-            barTimer -= 0.125f;
-        }
+        updateBars();
     }
 
     public void setStation(int station)
@@ -164,138 +167,23 @@ public class radio_menu : MonoBehaviour
     {
         if (manager.radioID > 0)
         {
-            if (radioChangeTimer < -1) {
-                int barLevel = (int)Random.Range(vol.value * 2, vol.value * 8);
-                for (int i = 0; i < bars1.Count; i++)
-                {
-                    if (i <= barLevel)
-                    {
-                        bars1[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars1[i].SetActive(false);
-                    }
-                }
+            float barsTime = 0.35f;
 
-                int barLevel2 = (int)Random.Range(vol.value * 2, vol.value * 8);
-                for (int i = 0; i < bars2.Count; i++)
-                {
-                    if (i <= barLevel2)
-                    {
-                        bars2[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars2[i].SetActive(false);
-                    }
-                }
-
-                int barLevel3 = (int)Random.Range(vol.value * 2, vol.value * 8);
-                for (int i = 0; i < bars3.Count; i++)
-                {
-                    if (i <= barLevel3)
-                    {
-                        bars3[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars3[i].SetActive(false);
-                    }
-                }
-
-                int barLevel4 = (int)Random.Range(vol.value * 2, vol.value * 8);
-                for (int i = 0; i < bars4.Count; i++)
-                {
-                    if (i <= barLevel4)
-                    {
-                        bars4[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars4[i].SetActive(false);
-                    }
-                }
-
-                int barLevel5 = (int)Random.Range(vol.value * 2, vol.value * 8);
-                for (int i = 0; i < bars5.Count; i++)
-                {
-                    if (i <= barLevel5)
-                    {
-                        bars5[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars5[i].SetActive(false);
-                    }
-                }
+            if (radioChangeTimer < -1)
+            {
+                setBar(ref bars1Timer, bars1, ref bars1Target, 4, barsTime);
+                setBar(ref bars2Timer, bars2, ref bars2Target, 5, barsTime);
+                setBar(ref bars3Timer, bars3, ref bars3Target, 6, barsTime);
+                setBar(ref bars4Timer, bars4, ref bars4Target, 6, barsTime);
+                setBar(ref bars5Timer, bars5, ref bars5Target, 2, barsTime);
             }
             else
             {
-                int barLevel = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
-                for (int i = 0; i < bars1.Count; i++)
-                {
-                    if (i <= barLevel)
-                    {
-                        bars1[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars1[i].SetActive(false);
-                    }
-                }
-
-                int barLevel2 = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
-                for (int i = 0; i < bars2.Count; i++)
-                {
-                    if (i <= barLevel2)
-                    {
-                        bars2[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars2[i].SetActive(false);
-                    }
-                }
-
-                int barLevel3 = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
-                for (int i = 0; i < bars3.Count; i++)
-                {
-                    if (i <= barLevel3)
-                    {
-                        bars3[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars3[i].SetActive(false);
-                    }
-                }
-
-                int barLevel4 = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
-                for (int i = 0; i < bars4.Count; i++)
-                {
-                    if (i <= barLevel4)
-                    {
-                        bars4[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars4[i].SetActive(false);
-                    }
-                }
-
-                int barLevel5 = (int)Random.Range(((0 - radioChangeTimer)) * 2, (1 + (0 - radioChangeTimer)) * 8);
-                for (int i = 0; i < bars5.Count; i++)
-                {
-                    if (i <= barLevel5)
-                    {
-                        bars5[i].SetActive(true);
-                    }
-                    else
-                    {
-                        bars5[i].SetActive(false);
-                    }
-                }
+                setBar(ref bars1Timer, bars1, ref bars1Target, (int)((((2 - radioChangeTimer)-1)/2) * 4), barsTime);
+                setBar(ref bars2Timer, bars2, ref bars2Target, (int)((((2 - radioChangeTimer) - 1) / 2) * 5), barsTime);
+                setBar(ref bars3Timer, bars3, ref bars3Target, (int)((((2 - radioChangeTimer) - 1) / 2) * 6), barsTime);
+                setBar(ref bars4Timer, bars4, ref bars4Target, (int)((((2 - radioChangeTimer) - 1) / 2) * 6), barsTime);
+                setBar(ref bars5Timer, bars5, ref bars5Target, (int)((((2 - radioChangeTimer) - 1) / 2) * 2), barsTime);
             }
         }
         else
@@ -319,6 +207,43 @@ public class radio_menu : MonoBehaviour
             for (int i = 0; i < bars5.Count; i++)
             {
                 bars5[i].SetActive(false);
+            }
+        }
+    }
+
+    public void setBar(ref float timer, List<GameObject> bars, ref bool targ, int numBars, float barsTime)
+    {
+        int barLevel = (int)getValueScale(timer, 0, barsTime, vol.value * numBars);
+        if (targ)
+        {
+            timer += Time.unscaledDeltaTime * Random.Range(0.75f, 1.25f);
+            if (timer > barsTime)
+            {
+                barLevel = (int)(vol.value * numBars);
+                timer = barsTime;
+                targ = false;
+            }
+        }
+        else
+        {
+            timer -= Time.unscaledDeltaTime * Random.Range(0.75f, 1.25f);
+            if (timer < 0)
+            {
+                barLevel = 0;
+                timer = 0;
+                targ = true;
+            }
+        }
+
+        for (int i = 0; i < bars.Count; i++)
+        {
+            if (i <= barLevel)
+            {
+                bars[i].SetActive(true);
+            }
+            else
+            {
+                bars[i].SetActive(false);
             }
         }
     }

@@ -6,11 +6,12 @@ using System.IO;
 public class powerUpManager : MonoBehaviour
 {
     public TextAsset powerupJSON;
+    public pwUnlocks pwUnl = new pwUnlocks();
 
     public List<bool> unlocks;
     public List<int> tiers;
-    public List<List<Sprite>> icons = new List<List<Sprite>>();
-    public List<List<Sprite>> bubbles = new List<List<Sprite>>();
+    public Dictionary<string, List<Sprite>> icons = new Dictionary<string, List<Sprite>>();
+    public Dictionary<string, List<Sprite>> bubbles = new Dictionary<string, List<Sprite>>();
 
     public GameObject magneticField;
     public GameObject bigCoinhuna;
@@ -49,13 +50,22 @@ public class powerUpManager : MonoBehaviour
         else
         {
             DontDestroyOnLoad(gameObject);
+            if (JsonDataService.fileExist<pwUnlocks>("/pwUnlock.json", pwUnl))
+            {
+                loadUnlocks();
+                pwReader = readPowerupJSON();
+            }
+            else
+            {
+                pwReader = readPowerupJSON();
+                saveUnlocks();
+            }
+
+            getIcons();
+            getPowerupOdds();
         }
 
-        pwReader = readPowerupJSON();
-        getIcons();
-        getPowerupOdds();
-
-        //createPowerup(11, new Vector3(9, -1.65f, 0));
+        //createPowerup(7, new Vector3(9, -1.65f, 0));
     }
 
     public void collectPowerUp(string id, int level)
@@ -260,34 +270,34 @@ public class powerUpManager : MonoBehaviour
         newMagnet.lifetime = time;
         newMagnet.setSize(strength);
         newMagnet.getHolo = getHolo;
-        speedmer.startPowerup(time, icons[0][tiers[0]], true);
+        speedmer.startPowerup(time, icons["magnet"][pwUnl.tiers["magnet"]], true);
     }
 
     public void activateRam(int hits, bool justCars, bool headOn)
     {
 
         pCar.gameObject.GetComponent<playerCar>().startRam(hits, justCars, headOn);
-        speedmer.startPowerup(hits, icons[1][tiers[1]], false);
+        speedmer.startPowerup(hits, icons["ram"][pwUnl.tiers["ram"]], false);
     }
 
     public void activateBoost(int uses, float power, bool hitProt)
     {
         pCar.gameObject.GetComponent<playerCar>().startBoost(uses, power, hitProt);
-        speedmer.startPowerup(uses, icons[2][tiers[2]], false);
+        speedmer.startPowerup(uses, icons["boost"][pwUnl.tiers["boost"]], false);
     }
 
     public void activateCoin(int time, float spawnMultipliyer, bool startHolo)
     {
         coinhuna chuna = Instantiate(bigCoinhuna, GameObject.Find("contoller").transform).GetComponent<coinhuna>();
         chuna.setCoinhuna(time, spawnMultipliyer, startHolo);
-        speedmer.startPowerup(time, icons[3][tiers[3]], true);
+        speedmer.startPowerup(time, icons["coin"][pwUnl.tiers["coin"]], true);
     }
 
     public void activateVision(int time, bool showIcons, float turnMultiplyer, float hitBoxSize)
     {
         sense enhance = Instantiate(enhancedSense, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<sense>();
         enhance.startSense(time, showIcons, turnMultiplyer, hitBoxSize);
-        speedmer.startPowerup(time, icons[4][tiers[4]], true);
+        speedmer.startPowerup(time, icons["sense"][pwUnl.tiers["sense"]], true);
     }
 
     public void activateRandom(float spinTime, bool maxTier, bool isLonger, bool isStronger)
@@ -295,62 +305,56 @@ public class powerUpManager : MonoBehaviour
         randomWheel rWheel = Instantiate(randomBar).GetComponent<randomWheel>();
         rWheel.pwManager = this;
         rWheel.startRandom(spinTime - 1, maxTier, isLonger, isStronger);
-        speedmer.startPowerup(spinTime, icons[5][tiers[5]], true);
+        speedmer.startPowerup(spinTime, icons["random"][pwUnl.tiers["random"]], true);
     }
 
     public void activateShield(int time, bool autoStart, bool startWhenHit)
     {
         pCar.gameObject.GetComponent<playerCar>().startShield(time, autoStart, startWhenHit);
-        speedmer.startPowerup(time, icons[6][tiers[6]], autoStart);
+        speedmer.startPowerup(time, icons["shield"][pwUnl.tiers["shield"]], autoStart);
     }
 
     public void activateRocket(float power, float boostTime, float coinDist, bool allHolo)
     {
         pCar.gameObject.GetComponent<playerCar>().startRocket(power, boostTime, coinDist, allHolo);
-        speedmer.startPowerup(power, icons[7][tiers[7]], false);
+        speedmer.startPowerup(power, icons["rocket"][pwUnl.tiers["rocket"]], false);
     }
 
     public void activateTinyCars(int time, bool allCars)
     {
         tinyCars tCars = Instantiate(tinyCar, GameObject.Find("contoller").transform).GetComponent<tinyCars>();
         tCars.setTinyCars(time, allCars);
-        speedmer.startPowerup(time, icons[8][tiers[8]], true);
+        speedmer.startPowerup(time, icons["tiny"][pwUnl.tiers["tiny"]], true);
     }
 
     public void activateSlowdown(int time, float spawns, bool affectScore)
     {
         incognito inco = Instantiate(slowdown, GameObject.Find("contoller").transform).GetComponent<incognito>();
         inco.setSlowdown(time, spawns, affectScore);
-        speedmer.startPowerup(time, icons[9][tiers[9]], true);
+        speedmer.startPowerup(time, icons["slowdown"][pwUnl.tiers["slowdown"]], true);
     }
 
     public void activateTeleport(int uses, float boltTimer, Color32 boltColor, bool destroyObjs, bool affectCharge)
     {
         pCar.gameObject.GetComponent<playerCar>().enterTeleport(uses, boltTimer, boltColor, destroyObjs, affectCharge);
-        speedmer.startPowerup(uses, icons[10][tiers[10]], false);
+        speedmer.startPowerup(uses, icons["teleport"][pwUnl.tiers["teleport"]], false);
     }
 
     public void activateLaser(int shots, float fireRate, float cooldown, bool autoShoot)
     {
         pCar.gameObject.GetComponent<playerCar>().startLaser(shots, fireRate, cooldown, autoShoot);
-        speedmer.startPowerup(shots, icons[11][tiers[11]], false);
+        speedmer.startPowerup(shots, icons["laser"][pwUnl.tiers["laser"]], false);
     }
 
     public int getPowerupTier(string id)
     {
-        return tiers[powerupIDs.IndexOf(id)];
-    }
-
-    public void setPowerupTier(string id, int tierChange)
-    {
-        tiers[powerupIDs.IndexOf(id)] += tierChange;
-        PlayerPrefs.SetInt(id + "Tier", getPowerupTier(id));
+        return pwUnl.getTier(id);
     }
 
     public void createPowerup(int ind, Vector3 pos)
     {
         int t = tiers[ind];
-        createBubble(powerupIDs[ind], powerupTypes[ind], icons[ind][t], bubbles[ind][t], t, pos);
+        createBubble(powerupIDs[ind], powerupTypes[ind], icons[powerupIDs[ind]][t], bubbles[powerupIDs[ind]][t], t, pos);
     }
 
     public void createBubble(string id, int tpId, Sprite newIcon, Sprite bubble, int tier, Vector3 pos)
@@ -375,8 +379,9 @@ public class powerUpManager : MonoBehaviour
         {
             powerupNames.Add(pw.gameName);
             powerupIDs.Add(pw.idName);
-            tiers.Add(PlayerPrefs.GetInt(pw.idName + "Tier", 0));
-            unlocks.Add(true);
+            tiers.Add(pwUnl.getTier(pw.idName));
+            bool isUnlocked = pwUnl.getUnlock(pw.idName, true);
+            unlocks.Add(isUnlocked);
             unlockCosts.Add(0);
             powerupRawOdds.Add(pw.odds);
             powerupTypes.Add(pw.typeID);
@@ -408,8 +413,8 @@ public class powerUpManager : MonoBehaviour
         {
             powerupNames.Add(pw.gameName);
             powerupIDs.Add(pw.idName);
-            tiers.Add(PlayerPrefs.GetInt(pw.idName + "Tier", 0));
-            bool isUnlocked = PlayerPrefs.GetInt(pw.idName + "Unlock", 0) != 0;
+            tiers.Add(pwUnl.getTier(pw.idName));
+            bool isUnlocked = pwUnl.getUnlock(pw.idName, false);
             unlocks.Add(isUnlocked);
             unlockCosts.Add(pw.unlockCost);
             powerupTypes.Add(pw.typeID + 2);
@@ -448,8 +453,8 @@ public class powerUpManager : MonoBehaviour
             int maxTier = 2;
             if (i < pwReader.standard.Length) { maxTier = 3; }
             getIconAssets(newIcons, newBubble, maxTier, powerupIDs[i]);
-            icons.Add(newIcons);
-            bubbles.Add(newBubble);
+            icons.Add(powerupIDs[i], newIcons);
+            bubbles.Add(powerupIDs[i], newBubble);
         }
     }
 
@@ -557,14 +562,25 @@ public class powerUpManager : MonoBehaviour
     public void unlockPowerUp(string id)
     {
         unlocks[powerupIDs.IndexOf(id)] = true;
-        PlayerPrefs.SetInt(id + "Unlock", 1);
+        pwUnl.unlocks[id] = true;
+        saveUnlocks();
     }
 
     public void upgradePowerUp(string id)
     {
         int ind = powerupIDs.IndexOf(id);
         tiers[ind]++;
-        PlayerPrefs.SetInt(id + "Tier", tiers[powerupIDs.IndexOf(id)]);
+        pwUnl.tiers[id]++;
+        saveUnlocks();
+    }
+
+    private void loadUnlocks()
+    {
+        pwUnl = JsonDataService.LoadData<pwUnlocks>("/pwUnlock.json", true);
+    }
+    private void saveUnlocks()
+    {
+        JsonDataService.SaveData("/pwUnlock.json", pwUnl, true);
     }
 }
 
@@ -603,4 +619,39 @@ public class standardPowerup : powerup
 public class premiumPowerup : powerup
 {
     public int unlockCost;
+}
+
+[System.Serializable]
+public class pwUnlocks
+{
+    public Dictionary<string, bool> unlocks = new Dictionary<string, bool>();
+    public Dictionary<string, int> tiers = new Dictionary<string, int>();
+
+    public bool getUnlock(string id, bool unlDefault)
+    {
+        try
+        {
+            bool a = unlocks[id];
+            return a;
+        }
+        catch
+        {
+            unlocks.Add(id, unlDefault);
+            return unlDefault;
+        }
+    }
+
+    public int getTier(string id)
+    {
+        try
+        {
+            int a = tiers[id];
+            return a;
+        }
+        catch
+        {
+            tiers.Add(id, 0);
+            return 0;
+        }
+    }
 }

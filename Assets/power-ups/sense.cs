@@ -43,7 +43,10 @@ public class sense : MonoBehaviour
         lifetime -= Time.deltaTime;
         if(lifetime < 0 && !doFadeOut) { startFade(false); }
 
-        updateUI();
+        if (scoreBlimpOutline != null)
+        {
+            updateUI();
+        }
 
         if (doFadeIn) { visionFadeIn(); }
         if (doFadeOut) { visionFadeOut(); }

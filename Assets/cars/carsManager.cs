@@ -58,17 +58,17 @@ public class carsManager : MonoBehaviour
 
     public cars spawnSpecialCar(Vector3 pos, Transform par)
     {
-        cars ca = Instantiate(carsOBJs[2][0], pos, Quaternion.identity, par).GetComponent<cars>();
+        cars ca = spawnCar(2, pos, par).GetComponent<cars>();
 
-        setCarStuff(ca, 0 + carsOBJs[0].Count + carsOBJs[1].Count);
-        return ca;
+        setCarStuff(ca, lastSelID + carsOBJs[0].Count + carsOBJs[1].Count);
+        return ca; 
     }
 
     public cars spawnPoliceCar(Vector3 pos, Transform par)
     {
-        cars ca = spawnCar(2, pos, par).GetComponent<cars>();
+        cars ca = Instantiate(carsOBJs[2][0], pos, Quaternion.identity, par).GetComponent<cars>();
 
-        setCarStuff(ca, lastSelID + carsOBJs[0].Count + carsOBJs[1].Count);
+        setCarStuff(ca, 0 + carsOBJs[0].Count + carsOBJs[1].Count);
         return ca;
     }
 

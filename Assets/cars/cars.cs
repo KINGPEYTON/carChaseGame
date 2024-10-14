@@ -285,19 +285,24 @@ public class cars : MonoBehaviour
         xForce = xF;
         yForce = yF;
         crashSmoke.Play();
+        controller.carsDisabled++;
     }
 
     public void makeDestroyed()
     {
-        isDestroyed = true;
-        isDisabled = true;
-        speed = 0;
-        destroyedTimer = 0;
-        Instantiate(destroyedCar, transform.position, Quaternion.identity, transform.parent);
-
-        foreach (GameObject c in controller.carsInGame)
+        if (!isDestroyed)
         {
-            c.GetComponent<cars>().makeScared(lane);
+            isDestroyed = true;
+            isDisabled = true;
+            speed = 0;
+            destroyedTimer = 0;
+            Instantiate(destroyedCar, transform.position, Quaternion.identity, transform.parent);
+            controller.carsDestroyed++;
+
+            foreach (GameObject c in controller.carsInGame)
+            {
+                c.GetComponent<cars>().makeScared(lane);
+            }
         }
     }
 
@@ -623,12 +628,15 @@ public class cars : MonoBehaviour
         {
             int maxLane = 1;
             if (controller.topLane)
-            { maxLane = 0; }
+            {
+                if (controller.topLaneTime < 240) { maxLane = 0; }
+            }
+            else if (controller.topLaneTime > 10) { maxLane = 0; }
 
             int minLane = 5;
             if (controller.inConstruction)
             { minLane = 4; }
-            transform.position = new Vector3(transform.position.x, (Random.Range(maxLane, -minLane) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
+            transform.position = new Vector3(transform.position.x, (-Random.Range(maxLane, minLane) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
         }
         else
         {
@@ -639,7 +647,7 @@ public class cars : MonoBehaviour
             int minLane = 5;
             if (controller.inConstruction)
             { minLane = 4; }
-            transform.position = new Vector3(-14, (Random.Range(maxLane, -minLane) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
+            transform.position = new Vector3(-14, (-Random.Range(maxLane, minLane) * 1.25f) + 0.65f, 0);  //spawn new car in a random lane before going on screen;
         }
         setLane();
     }
@@ -706,6 +714,7 @@ public class cars : MonoBehaviour
 
     public virtual void nearCrash()
     {
+        controller.closeHits++;
         AudioSource.PlayClipAtPoint(horn, new Vector3(0, 0, -9), controller.masterVol * controller.sfxVol);
     }
 

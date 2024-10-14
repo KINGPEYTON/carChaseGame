@@ -11,7 +11,6 @@ public class main : MonoBehaviour
     public bool isOver;
     public float mph; //controls the speed of the game
     public float scoremph; //controls the speed of the scoreIncrese
-    public int topMPH;
     public bool inStartup;
     public float score;
     public float highScore;
@@ -254,6 +253,16 @@ public class main : MonoBehaviour
     public GameObject bridgeBigBillboard;
     public Sprite bridgeBigBillboardSkin;
 
+    public statsManager statManage;
+    public int topMPH;
+    public float timePlayed;
+    public int closeHits;
+    public float[] laneTimes;
+    public int carsDisabled;
+    public int carsDestroyed;
+    public int powerUpsCollected;
+    public int[] pwCollected;
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -263,6 +272,7 @@ public class main : MonoBehaviour
         modMang = GameObject.Find("modsManager").GetComponent<boostManager>();
         caManager = GameObject.Find("carsManager").GetComponent<carsManager>();
         worldM = GameObject.Find("worldManager").GetComponent<worldManager>();
+        statManage = GameObject.Find("statsManager").GetComponent<statsManager>();
 
         masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
@@ -285,8 +295,8 @@ public class main : MonoBehaviour
         startMPHmod = 1;
 
         coins = 0;
-        highScore = PlayerPrefs.GetInt("highscore", 0); //sets high score to the one saved
-        totalCoins = PlayerPrefs.GetInt("coins", 0); //sets high score to the one saved
+        highScore = statManage.pstats.highScore;
+        totalCoins = statManage.pstats.currCoins;
 
         carTimerMultiplyer = 1;
         obstaclesMultiplyer = 1;
@@ -304,9 +314,9 @@ public class main : MonoBehaviour
         signTime = 110;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
 
-        topLaneTimer = Random.Range(500, 3000);
-        areaTimer = Random.Range(500, 2000);
-        constructionTimer = Random.Range(750, 1475);
+        topLaneTimer = Random.Range(550, 2250);
+        areaTimer = Random.Range(750, 2500);
+        constructionTimer = Random.Range(850, 1475);
 
         bigPlaneTimer = Random.Range(15, 65);
 
@@ -334,6 +344,8 @@ public class main : MonoBehaviour
         if(exitNum < 30) { exitNumUp = true; }
         else if(exitNum > 70) { exitNumUp = false; }
         else { exitNumUp = Random.Range(0, 2) != 0; }
+
+        pwCollected = new int[pwManage.powerupIDs.Count];
     }
 
     // Update is called once per frame
@@ -341,6 +353,7 @@ public class main : MonoBehaviour
     {
         if (playing) //if in a game 
         {
+            timePlayed += Time.deltaTime;
             if (inStartup) //checks if the game is in its starting animation
             {
                 mph += (mph/2 + 15.0f) * Time.deltaTime * upMPHmod;
@@ -824,8 +837,7 @@ public class main : MonoBehaviour
                 {
                     topCurrRoad = Instantiate(topRoad, new Vector3(guardLast.position.x + 15.75f, -2.02f, 0), Quaternion.identity);
                     Transform lastGuard = Instantiate(guard2, new Vector3(guardLast.position.x + guardDist, 0.25f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
-                    Transform newGuard = Instantiate(guard, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
-                    guardLast = newGuard;
+                    guardLast = Instantiate(guard, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
 
                     Instantiate(mergeLine, new Vector3(lastGuard.position.x + 10.35f, 0.225f, 0), Quaternion.identity, GameObject.Find("roads").transform);
                     Instantiate(yelloBarrel, new Vector3(lastGuard.position.x + 1.7f, 0.4f, 0), Quaternion.identity, GameObject.Find("guards").transform);
@@ -890,11 +902,11 @@ public class main : MonoBehaviour
         {
             if (!startBridge)
             {
-                Transform bridgeStarting = Instantiate(bridgeStart, new Vector3(guardLast.position.x + 2, 0.95f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                Transform bridgeStarting = Instantiate(bridgeStart, new Vector3(guardLast.position.x + 2, 0.95f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform;
+                Instantiate(bridgeSupport, new Vector3(bridgeStarting.position.x + 9f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
+                buildingDist = 1.5f;
                 Instantiate(bridgeBar, new Vector3(guardLast.position.x + 1.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
-                frontBuildingLast = bridgeStarting;
-                frontBuildingDist = 10;
-                buildingDist = 10;
+                frontBuildingDist = 9;
                 Instantiate(bridgeStartConnector, new Vector3(guardLast.position.x -1, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                 createSign(3);
                 Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + 1.5f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
@@ -913,7 +925,7 @@ public class main : MonoBehaviour
             {
                 if (startBridge)
                 {
-                    Transform bridgeEnding = Instantiate(bridgeEnd, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.95f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
+                    Transform bridgeEnding = Instantiate(bridgeEnd, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.95f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform;
                     Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x - 2.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x + 2, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x + 6.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
@@ -1376,15 +1388,18 @@ public class main : MonoBehaviour
 
         if (score > highScore) { //check if theres a new high score
             highScore = score; // sets the new high score
-            PlayerPrefs.SetInt("highscore", (int)highScore); //saves the new high score
             newHighScore = true;
         }
+
+        totalCoins += coins;
 
         isOver = true;
 
         GameObject.Find("Main Camera").GetComponent<AudioLowPassFilter>().cutoffFrequency = 2500;
 
         screenDistortTarget = 0;
+
+        statManage.addStats((int)score, timePlayed, coins, laneTimes, playerCar.statTurns, topMPH, closeHits, carsDisabled, carsDestroyed, powerUpsCollected, pwCollected, modMang.currSelect);
 
         gameGameOverButton();
     }
@@ -1486,6 +1501,7 @@ public class main : MonoBehaviour
         billboard bboard = billboards.ToArray()[0].GetComponent<billboard>();
         Image overButton = Instantiate(bboard.gameOverOBJ, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform).GetComponent<Image>();
         overButton.sprite = bboard.skinCurr;
+        overButton.GetComponent<menuBillboard>().adOBJ.GetComponent<Image>().sprite = bboard.ad;
         if (inTutorial)
         {
             activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.gameObject.transform.position.x + 1.5f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
@@ -1650,8 +1666,6 @@ public class main : MonoBehaviour
     public void collectCoin(int ammount)
     {
         coins += ammount;
-        totalCoins += ammount;
-        PlayerPrefs.SetInt("coins", totalCoins); //saves the total coins
     }
 
     public void makeCoinsHolo()

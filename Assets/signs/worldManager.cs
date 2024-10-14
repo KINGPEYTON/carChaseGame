@@ -28,8 +28,8 @@ public class worldManager : MonoBehaviour
         else
         {
             DontDestroyOnLoad(gameObject);
+            wReader = getWorldData();
         }
-        wReader = getWorldData();
     }
 
     public string getBridgeName()

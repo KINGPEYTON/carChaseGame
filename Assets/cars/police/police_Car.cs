@@ -71,13 +71,13 @@ public class police_Car : cars
                 }
                 else if (!chasingVan || isDisabled)
                 {
-                    if (speed > 0)
+                    if (speed > 6f)
                     {
                         transform.position = transform.position - new Vector3(((controller.mph * Time.deltaTime) / speed), 0, 0); //move fowards in game
                     }
                     else
                     {
-                        transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
+                        transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 6f), 0, 0); //move fowards in game
                     }
                 }
                 if (transform.position.x < -16 && controller.mph > speedLimit && !playerCarOBJ.boosting && !playerCarOBJ.inRocket)
@@ -328,7 +328,12 @@ public class police_Car : cars
             }
             else if (transform.position.x < collision.transform.position.x)
             {
-                if (daCarhit.speed > 13)
+                if (daCarhit.inTraffic)
+                {
+                    speed = daCarhit.speed;
+                    inTraffic = true;
+                }
+                else if (daCarhit.speed > 13 && !inTraffic)
                 {
                     speed = daCarhit.speed - 1; //changes the speed so cars won't go through eachother
                 }

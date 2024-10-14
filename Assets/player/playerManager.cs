@@ -6,6 +6,7 @@ using System.IO;
 public class playerManager : MonoBehaviour
 {
     public TextAsset carPartsJSON;
+    public playerCarUnlocks pUnlocks;
 
     public List<string> carNames;
     public List<string> carIDs;
@@ -54,18 +55,26 @@ public class playerManager : MonoBehaviour
         else
         {
             DontDestroyOnLoad(gameObject);
+            if (JsonDataService.fileExist<playerCarUnlocks>("/playerUnlock.json", pUnlocks))
+            {
+                loadUnlocks();
+                carPartsData = readCarDataJSON();
+            }
+            else
+            {
+                carPartsData = readCarDataJSON();
+                saveUnlocks();
+            }
+
+            for (int f = 0; f < carNames.Count; f++)
+            {
+                getCarTypeAssets(carIDs[f], "player/cars/" + carIDs[f], f);
+            }
+            getCarAssets(wheels, wheelIds, "wheel ", "player/wheels");
+            getCarAssets(livery, liveryIDs, "livery ", "player/livery");
+
+            intro = true;
         }
-
-        carPartsData = readCarDataJSON();
-
-        for(int f = 0; f < carNames.Count; f++)
-        {
-            getCarTypeAssets(carIDs[f], "player/cars/"+ carIDs[f], f);
-        }
-        getCarAssets(wheels, wheelIds, "wheel ", "player/wheels");
-        getCarAssets(livery, liveryIDs, "livery ", "player/livery");
-
-        intro = true;
     }
 
     private void getCarTypeAssets(string id, string path, int ind)
@@ -121,7 +130,7 @@ public class playerManager : MonoBehaviour
         {
             carNames.Add(carType.typeName);
             carIDs.Add(carType.idName);
-            carTypeUnlocks.Add(PlayerPrefs.GetInt(carType.idName + "type", 0) != 0);
+            carTypeUnlocks.Add(pUnlocks.getUnlock(carType.idName + "type"));
         }
         carTypeUnlocks[0] = true;
 
@@ -135,7 +144,7 @@ public class playerManager : MonoBehaviour
             {
                 bodyNames[i].Add(bodySkin.bodyColor);
                 bodyIDs[i].Add(bodySkin.colorID);
-                bodyUnlocks[i].Add(PlayerPrefs.GetInt(carIDs[i] + bodySkin.colorID + "body", 0) != 0);
+                bodyUnlocks[i].Add(pUnlocks.getUnlock(carIDs[i] + bodySkin.colorID + "body"));
             }
             bodyUnlocks[i][0] = true;
         }
@@ -144,7 +153,7 @@ public class playerManager : MonoBehaviour
         {
             wheelNames.Add(wheelType.wheelName);
             wheelIds.Add(wheelType.idName);
-            wheelUnlocks.Add(PlayerPrefs.GetInt(wheelType.idName + "wheel", 0) != 0);
+            wheelUnlocks.Add(pUnlocks.getUnlock(wheelType.idName + "wheel"));
         }
         wheelUnlocks[0] = true;
 
@@ -153,7 +162,7 @@ public class playerManager : MonoBehaviour
             windowNames.Add(windowTint.tintColor);
             windowIDs.Add(windowTint.idName);
             windowColors.Add(new Color32(windowTint.ColorR, windowTint.ColorB, windowTint.ColorG, 255));
-            windowUnlocks.Add(PlayerPrefs.GetInt(windowTint.idName + "window", 0) != 0);
+            windowUnlocks.Add(pUnlocks.getUnlock(windowTint.idName + "window"));
         }
         windowUnlocks[0] = true;
 
@@ -161,7 +170,7 @@ public class playerManager : MonoBehaviour
         {
             liveryNames.Add(liveryType.liveryName);
             liveryIDs.Add(liveryType.idName);
-            liveryUnlocks.Add(PlayerPrefs.GetInt(liveryType.idName + "livery", 0) != 0);
+            liveryUnlocks.Add(pUnlocks.getUnlock(liveryType.idName + "livery"));
         }
         liveryUnlocks[0] = true;
 
@@ -170,7 +179,7 @@ public class playerManager : MonoBehaviour
             liveryColorNames.Add(liveryColor.liveryColor);
             liveryColorIDs.Add(liveryColor.idName);
             liveryColors.Add(new Color32(liveryColor.ColorR, liveryColor.ColorB, liveryColor.ColorG, liveryColor.ColorA));
-            liveryColorUnlocks.Add(PlayerPrefs.GetInt(liveryColor.idName + "color", 0) != 0);
+            liveryColorUnlocks.Add(pUnlocks.getUnlock(liveryColor.idName + "color"));
         }
         liveryColorUnlocks[0] = true;
 
@@ -203,6 +212,21 @@ public class playerManager : MonoBehaviour
         {
             liveryColorUnlocks[i] = false;
         }
+    }
+
+    public void unlockItem(string id)
+    {
+        pUnlocks.unlocks[id] = true;
+        saveUnlocks();
+    }
+
+    private void loadUnlocks()
+    {
+        pUnlocks = JsonDataService.LoadData<playerCarUnlocks>("/playerUnlock.json", true);
+    }
+    private void saveUnlocks()
+    {
+        JsonDataService.SaveData("/playerUnlock.json", pUnlocks, true);
     }
 }
 
@@ -311,4 +335,23 @@ public class carLiveryColorReader : carPart
     public byte ColorG;
     public byte ColorB;
     public byte ColorA;
+}
+
+[System.Serializable]
+public class playerCarUnlocks
+{
+    public Dictionary<string, bool> unlocks = new Dictionary<string, bool>();
+
+    public bool getUnlock(string id)
+    {
+        try
+        {
+            return unlocks[id];
+        }
+        catch
+        {
+            unlocks.Add(id, false);
+            return false;
+        }
+    }
 }

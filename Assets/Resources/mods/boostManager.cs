@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class boostManager : MonoBehaviour
 {
+    public modsCount mCount = new modsCount();
+
     public List<string> modIDs;
     public List<int> inventory;
     public List<Sprite> icons;
@@ -32,9 +34,18 @@ public class boostManager : MonoBehaviour
         else
         {
             DontDestroyOnLoad(gameObject);
+            if (JsonDataService.fileExist<modsCount>("/modCount.json", mCount))
+            {
+                loadUnlocks();
+                mdReader = readModsJSON();
+            }
+            else
+            {
+                mdReader = readModsJSON();
+                saveUnlocks();
+            }
         }
 
-        mdReader = readModsJSON();
     }
 
     public bool selectMod(int id)
@@ -57,7 +68,8 @@ public class boostManager : MonoBehaviour
         if (id > 0)
         {
             inventory[id]++;
-            PlayerPrefs.SetInt(modIDs[id] + "Ammount", inventory[id]);
+            mCount.ammount[modIDs[id]]++;
+            saveUnlocks();
         }
     }
 
@@ -66,7 +78,8 @@ public class boostManager : MonoBehaviour
         if(currSelect > 0)
         {
             inventory[currSelect]--;
-            PlayerPrefs.SetInt(modIDs[currSelect] + "Ammount", inventory[currSelect]);
+            mCount.ammount[modIDs[currSelect]]--;
+            saveUnlocks();
         }
         return currSelect;
     }
@@ -88,7 +101,7 @@ public class boostManager : MonoBehaviour
             modNames.Add(md.gameName);
             modIDs.Add(md.idName);
             modRarity.Add(md.rarity);
-            inventory.Add(PlayerPrefs.GetInt(md.idName + "Ammount", 0));
+            inventory.Add(mCount.getAmmount(md.idName));
             modCosts.Add(md.cost);
             modDescription.Add(md.description);
 
@@ -98,6 +111,15 @@ public class boostManager : MonoBehaviour
         }
 
         return modsDataInJson;
+    }
+
+    private void loadUnlocks()
+    {
+        mCount = JsonDataService.LoadData<modsCount>("/modCount.json", true);
+    }
+    private void saveUnlocks()
+    {
+        JsonDataService.SaveData("/modCount.json", mCount, true);
     }
 }
 
@@ -117,4 +139,23 @@ public class mods
     public int rarity;
     public string description;
     public int cost;
+}
+
+[System.Serializable]
+public class modsCount
+{
+    public Dictionary<string, int> ammount = new Dictionary<string, int>();
+
+    public int getAmmount(string id)
+    {
+        try
+        {
+            return ammount[id];
+        }
+        catch
+        {
+            ammount.Add(id, 0);
+            return 0;
+        }
+    }
 }

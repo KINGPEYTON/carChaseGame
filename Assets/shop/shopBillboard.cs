@@ -1,8 +1,10 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+//using UnityEngine.Purchasing;
 
 public class shopBillboard : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public class shopBillboard : MonoBehaviour
     public GameObject powerupCoverPage;
     public GameObject uiCoverPage;
     public GameObject boostsCoverPage;
+    public GameObject buyCoinsCoverPage;
 
     public bool intro;
     public float introTimer;
@@ -544,7 +547,6 @@ public class shopBillboard : MonoBehaviour
 
     void setMenuUI(bool val)
     {
-        startSign.interactable = val;
         modSign.interactable = val;
         settingsSign.interactable = val;
         speedUI.SetActive(val);
@@ -692,6 +694,7 @@ public class shopBillboard : MonoBehaviour
         sideCamera.enabled = true;
         sideCamera.transform.position = new Vector3(-6.25f, 4.85f, -10);
         sideCamera.orthographicSize = 1.75f;
+        setMenuUI(false);
     }
 
     public void equipPlayerItem()
@@ -824,9 +827,9 @@ public class shopBillboard : MonoBehaviour
         if (cost < controller.totalCoins)
         {
             controller.totalCoins -= cost;
-            PlayerPrefs.SetInt("coins", controller.totalCoins); //saves the total coins
+            controller.statManage.setCoins(controller.totalCoins);
             save[itemID] = true;
-            PlayerPrefs.SetInt(saveName, 1);
+            pManager.unlockItem(saveName);
             return true;
         }
         else
@@ -836,11 +839,6 @@ public class shopBillboard : MonoBehaviour
             areYouSure.message = "Not enough coins. Would you like to buy some more?";
             return false;
         }
-    }
-
-    public void buyMoreCoins()
-    {
-        Debug.Log("no coins yet");
     }
 
     public void selectPlayerCustomizationItem(int buttonID, Image toChange, Sprite spriteChange, int cost, bool unlocked)
@@ -1320,11 +1318,11 @@ public class shopBillboard : MonoBehaviour
         newButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = pwManage.powerupNames[id];
         if (pwManage.unlocks[id])
         {
-            newButton.transform.Find("Image").GetComponent<Image>().sprite = pwManage.icons[id][pwManage.tiers[id]];
+            newButton.transform.Find("Image").GetComponent<Image>().sprite = pwManage.icons[pwManage.powerupIDs[id]][pwManage.tiers[id]];
         }
         else
         {
-            newButton.transform.Find("Image").GetComponent<Image>().sprite = pwManage.bubbles[id][0];
+            newButton.transform.Find("Image").GetComponent<Image>().sprite = pwManage.bubbles[pwManage.powerupIDs[id]][0];
             ColorBlock cb = newButton.colors;
             cb.normalColor = new Color32(100, 100, 140, 255);
             newButton.colors = cb;
@@ -1392,7 +1390,7 @@ public class shopBillboard : MonoBehaviour
         newUpgrade.transform.Find("Upgrade Button").gameObject.SetActive(false);
         if (tier > -1)
         {
-            newUpgrade.transform.Find("Icon").GetComponent<Image>().sprite = pwManage.icons[powID][tier];
+            newUpgrade.transform.Find("Icon").GetComponent<Image>().sprite = pwManage.icons[pwManage.powerupIDs[powID]][tier];
             newUpgrade.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = pwManage.tierNames[powID][tier];
             newUpgrade.transform.Find("Description").GetComponent<TextMeshProUGUI>().text = pwManage.tierDescription[powID][tier];
             if (pwManage.unlocks[powID])
@@ -1471,7 +1469,7 @@ public class shopBillboard : MonoBehaviour
         }
         else
         {
-            newUpgrade.transform.Find("Icon").GetComponent<Image>().sprite = pwManage.bubbles[powID][0];
+            newUpgrade.transform.Find("Icon").GetComponent<Image>().sprite = pwManage.bubbles[pwManage.powerupIDs[powID]][0];
             newUpgrade.transform.Find("Cost").gameObject.SetActive(false);
             newUpgrade.transform.Find("Coin").gameObject.SetActive(false);
             newUpgrade.transform.Find("Unlock Text").gameObject.SetActive(false);
@@ -1513,13 +1511,13 @@ public class shopBillboard : MonoBehaviour
         if (cost < controller.totalCoins)
         {
             controller.totalCoins -= cost;
-            PlayerPrefs.SetInt("coins", controller.totalCoins); //saves the total coins
+            controller.statManage.setCoins(controller.totalCoins);
             updateCoinText();
             pwManage.unlockPowerUp(pwManage.powerupIDs[powID]);
             pwManage.setPowerupOdds();
             selectPowerups(catergoryID);
 
-            powerUpCategoryButton.transform.Find("Image").GetComponent<Image>().sprite = pwManage.icons[catergoryID][0];
+            powerUpCategoryButton.transform.Find("Image").GetComponent<Image>().sprite = pwManage.icons[pwManage.powerupIDs[catergoryID]][0];
             ColorBlock cb = powerUpCategoryButton.colors;
             cb.normalColor = new Color32(200, 200, 255, 255);
             powerUpCategoryButton.colors = cb;
@@ -1537,12 +1535,12 @@ public class shopBillboard : MonoBehaviour
         if (cost < controller.totalCoins)
         {
             controller.totalCoins -= cost;
-            PlayerPrefs.SetInt("coins", controller.totalCoins); //saves the total coins
+            controller.statManage.setCoins(controller.totalCoins);
             updateCoinText();
             pwManage.upgradePowerUp(pwManage.powerupIDs[powID]);
             selectPowerups(catergoryID);
 
-            powerUpCategoryButton.transform.Find("Image").GetComponent<Image>().sprite = pwManage.icons[catergoryID][pwManage.tiers[catergoryID]];
+            powerUpCategoryButton.transform.Find("Image").GetComponent<Image>().sprite = pwManage.icons[pwManage.powerupIDs[catergoryID]][pwManage.tiers[catergoryID]];
         }
         else
         {
@@ -1756,7 +1754,7 @@ public class shopBillboard : MonoBehaviour
         if (cost < controller.totalCoins && ammount < 100)
         {
             controller.totalCoins -= cost;
-            PlayerPrefs.SetInt("coins", controller.totalCoins); //saves the total coins
+            controller.statManage.setCoins(controller.totalCoins);
             updateCoinText();
 
             modShopIcon mIcon = Instantiate(modIconOBJ, modItem.transform).GetComponent<modShopIcon>();
@@ -1832,6 +1830,16 @@ public class shopBillboard : MonoBehaviour
         newButton.transform.Find("mod icon").GetComponent<Image>().sprite = modManage.icons[id];
 
         return newButton;
+    }
+
+    public void buyMoreCoins()
+    {
+        buyCoinsCoverPage.SetActive(true);
+    }
+
+    public void closeBuyCoins()
+    {
+        buyCoinsCoverPage.SetActive(false);
     }
 
 

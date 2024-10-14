@@ -237,7 +237,7 @@ public class randomWheel : MonoBehaviour
             }
             int iconPlace = iconAmount - 4;
             int newID = iconsToUse.IndexOf(iconsIn[iconPlace]);
-            if (newID > 4) { newID++; } // to accomedate the gap of ids without the random powerup
+            if (newID > pwManager.powerupIDs.IndexOf("random")) { newID++; } // to accomedate the gap of ids without the random powerup
             string iconId = pwManager.powerupIDs[newID];
             icons[iconPlace].AddComponent(typeof(randomIcon));
             icons[iconPlace].GetComponent<randomIcon>().id = iconId;
@@ -252,11 +252,11 @@ public class randomWheel : MonoBehaviour
             int stdLen = pwManager.pwReader.standard.Length;
             for (int i = 0; i < stdLen - 1; i++)
             {
-                iconsToUse.Add(pwManager.icons[i][3]);
+                iconsToUse.Add(pwManager.icons[pwManager.powerupIDs[i]][3]);
             }
             for(int i = stdLen; i < pwManager.pwReader.premium.Length + stdLen; i++)
             {
-                iconsToUse.Add(pwManager.icons[i][2]);
+                iconsToUse.Add(pwManager.icons[pwManager.powerupIDs[i]][2]);
             }
         }
         else
@@ -265,7 +265,7 @@ public class randomWheel : MonoBehaviour
             for (int i = 0; i < pwManager.powerupIDs.Count; i++)
             {
                 if(i == pwManager.pwReader.standard.Length - 1) { i++; } //skips the random icon
-                iconsToUse.Add(pwManager.icons[i][pwManager.getPowerupTier(pwManager.powerupIDs[i])]);
+                iconsToUse.Add(pwManager.icons[pwManager.powerupIDs[i]][pwManager.getPowerupTier(pwManager.powerupIDs[i])]);
             }
         }
     }

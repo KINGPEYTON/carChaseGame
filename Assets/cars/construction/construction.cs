@@ -72,6 +72,7 @@ public class construction : cars
                 {
                     cars c = controller.caManager.spawnRegularCar(new Vector3(12, transform.position.y, 0), GameObject.Find("cars").transform).GetComponent<cars>();
                     c.makeTraffic(Random.Range(10, 15.5f));
+                    controller.checkCarEffects(c.gameObject);
                     carTimer -= carTime;
                     controller.carTimer -= 25;
                 }
@@ -143,7 +144,7 @@ public class construction : cars
         }
         controller.bannedLanes.Remove(lane);
         controller.inConstruction = false;
-        controller.constructionTimer = Random.Range(450, 1375);
+        controller.constructionTimer = Random.Range(750, 1775);
         base.destroyCar();
     }
 

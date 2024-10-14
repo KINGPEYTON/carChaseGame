@@ -32,7 +32,10 @@ public class playerCar : MonoBehaviour
     public bool tapped;
     public float firstTapPoint;
     public bool inPos;
+    public bool slidingUp;
+    public bool slidingDown;
     public bool newTap;
+    public Transform nearCar;
 
     public float swipeDistToDetect;
 
@@ -109,6 +112,11 @@ public class playerCar : MonoBehaviour
     public float beginBoostTime;
     public float beginBoostScoreMPH;
 
+    public int statLane;
+    public int statTurns;
+
+    public GameObject aaa;
+
     void OnEnable()
     {
         pManager = GameObject.Find("playerManager").GetComponent<playerManager>();
@@ -140,6 +148,7 @@ public class playerCar : MonoBehaviour
         {
             if (!beginBoost)
             {
+                controller.laneTimes[statLane] += Time.deltaTime;
                 if (startPos == transform.position.x && controller.scoreShowing && controller.textNum >= 10)
                 {
                     if (!(inRocket && rocket.boosting))
@@ -297,6 +306,7 @@ public class playerCar : MonoBehaviour
         {
             transform.position = targetPos; //places player car where it should be
             inPos = true;
+            if(nearCar != null) { controller.closeHits++; }
         }
     }
 
@@ -645,7 +655,7 @@ public class playerCar : MonoBehaviour
         int carTypeSave = PlayerPrefs.GetInt("playerCarType", 0); //grabes the id of the car type the player last used
         rocket.setTargetPos(pManager.carPartsData.carTypes[carTypeSave].rocketX, pManager.carPartsData.carTypes[carTypeSave].rocketY, pManager.carPartsData.carTypes[carTypeSave].rocketX2);
         rocket.startBoost(power, boostTime, coinRate, makeHolo);
-        setOrder(10);
+        setOrder(statLane + 5);
     }
 
     void landingRocket()
@@ -796,10 +806,13 @@ public class playerCar : MonoBehaviour
             overshoot = 0; //resets overshoot
 
             AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
+            slidingUp = isUp;
+            slidingDown = !isUp;
             inPos = false;
             tapped = false;
 
-            playHorn();
+            statTurns++;
+            almostHit();
         }
     }
 
@@ -815,24 +828,14 @@ public class playerCar : MonoBehaviour
         overshoot = 0; //resets overshoot
 
         AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
+        slidingUp = isUp;
+        slidingDown = !isUp;
         inPos = false;
         tapped = false;
 
-        playHorn();
+        statTurns++;
+        almostHit();
     }
-
-    public void crash()
-    {
-        controller.gameOver(); //sets the game to its game over state
-        AudioSource.PlayClipAtPoint(crash1, new Vector3 (0,0,-10), controller.masterVol * controller.sfxVol);
-
-        GameObject rWheel = GameObject.Find("random bar(Clone)");
-        if(rWheel != null && !rWheel.GetComponent<randomWheel>().doFadeOut)
-        {
-            rWheel.GetComponent<randomWheel>().startFade(false);
-        }
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (controller.playing && !(inRocket && rocket.boosting))
@@ -917,7 +920,7 @@ public class playerCar : MonoBehaviour
                 {
                     if (!ram.justCars || carHit.isCar)
                     {
-                        if (!ram.headOn || Mathf.Abs(transform.position.y - collision.transform.position.y) < 0.25f)
+                        if (!ram.headOn || Mathf.Abs(transform.position.y - collision.transform.position.y) < 0.35f)
                         {
                             disableCar(collision, 2.5f);
                             ram.ramHit();
@@ -943,37 +946,39 @@ public class playerCar : MonoBehaviour
             carHit.makeDestroyed();
             if (!destroyObstacle)
             {
-                crash();
-                controller.bannedLanes.Add(carHit.lane);
+                takeHit(collision, carHit.hitPoint);
             }
         }
     }
 
     void takeHit(Collider2D collision, int hitPoint)
     {
-        hits -= hitPoint;
-        if(hits < hitsStart)
+        if (Mathf.Abs(collision.transform.position.magnitude - transform.position.magnitude) < 4)
         {
-            crashSmoke.emissionRate = getValueScale(hitsStart - hits, 0, hitsStart, hitsStart * 3);
-        }
-        if(hits <= 0)
-        {
-            lethalHit(collision);
-        }
+            hits -= hitPoint;
+            if (hits < hitsStart)
+            {
+                crashSmoke.emissionRate = getValueScale(hitsStart - hits, 0, hitsStart, hitsStart * 3);
+            }
+            if (hits <= 0)
+            {
+                lethalHit(collision);
+            }
 
-        if (collision.transform.position.y == transform.position.y)
-        {
-            collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(-0.75f, 0.75f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
-        }
-        else if (collision.transform.position.y < transform.position.y)
-        {
-            float forceFactor = (collision.transform.position.y - transform.position.y) * 1.5f;
-            collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(forceFactor * 0.75f, forceFactor * 1.25f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
-        }
-        else if (collision.transform.position.y > transform.position.y)
-        {
-            float forceFactor = (collision.transform.position.y - transform.position.y) * 1.5f;
-            collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(forceFactor * 0.75f, forceFactor * 1.25f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
+            if (collision.transform.position.y == transform.position.y)
+            {
+                collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(-0.75f, 0.75f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
+            }
+            else if (collision.transform.position.y < transform.position.y)
+            {
+                float forceFactor = (collision.transform.position.y - transform.position.y) * 1.5f;
+                collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(forceFactor * 0.75f, forceFactor * 1.25f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
+            }
+            else if (collision.transform.position.y > transform.position.y)
+            {
+                float forceFactor = (collision.transform.position.y - transform.position.y) * 1.5f;
+                collision.GetComponent<cars>().makeDisabled(crashForce, Random.Range(forceFactor * 0.75f, forceFactor * 1.25f)); //stops the car that crashes into the player (so they can file an insurence claim aganst the player)
+            }
         }
     }
 
@@ -999,7 +1004,14 @@ public class playerCar : MonoBehaviour
                 controller.bannedLanes.Add(collision.GetComponent<cars>().lane + 1);
                 AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             }
-            crash(); //what happens when the player crashes
+
+            controller.gameOver(); //sets the game to its game over state
+
+            GameObject rWheel = GameObject.Find("random bar(Clone)");
+            if (rWheel != null && !rWheel.GetComponent<randomWheel>().doFadeOut)
+            {
+                rWheel.GetComponent<randomWheel>().startFade(false);
+            }
         }
     }
 
@@ -1015,15 +1027,18 @@ public class playerCar : MonoBehaviour
 
     void hitBarrier(Collider2D collision)
     {
-        if (transform.position.y > 0)
+        if (transform.position.y > 0 && !slidingDown)
         {
-            forceSlide(false, turnMulti);
+            forceSlide(false, turnMulti * 2);
         }
     }
 
     void hitCone(Collider2D collision)
     {
-        if (targetPos.y < transform.position.y && controller.inConstruction) { forceSlide(true, turnMulti * 2); }
+        if (targetPos.y < transform.position.y && controller.inConstruction && !slidingUp)
+        {
+            forceSlide(true, turnMulti * 2);
+        }
     }
 
     void hitCoin(Collider2D collision)
@@ -1068,6 +1083,8 @@ public class playerCar : MonoBehaviour
         wheelF.sortingOrder = 2 + lane;
         wheelB.sortingOrder = 2 + lane;
         livery.sortingOrder = 3 + lane;
+
+        statLane = lane;
     }
 
     private void changeOrder(int change)
@@ -1077,7 +1094,10 @@ public class playerCar : MonoBehaviour
         wheelF.sortingOrder += change;
         wheelB.sortingOrder += change;
         livery.sortingOrder += change;
+        if (ramOn) { ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder += change; }
         if (controller.laserOn) { carLaser.gameObject.GetComponent<SpriteRenderer>().sortingOrder += change; }
+
+        statLane += change;
     }
 
     private void setOrder(int lane)
@@ -1089,6 +1109,15 @@ public class playerCar : MonoBehaviour
         livery.sortingOrder = 3 + lane;
         if (ramOn) { ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
         if (controller.laserOn) { carLaser.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
+
+        if (lane < 5)
+        {
+            statLane = lane;
+        }
+        else
+        {
+            statLane = lane % 5;
+        }
     }
 
     public void getPlayerCustomazation()
@@ -1184,7 +1213,7 @@ public class playerCar : MonoBehaviour
         }
     }
 
-    private void playHorn()
+    private void almostHit()
     {
         Transform closestCar = findClosestCar();
         if (closestCar != null)
@@ -1192,6 +1221,7 @@ public class playerCar : MonoBehaviour
             float closestDist = transform.position.x - closestCar.position.x;
             if ((closestDist < 2.75f && closestDist > 1) && closestCar.position.y == targetPos.y)
             {
+                nearCar = closestCar;
                 closestCar.gameObject.GetComponent<cars>().nearCrash();
             }
         }

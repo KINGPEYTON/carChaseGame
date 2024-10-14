@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class settingsMenu : MonoBehaviour
 {
@@ -45,6 +46,14 @@ public class settingsMenu : MonoBehaviour
 
     public Button resetTutorialButton;
 
+    public statsManager statManage;
+    public GameObject statScreen;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI coinText;
+    public Transform coinImg;
+    public TextMeshProUGUI highText;
+    public TextMeshProUGUI speedText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -76,6 +85,8 @@ public class settingsMenu : MonoBehaviour
         sfxVol.handleRect.GetComponent<Image>().color = new Color32((byte)(255 - getValueScale(contoller.sfxVol, 0, 1, 255)), 255, (byte)(255 - getValueScale(contoller.sfxVol, 0, 1, 64)), 255);
         musicVol.value = contoller.musicVol;
         musicVol.handleRect.GetComponent<Image>().color = new Color32((byte)(255 - getValueScale(contoller.musicVol, 0, 1, 255)), (byte)(255 - getValueScale(contoller.musicVol, 0, 1, 64)), 255, 255);
+
+        setStats();
 
         if (contoller.inTutorial)
         {
@@ -173,6 +184,23 @@ public class settingsMenu : MonoBehaviour
         }
 
         PlayerPrefs.SetInt("tutorialStep", 0);
+    }
+
+    void setStats()
+    {
+        statManage = GameObject.Find("statsManager").GetComponent<statsManager>();
+
+        scoreText.text = "Total Distance:\n" + statManage.pstats.scoreTotal + "m";
+        coinText.text = "Total Coins:\n" + statManage.pstats.coins;
+        coinImg.localPosition = new Vector3(37.0f - (statManage.pstats.coins.ToString().Length * 2.35f), 14.75f, 0);
+        highText.text = "Highest Score:\n" + statManage.pstats.highScore + "m";
+        speedText.text = "Top Speed:\n" + statManage.pstats.topSpeed + " MPH";
+    }
+
+    public void statMenu()
+    {
+        AudioSource.PlayClipAtPoint(clickSound, transform.position, contoller.masterVol * contoller.sfxVol);
+        Instantiate(statScreen);
     }
 
     float getValueScale(float val, float min, float max, float scale)

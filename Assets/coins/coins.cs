@@ -43,7 +43,7 @@ public class coins : MonoBehaviour
     void Start()
     {
         controller = GameObject.Find("contoller").GetComponent<main>();
-        speedometer = GameObject.Find("Speedometer").transform;
+        speedometer = GameObject.Find("Speedometer").transform.Find("coin mask");
         ani = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
         hitbox = GetComponent<BoxCollider2D>();
@@ -54,7 +54,7 @@ public class coins : MonoBehaviour
         controller.coinList.Add(gameObject);
         setLane();
         collectedTime = 1.25f;
-        collectedSize = 0.001f;
+        collectedSize = 0.005f;
         attractTime = 0.75f;
 
         startSize = 0.04f;

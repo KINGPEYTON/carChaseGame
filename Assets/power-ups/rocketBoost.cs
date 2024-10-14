@@ -166,7 +166,7 @@ public class rocketBoost : MonoBehaviour
         {
             boosting = false;
             inSky = true;
-            player.position = new Vector3(player.position.x, targY, -9);
+            player.position = new Vector3(player.position.x, targY, 0);
             camera.position = new Vector3(camera.position.x, 8, -10);
             skyline.position = new Vector3(skyline.position.x, 2, 0);
             clouds.position = new Vector3(clouds.position.x, 6, 0);
@@ -216,7 +216,7 @@ public class rocketBoost : MonoBehaviour
         {
             boosting = false;
             inSky = false;
-            player.position = new Vector3(player.position.x, targY, -9);
+            player.position = new Vector3(player.position.x, targY, 0);
             camera.position = new Vector3(camera.position.x, 0, -10);
             skyline.position = new Vector3(skyline.position.x, -1, 0);
             clouds.position = new Vector3(clouds.position.x, -1, 0);

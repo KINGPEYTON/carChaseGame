@@ -132,8 +132,8 @@ MonoBehaviour:
   isDestroyed: 0
   destroyedTimer: 0
   destroyedTime: 0
-  destroyedCar: {fileID: 0}
-  carDebris: {fileID: 0}
+  destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
+  carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
   isDisabled: 0
   crashSmoke: {fileID: 2285725734301289767}
   inTraffic: 0

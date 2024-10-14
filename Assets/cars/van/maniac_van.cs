@@ -195,21 +195,21 @@ public class maniac_van : cars
 
     private void checkInBounce()
     {
-        if (transform.position.y <= -4.35 && turningSpeed > 0)
+        if (transform.position.y <= -4.35 && turningSpeed < 0)
         {
-            turningSpeed *= -1;
+            turningSpeed = -Mathf.Abs(turningSpeed);
         }
         if (controller.topLane)
         {
-            if (transform.position.y >= 0.65 && turningSpeed < 0)
+            if (transform.position.y >= 0.65 && turningSpeed > 0)
             {
-                turningSpeed *= -1;
+                turningSpeed = Mathf.Abs(turningSpeed);
             }
         } else
         {
-            if (transform.position.y >= -0.45 && turningSpeed < 0)
+            if (transform.position.y >= -0.45 && turningSpeed > 0)
             {
-                turningSpeed *= -1;
+                turningSpeed = Mathf.Abs(turningSpeed);
             }
         }
         if (turningTimer < 0)

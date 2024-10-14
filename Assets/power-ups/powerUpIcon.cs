@@ -26,7 +26,7 @@ public class powerUpIcon : MonoBehaviour
         startSize = transform.localScale;
         targetTime = 1.25f;
         targetSize = 0.35f;
-        speedometer = GameObject.Find("Speedometer").transform;
+        speedometer = GameObject.Find("Speedometer").transform.Find("pw mask");
         pwManage = GameObject.Find("powerUpManager").GetComponent<powerUpManager>();
         controller = GameObject.Find("contoller").GetComponent<main>();
     }
@@ -71,7 +71,12 @@ public class powerUpIcon : MonoBehaviour
             startSize = transform.localScale;
             sizeU = true; 
             targetTimer = 0;
-            if (controller.playing) { pwManage.collectPowerUp(id, tier); }
+            if (controller.playing)
+            {
+                pwManage.collectPowerUp(id, tier);
+                controller.powerUpsCollected++;
+                controller.pwCollected[pwManage.powerupIDs.IndexOf(id)]++;
+            }
         }
     }
 

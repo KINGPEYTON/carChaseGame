@@ -12,7 +12,8 @@ public class speedometer : MonoBehaviour
     public TextMeshProUGUI coinText;
     public Image speedMeter;
     public Image speedBackround;
-    public Image pwTimeBackround;
+    public Image coinImg;
+    public RectTransform dial;
 
     public float startSpeed;
     public float maxSpeed;
@@ -64,7 +65,7 @@ public class speedometer : MonoBehaviour
             {
                 if (controller.mph < controller.playerCar.startMph)
                 {
-                    coinText.text = ((int)(controller.totalCoins - getValueScale(getValueRanged(controller.mph, 0, controller.playerCar.startMph), 0, controller.playerCar.startMph, controller.totalCoins))).ToString();
+                    coinText.text = "0";
                     fadeOBJ(getValueScale(getValueRanged(controller.mph, 0, controller.playerCar.startMph), 0, controller.playerCar.startMph, 200));
                 }
                 else
@@ -80,14 +81,13 @@ public class speedometer : MonoBehaviour
         }
         else if (controller.isOver)
         {
+            if (powerupActive)
+            {
+                finishPowerup();
+            }
             endSmoke();
         }
-        else
-        {
-            speedText.text = "---";
-            coinText.text = controller.totalCoins.ToString();
-        }
-        setSpeedText();
+        //setSpeedText();
 
         if (powerupActive)
         {
@@ -107,13 +107,13 @@ public class speedometer : MonoBehaviour
             {
                 fadePowerUp(getValueScale(1 - iconHueTimer, 0, 1, 200));
             }
-            powerUpUseText.color = new Color32(32, 217, 255, (byte)getValueScale(1 - iconHueTimer, 0, 1, 200));
+            powerUpUseText.color = new Color32(255, 255, 255, (byte)getValueScale(1 - iconHueTimer, 0, 1, 255));
 
             iconHueTimer += Time.deltaTime;
             if (iconHueTimer > 1)
             {
                 fadePowerUp(0);
-                powerUpUseText.color = new Color32(32, 217, 255, 0);
+                powerUpUseText.color = new Color32(255, 255, 255, 0);
             }
         }
     }
@@ -178,36 +178,43 @@ public class speedometer : MonoBehaviour
 
     void fadeOBJ(float value)
     {
-        GetComponent<Image>().color = new Color32(255, 255, 255, (byte)value);
+        GetComponent<Image>().color = new Color32(255, 255, 255, (byte)getValueScale(value, 0, 200, 255));
         speedText.color = new Color32(255, 0, 0, (byte)value);
-        coinText.color = new Color32(30, 215, 255, (byte)value);
+        coinText.color = new Color32(255, 255, 255, (byte)getValueScale(value, 0, 200, 255));
+        coinImg.color = new Color32(255, 255, 255, (byte)value);
         speedMeter.color = new Color32((byte)(speedMeter.color.r * 255), (byte)(speedMeter.color.g * 255), (byte)(speedMeter.color.b * 255), (byte)value);
         speedBackround.color = new Color32(255, 255, 255, (byte)value);
-        pwTimeBackround.color = new Color32(255, 255, 255, (byte)value);
-        speed1.color = new Color32(255, 255, 255, (byte)value);
+        dial.Find("dial icon").GetComponent<Image>().color = new Color32(255, 255, 255, (byte)value);
+        /*speed1.color = new Color32(255, 255, 255, (byte)value);
         speed2.color = new Color32(255, 255, 255, (byte)value);
         speed3.color = new Color32(255, 255, 255, (byte)value);
         speed4.color = new Color32(255, 255, 255, (byte)value);
         speed5.color = new Color32(255, 255, 255, (byte)value);
         speed6.color = new Color32(255, 255, 255, (byte)value);
-        speed7.color = new Color32(255, 255, 255, (byte)value);
+        speed7.color = new Color32(255, 255, 255, (byte)value);*/
     }
 
     void mphText()
     {
         if (controller.mph < maxSpeed)
         {
-            speedMeter.fillAmount = 0.11f + ((controller.mph / maxSpeed) * 0.78f);
+            speedMeter.fillAmount = 0.065f + ((controller.mph / maxSpeed) * 0.87f);
             speedText.text = ((int)controller.mph).ToString();
+            dial.eulerAngles = new Vector3(0, 0, -10 - getValueScale(controller.mph, 0, maxSpeed, 160));
         }
         else if (controller.mph < maxSpeed * 2)
         {
             speedMeter.fillAmount = 1;
-            speedMeter.color = new Color32((byte)(255 - (controller.mph - maxSpeed) * 2), 0, 0, 200);
+            speedMeter.color = new Color32(255, (byte)(255 - getValueScale(controller.mph, maxSpeed, maxSpeed*2, 255)), (byte)(255 - getValueScale(controller.mph, maxSpeed, maxSpeed * 2, 255)), 200);
             speedText.text = ((int)controller.mph).ToString();
+            if (dial.eulerAngles.z != -170)
+            {
+                dial.eulerAngles = new Vector3(0, 0, -170);
+            }
         }
         else
         {
+            dial.eulerAngles = new Vector3(0, 0, -10 - getValueScale(Mathf.Abs((controller.mph % 2) - 1), 0, 1, 160));
             speedText.text = "WTF";
         }
     }
@@ -222,19 +229,19 @@ public class speedometer : MonoBehaviour
         if (powerUpUses * 1.0f / powerUpStartUses < 0.28f || (powerUpUses == 1 && powerUpStartUses > 1))
         {
             iconHueTimer += Time.deltaTime;
-            fadePowerUp(getValueScale(Mathf.Abs((iconHueTimer % 2) - 1), 0, 1, 200));
+            fadePowerUp(30 + getValueScale(Mathf.Abs((iconHueTimer % 2) - 1), 0, 1, 170));
         }
         else
         {
             if (iconHueTimer < 2)
             {
                 fadePowerUp(getValueScale(iconHueTimer, 0, 2, 200));
-                powerUpUseText.color = new Color32(32, 217, 255, (byte)getValueScale(iconHueTimer, 0, 2, 200));
+                powerUpUseText.color = new Color32(255, 255, 255, (byte)getValueScale(iconHueTimer, 0, 2, 255));
                 iconHueTimer += Time.deltaTime;
                 if(iconHueTimer > 2)
                 {
                     fadePowerUp(200);
-                    powerUpUseText.color = new Color32(32, 217, 255, 200);
+                    powerUpUseText.color = new Color32(255, 255, 255, 255);
                 }
             }
         }

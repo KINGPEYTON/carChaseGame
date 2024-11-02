@@ -6548,6 +6548,7 @@ MonoBehaviour:
   powerupIDs: []
   powerupTypes: 
   powerupRawOdds: []
+  popSound: {fileID: 8300000, guid: 1d118268485354897b23556802a2c1fc, type: 3}
   pwReader:
     standard: []
     premium: []
@@ -6923,7 +6924,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: -13
+  m_SortingOrder: -20
   m_TargetDisplay: 0
 --- !u!224 &353799763 stripped
 RectTransform:
@@ -38967,7 +38968,7 @@ RectTransform:
   m_GameObject: {fileID: 1455716944}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1388516577}
@@ -39071,6 +39072,8 @@ MonoBehaviour:
   endTextTimer: 0
   endTimer: 0
   startAni: 0
+  coinPulseTimer: 0
+  coinPulseTime: 0
 --- !u!1 &1457027188
 GameObject:
   m_ObjectHideFlags: 0
@@ -41672,6 +41675,7 @@ MonoBehaviour:
   liveryMaskSprite: {fileID: 0}
   liverySprite: {fileID: 0}
   liveryColor: {r: 0, g: 0, b: 0, a: 0}
+  engineStart: {fileID: 0}
   body: {fileID: 160000939}
   window: {fileID: 249655682}
   liveryMask: {fileID: 1712579200}
@@ -41692,13 +41696,13 @@ MonoBehaviour:
   disMove: 0
   overshoot: 0
   startPos: 0
-  turns:
-  - {fileID: 8300000, guid: b2783116cca294a46af603bed881fc6d, type: 3}
-  - {fileID: 8300000, guid: f03306fa8455b447a892330a61edf4d6, type: 3}
-  - {fileID: 8300000, guid: a12d5c80c46654d1fa43a7d93499bcc2, type: 3}
-  - {fileID: 8300000, guid: e6e81d3a76261469c99fd45f3adc2a20, type: 3}
-  crash1: {fileID: 8300000, guid: 7beda4447c72246df995b524a1358bb4, type: 3}
-  crash2: {fileID: 8300000, guid: a7ebc837c730747b1b1df317ebb8f4ac, type: 3}
+  turnsUp: {fileID: 8300000, guid: 94fd7c6b28b7e4502b6c63a2ece387a7, type: 3}
+  turnsDown: {fileID: 8300000, guid: ac33401ac3ae04258ab0d78f56984c8f, type: 3}
+  hitsAudio:
+  - {fileID: 8300000, guid: 3e6f61a4e28704369831b3a3fcfa6cff, type: 3}
+  - {fileID: 8300000, guid: 772888f8ff6ef4d44bfb3f007f439279, type: 3}
+  - {fileID: 8300000, guid: 17fc88d0ebd4642648ecded7c464fe8b, type: 3}
+  - {fileID: 8300000, guid: 69ddfae271a6a4555ae2e0e336765d65, type: 3}
   speedo: {fileID: 0}
   powerTapTimer: 0
   crashForce: 0
@@ -41754,7 +41758,7 @@ MonoBehaviour:
   beginBoostScoreMPH: 0
   statLane: 0
   statTurns: 0
-  aaa: {fileID: 0}
+  crashAudio: {fileID: 5522838742561888528, guid: 115b4a302390649e0affec77c9c56fc0, type: 3}
 --- !u!4 &1552645251
 Transform:
   m_ObjectHideFlags: 0
@@ -46094,9 +46098,9 @@ SpriteMask:
   m_BackSortingLayerID: 0
   m_FrontSortingLayer: 0
   m_BackSortingLayer: 0
-  m_FrontSortingOrder: 0
-  m_BackSortingOrder: 0
-  m_IsCustomRangeActive: 0
+  m_FrontSortingOrder: 25
+  m_BackSortingOrder: -15
+  m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0
 --- !u!224 &1714805037 stripped
 RectTransform:
@@ -56557,6 +56561,7 @@ MonoBehaviour:
   carNames: []
   carIDs: []
   carIcon: []
+  carStart: []
   wheelNames: []
   wheelIds: []
   wheels: []
@@ -58101,8 +58106,8 @@ MonoBehaviour:
   carsPast: 0100000003000000
   settingsUI: {fileID: 3914550148770872345, guid: 806e32ce56b4b452ca8aa7c11267be32, type: 3}
   inventoryUI: {fileID: 5105386078417603160, guid: f2b43a8b2a02b462a8571fd2a5e1c45f, type: 3}
-  menuAmbience: {fileID: 8300000, guid: 7501916f8c90c4e868d55484fcc27ea2, type: 3}
-  gameAmbience: {fileID: 8300000, guid: 3d5927ae1d4c84c0d8f1c89b54858511, type: 3}
+  menuAmbience: {fileID: 8300000, guid: 85044f1e1fafc42098e7120c552afa1a, type: 3}
+  gameAmbience: {fileID: 8300000, guid: f6d7f79dea1924814b78f062165e9490, type: 3}
   menuSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: 3a2333cedba404894a725fc6bfd28e13, type: 3}
   inConstruction: 0
@@ -58130,6 +58135,7 @@ MonoBehaviour:
   startBridge: 0
   bridgeBar: {fileID: 4032777581963735201, guid: d4f03ca2df04e452a820c979cbd875df, type: 3}
   bridgeBar2: {fileID: 8494465923659025244, guid: a56f213719f1940dcbef4f750dbf257b, type: 3}
+  bridgebar3: {fileID: 4032777581963735201, guid: 10bc87602df7544de9623824a49548b5, type: 3}
   bridgeStart: {fileID: 9083144179903063059, guid: aa2504119327642b08330c40376a00b9, type: 3}
   bridgeEnd: {fileID: 789969036681543615, guid: 31f6c213e5a1246aa99b30cf34004d28, type: 3}
   bridgeStartConnector: {fileID: 2445986795045182302, guid: e8d3479b763ff4c0697ce72244b98555, type: 3}

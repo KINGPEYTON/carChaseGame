@@ -108,3 +108,4 @@ MonoBehaviour:
   tier: 0
   pwManage: {fileID: 0}
   controller: {fileID: 0}
+  popSound: {fileID: 8300000, guid: 1d118268485354897b23556802a2c1fc, type: 3}

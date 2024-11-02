@@ -19,6 +19,8 @@ public class powerUpIcon : MonoBehaviour
     public powerUpManager pwManage;
     public main controller;
 
+    public AudioClip popSound;
+
     // Start is called before the first frame update
     void Start()
     {

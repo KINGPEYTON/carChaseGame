@@ -39,6 +39,9 @@ public class radio_menu : MonoBehaviour
     public bool bars4Target;
     public bool bars5Target;
 
+    public AudioClip radioChangeUp;
+    public AudioClip radioChangeDown;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -91,11 +94,13 @@ public class radio_menu : MonoBehaviour
     public void nextStation()
     {
         changeStation(manager.radioID + 1, 2.0f);
+        pauseMenu.playSound(radioChangeUp, new Vector3(0, 0, -10), manager.controller.masterVol * manager.controller.radioVol);
     }
 
     public void prevStation()
     {
         changeStation(manager.radioID - 1, 2.0f);
+        pauseMenu.playSound(radioChangeDown, new Vector3(0, 0, -10), manager.controller.masterVol * manager.controller.radioVol);
     }
 
     public void changeStation(int station, float time)

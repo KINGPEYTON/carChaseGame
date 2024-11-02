@@ -60,13 +60,13 @@ public class maniac_van : cars
         {
             if (controller.mph > controller.playerCar.startMph) // checks if its not in the game start animation
             {
-                if (currSpeed > 0)
+                if (currSpeed > 6)
                 {
-                    transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / currSpeed), turningSpeed * Time.deltaTime, 0); //move fowards in game
+                    transform.position -= new Vector3(((controller.mph) * Time.deltaTime / currSpeed), turningSpeed * -Time.deltaTime, 0); //move fowards in game
                 }
                 else
                 {
-                    transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 3.5f), 0, 0); //move fowards in game
+                    transform.position -= new Vector3(((controller.mph) * -Time.deltaTime / 6), 0, 0); //move fowards in game
                 }
             }
             else
@@ -92,9 +92,9 @@ public class maniac_van : cars
         {
             if (currSpeed > 0)
             {
-                transform.position = transform.position + new Vector3(Time.deltaTime * (currSpeed / 2.0f), turningSpeed * Time.deltaTime, 0); // moves the across cars the screen when game isnt on (like game over screen)
+                transform.position += new Vector3(Time.deltaTime * (currSpeed / 2.0f), turningSpeed * Time.deltaTime, 0); // moves the across cars the screen when game isnt on (like game over screen)
             } else {
-                transform.position = transform.position + new Vector3(0, 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
+                transform.position += new Vector3(0, 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
             }
         }
 
@@ -123,6 +123,7 @@ public class maniac_van : cars
     public override void makeDisabled(float xF, float yF)
     {
         isDisabled = true;
+        AudioSource.PlayClipAtPoint(disableSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         currSpeed = 0;
         startSpeed = 0;
         xForce = xF;
@@ -197,13 +198,13 @@ public class maniac_van : cars
     {
         if (transform.position.y <= -4.35 && turningSpeed < 0)
         {
-            turningSpeed = -Mathf.Abs(turningSpeed);
+            turningSpeed = Mathf.Abs(turningSpeed);
         }
         if (controller.topLane)
         {
             if (transform.position.y >= 0.65 && turningSpeed > 0)
             {
-                turningSpeed = Mathf.Abs(turningSpeed);
+                turningSpeed = -Mathf.Abs(turningSpeed);
             }
         } else
         {

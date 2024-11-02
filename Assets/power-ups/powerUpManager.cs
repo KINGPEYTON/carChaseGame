@@ -37,6 +37,8 @@ public class powerUpManager : MonoBehaviour
     public List<int> powerupTypes;
     public List<float> powerupRawOdds;
 
+    public AudioClip popSound;
+
     public powerupReader pwReader;
 
     void Awake()
@@ -65,7 +67,7 @@ public class powerUpManager : MonoBehaviour
             getPowerupOdds();
         }
 
-        //createPowerup(7, new Vector3(9, -1.65f, 0));
+        createPowerup(10, new Vector3(9, -1.65f, 0));
     }
 
     public void collectPowerUp(string id, int level)
@@ -361,6 +363,7 @@ public class powerUpManager : MonoBehaviour
     {
         GameObject newPowerup = new GameObject(id + " powerup", typeof(SpriteRenderer), typeof(powerUp), typeof(Animator), typeof(Rigidbody2D), typeof(BoxCollider2D));
         newPowerup.GetComponent<powerUp>().createPowerUp(id, tpId, newIcon, bubble, tier, this, bubbleIconOBJ);
+        newPowerup.GetComponent<powerUp>().popSound = popSound;
         newPowerup.GetComponent<Animator>().runtimeAnimatorController = bubbleAni;
         newPowerup.GetComponent<SpriteRenderer>().sortingOrder = 18;
         newPowerup.GetComponent<Rigidbody2D>().gravityScale = 0;

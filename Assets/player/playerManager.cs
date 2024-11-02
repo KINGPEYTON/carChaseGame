@@ -11,6 +11,7 @@ public class playerManager : MonoBehaviour
     public List<string> carNames;
     public List<string> carIDs;
     public List<Sprite> carIcon;
+    public List<AudioClip> carStart;
 
     public List<string> wheelNames;
     public List<string> wheelIds;
@@ -92,6 +93,9 @@ public class playerManager : MonoBehaviour
         Texture2D maskOutlineTexture = Resources.Load<Texture2D>(path + "/" + id + " outline");
         Sprite maskOutline = Sprite.Create(maskOutlineTexture, new Rect(0, 0, maskOutlineTexture.width, maskOutlineTexture.height), new Vector2(xPiv, yPiv), 100);
         liveryMask.Add(maskOutline);
+
+        AudioClip carStartAudio = Resources.Load<AudioClip>(path + "/" + id + " start");
+        carStart.Add(carStartAudio);
 
         List<bool> newBodyUnlock = new List<bool>();
         newBodyUnlock.Add(true);

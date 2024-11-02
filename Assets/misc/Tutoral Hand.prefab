@@ -79,7 +79,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 6.12, y: 6.12}
+  m_Size: {x: 10.01, y: 17.65}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -100,6 +100,8 @@ MonoBehaviour:
   bounceX: 0
   startPointX: 0
   bounceDirX: 0
+  speedX: 0
   bounceY: 0
   startPointY: 0
   bounceDirY: 0
+  speedY: 0

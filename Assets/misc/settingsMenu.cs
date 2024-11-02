@@ -142,7 +142,7 @@ public class settingsMenu : MonoBehaviour
         settingsCurPos = -1750;
         exitCurPos = 4000;
         mainCurPos = -1750;
-        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
+        pauseMenu.playSound(clickSound, new Vector3(0, 0, -10), contoller.masterVol);
         settingsSlider.gameObject.SetActive(false);
         prevButton.interactable = true;
     }
@@ -199,7 +199,7 @@ public class settingsMenu : MonoBehaviour
 
     public void statMenu()
     {
-        AudioSource.PlayClipAtPoint(clickSound, transform.position, contoller.masterVol * contoller.sfxVol);
+        pauseMenu.playSound(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
         Instantiate(statScreen);
     }
 

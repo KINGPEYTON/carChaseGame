@@ -20,6 +20,7 @@ public class playerCar : MonoBehaviour
     public Sprite liveryMaskSprite;
     public Sprite liverySprite;
     public Color liveryColor;
+    public AudioClip engineStart;
 
     public SpriteRenderer body;
     public SpriteRenderer window;
@@ -46,9 +47,9 @@ public class playerCar : MonoBehaviour
 
     public float startPos;
 
-    public AudioClip[] turns;
-    public AudioClip crash1;
-    public AudioClip crash2;
+    public AudioClip turnsUp;
+    public AudioClip turnsDown;
+    public AudioClip[] hitsAudio;
 
     public speedometer speedo;
     public float powerTapTimer;
@@ -75,6 +76,7 @@ public class playerCar : MonoBehaviour
     public float teleBoltTimer;
     public GameObject teleBolt;
     public Color32 teleBoltColor;
+    public AudioClip teleportSound;
 
     public bool inShield;
     public bool shieldReady;
@@ -115,7 +117,7 @@ public class playerCar : MonoBehaviour
     public int statLane;
     public int statTurns;
 
-    public GameObject aaa;
+    public GameObject crashAudio;
 
     void OnEnable()
     {
@@ -403,6 +405,8 @@ public class playerCar : MonoBehaviour
             teleLocation = teleLane;
             Animator newEffect = Instantiate(teleportEffect, new Vector3(transform.position.x, (teleLane * -1.25f) + 0.65f, 0), Quaternion.identity, GameObject.Find("misc backround").transform).GetComponent<Animator>();
             newEffect.Play("tele light exit");
+            AudioSource.PlayClipAtPoint(teleportSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+
             if (affectCharge)
             {
                 useCharge();
@@ -798,14 +802,23 @@ public class playerCar : MonoBehaviour
         if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
         {
             float dis = 0;
-            if (isUp) { dis = 1.25f; } else { dis = -1.25f; }
+            if (isUp)
+            {
+                dis = 1.25f;
+                changeOrder(-1);
+                AudioSource.PlayClipAtPoint(turnsUp, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            }
+            else
+            {
+                dis = -1.25f;
+                changeOrder(1);
+                AudioSource.PlayClipAtPoint(turnsDown, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            }
             targetPos += new Vector3(0, dis, 0); //changes targetPos to the new lane it needs to go to
             disMove = (moveTime * (1 / multiplier)); //calculates the speed the player car needs to go to switch lanes
             turnPos = transform.position;
-            if (isUp) { changeOrder(-1); } else { changeOrder(1); }
             overshoot = 0; //resets overshoot
 
-            AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
             slidingUp = isUp;
             slidingDown = !isUp;
             inPos = false;
@@ -819,15 +832,23 @@ public class playerCar : MonoBehaviour
 
     void forceSlide(bool isUp, float multiplier)
     {
-        float dis = 0;
-        if (isUp) { dis = 1.25f; } else { dis = -1.25f; }
+        float dis = 0; if (isUp)
+        {
+            dis = 1.25f;
+            changeOrder(-1);
+            AudioSource.PlayClipAtPoint(turnsUp, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        }
+        else
+        {
+            dis = -1.25f;
+            changeOrder(1);
+            AudioSource.PlayClipAtPoint(turnsDown, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        }
         targetPos += new Vector3(0, dis, 0); //changes targetPos to the new lane it needs to go to
         disMove = (moveTime * (1 / multiplier)); //calculates the speed the player car needs to go to switch lanes
         turnPos = transform.position;
-        if (isUp) { changeOrder(-1); } else { changeOrder(1); }
         overshoot = 0; //resets overshoot
 
-        AudioSource.PlayClipAtPoint(turns[Random.Range(0, turns.Length - 1)], new Vector3(0, 0, -7), controller.masterVol * controller.sfxVol);
         slidingUp = isUp;
         slidingDown = !isUp;
         inPos = false;
@@ -964,6 +985,10 @@ public class playerCar : MonoBehaviour
             {
                 lethalHit(collision);
             }
+            else
+            {
+                AudioSource.PlayClipAtPoint(hitsAudio[Random.Range(0, hitsAudio.Length)], new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            }
 
             if (collision.transform.position.y == transform.position.y)
             {
@@ -991,18 +1016,17 @@ public class playerCar : MonoBehaviour
         else
         {
             crashSmoke.emissionRate = 24;
+            Instantiate(crashAudio).GetComponent<AudioSource>().volume = controller.masterVol * controller.sfxVol;
             controller.bannedLanes.Add(collision.GetComponent<cars>().lane);
             if (collision.transform.position.y < transform.position.y)
             {
                 changeOrder(-1);
                 controller.bannedLanes.Add(collision.GetComponent<cars>().lane - 1);
-                AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             }
             else if (collision.transform.position.y > transform.position.y)
             {
                 changeOrder(1);
                 controller.bannedLanes.Add(collision.GetComponent<cars>().lane + 1);
-                AudioSource.PlayClipAtPoint(crash2, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             }
 
             controller.gameOver(); //sets the game to its game over state
@@ -1106,7 +1130,7 @@ public class playerCar : MonoBehaviour
         window.sortingOrder = 3 + lane;
         wheelF.sortingOrder = 3 + lane;
         wheelB.sortingOrder = 3 + lane;
-        livery.sortingOrder = 3 + lane;
+        livery.sortingOrder = 4 + lane;
         if (ramOn) { ram.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
         if (controller.laserOn) { carLaser.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 3 + lane; }
 
@@ -1136,6 +1160,7 @@ public class playerCar : MonoBehaviour
         liveryMaskSprite = pManager.liveryMask[carTypeSave];
         liverySprite = pManager.livery[liverySave];
         liveryColor = pManager.liveryColors[liveryColorSave];
+        engineStart = pManager.carStart[carTypeSave];
 
         wheelB.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[carTypeSave].wheelB, pManager.carPartsData.carTypes[carTypeSave].wheelHight, 0);
         wheelF.transform.localPosition = new Vector3(pManager.carPartsData.carTypes[carTypeSave].wheelF, pManager.carPartsData.carTypes[carTypeSave].wheelHight, 0);

@@ -4932,13 +4932,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05ed7b409e694b13937b49997e3256f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
+  idName: 
   skins:
   - {fileID: 21300000, guid: 57bc539cb701d4858ab6442a1f7b45f9, type: 3}
   - {fileID: 21300000, guid: 287ca927c68404af695eb357f1c6012b, type: 3}
+  controller: {fileID: 0}
   speed: 0
   lane: 0
   isCar: 0
+  hitPoint: 0
   switchUp: 0
   switchDown: 0
   turnUp: {fileID: 8310843848355289072}
@@ -4954,12 +4956,14 @@ MonoBehaviour:
   speedMin: 0
   speedMax: 0
   odds: 0
-  horn: {fileID: 0}
+  horn: {fileID: 8300000, guid: 912814dfcc4ee48b28cacfa24b9510a5, type: 3}
+  disableSound: {fileID: 8300000, guid: 1a6b9d99f79fb42599c3e1109b9a52ff, type: 3}
   isDestroyed: 0
   destroyedTimer: 0
   destroyedTime: 0
   destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
   carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
+  carExplode: {fileID: 8300000, guid: 912814dfcc4ee48b28cacfa24b9510a5, type: 3}
   isDisabled: 0
   crashSmoke: {fileID: 7178966783698962575}
   inTraffic: 1
@@ -4981,6 +4985,8 @@ MonoBehaviour:
   inEnd: 0
   cones: {fileID: 5955303942070324948, guid: b8ce124907c96414e81c4eb06077a91f, type: 3}
   conesLast: {fileID: 0}
+  coneList: []
+  coneOutline: {fileID: 0}
   carTime: 0
   carTimer: 0
 --- !u!50 &4155396503624009453

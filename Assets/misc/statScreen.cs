@@ -245,7 +245,7 @@ public class statScreen : MonoBehaviour
     public void exit()
     {
         coverTimer = 0;
-        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
+        pauseMenu.playSound(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
         inEnd = true;
     }
 

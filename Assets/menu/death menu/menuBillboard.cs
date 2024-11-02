@@ -55,6 +55,8 @@ public class menuBillboard : MonoBehaviour
     public RectTransform menuButton;
     public RectTransform factOBJ;
 
+    public AudioClip deathTyping;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -103,6 +105,7 @@ public class menuBillboard : MonoBehaviour
             if (endTimer > 1)
             {
                 Destroy(adOBJ.gameObject);
+                AudioSource.PlayClipAtPoint(deathTyping, new Vector3(transform.position.x, transform.position.y, -10), controller.masterVol * controller.musicVol);
                 inTransition = false;
                 inZoom = true;
                 endTimer = 0;

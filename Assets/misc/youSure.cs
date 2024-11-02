@@ -99,7 +99,7 @@ public class youSure : MonoBehaviour {
 		speedTimer = 0;
 		yesButton.interactable = false;
 		noButton.interactable = false;
-		AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+		pauseMenu.playSound(clickSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
 		makeInteractable(true);
 	}
 

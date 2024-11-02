@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d5ed0c69acf476ea0cfb85fc7dec54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
+  idName: 
   skins:
   - {fileID: 21300000, guid: d76caa9ecb010400e9503cab3d7a2097, type: 3}
   - {fileID: 21300000, guid: cb23a361662f048f0993780264b0ac18, type: 3}
@@ -198,9 +198,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7352bebf896db491a9c1c3747e4640ef, type: 3}
   - {fileID: 21300000, guid: 4638a4606c98341349ca45ded8eb3a8f, type: 3}
   - {fileID: 21300000, guid: 08c3f93f6e3804b4e989edc37e7a0982, type: 3}
+  controller: {fileID: 0}
   speed: 0
   lane: 0
   isCar: 0
+  hitPoint: 0
   switchUp: 0
   switchDown: 0
   turnUp: {fileID: 3253012530673127236}
@@ -217,13 +219,16 @@ MonoBehaviour:
   speedMax: 0
   odds: 0.25
   horn: {fileID: 8300000, guid: cc80427c3be2544579d737c7f853e313, type: 3}
+  disableSound: {fileID: 8300000, guid: 60bb3069e9cd54cabb124288b9b7013b, type: 3}
   isDestroyed: 0
   destroyedTimer: 0
   destroyedTime: 0
   destroyedCar: {fileID: 2268019673299303580, guid: 1b713ec2fa45a49799ba2b0d392933c6, type: 3}
   carDebris: {fileID: 5236431963343791791, guid: b789053a16c5049b08405206a44fa378, type: 3}
+  carExplode: {fileID: 8300000, guid: 912814dfcc4ee48b28cacfa24b9510a5, type: 3}
   isDisabled: 0
   crashSmoke: {fileID: 5362024011944611001}
+  inTraffic: 0
   xForce: 0
   yForce: 0
   forceMass: 0
@@ -258,6 +263,7 @@ MonoBehaviour:
   musicPlayer: {fileID: 7380043963766142696}
   coins: {fileID: 4218232472382792144, guid: 4c316639989564bd683ee84114f2ea93, type: 3}
   coinTimer: 0
+  isChase: 0
 --- !u!61 &98328009427470596
 BoxCollider2D:
   m_ObjectHideFlags: 0

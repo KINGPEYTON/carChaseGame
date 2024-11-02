@@ -19,6 +19,7 @@ public class powerUp : MonoBehaviour
     //animation stuff
     public bool bounceUp;
     public float startPoint;
+    public AudioClip popSound;
 
     public bool popped;
     public float popTimer;
@@ -98,6 +99,7 @@ public class powerUp : MonoBehaviour
 
     void setPopAnimation()
     {
+        AudioSource.PlayClipAtPoint(popSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         popAni.enabled = true;
         switch (typeID)
         {

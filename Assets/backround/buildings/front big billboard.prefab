@@ -80,9 +80,9 @@ SpriteMask:
   m_BackSortingLayerID: 0
   m_FrontSortingLayer: 0
   m_BackSortingLayer: 0
-  m_FrontSortingOrder: 0
-  m_BackSortingOrder: 0
-  m_IsCustomRangeActive: 0
+  m_FrontSortingOrder: -10
+  m_BackSortingOrder: -25
+  m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0
 --- !u!1 &724043275687943698
 GameObject:
@@ -279,3 +279,4 @@ MonoBehaviour:
   statics: {fileID: 21300000, guid: d96e8febf28a0418381d27c68accdf73, type: 3}
   staticTimer: 0
   staticSound: {fileID: 8300000, guid: ab16747795dc64665a781b84575acf01, type: 3}
+  skinCurr: {fileID: 0}

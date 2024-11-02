@@ -54,8 +54,15 @@ public class billboard : buildings
 
     public override void setSkin(Sprite skin)
     {
-        base.setSkin(skin);
-        skinCurr = skin;
+        try
+        {
+            base.setSkin(skin);
+            skinCurr = skin;
+        }
+        catch
+        {
+
+        }
     }
 
     void setAd()

@@ -859,6 +859,8 @@ MonoBehaviour:
   bars3Target: 0
   bars4Target: 0
   bars5Target: 0
+  radioChangeUp: {fileID: 8300000, guid: e8d9124ddce2f48d5b715cc310514877, type: 3}
+  radioChangeDown: {fileID: 8300000, guid: 97bbeb50cfced42b789ad7e09e30659c, type: 3}
 --- !u!1 &2368789638451510379
 GameObject:
   m_ObjectHideFlags: 0

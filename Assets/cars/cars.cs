@@ -35,12 +35,14 @@ public class cars : MonoBehaviour
     public float odds;
 
     public AudioClip horn;
+    public AudioClip disableSound;
 
     public bool isDestroyed;
     public float destroyedTimer;
     public float destroyedTime;
     public GameObject destroyedCar;
     public GameObject carDebris;
+    public AudioClip carExplode;
     public bool isDisabled;
     public ParticleSystem crashSmoke;
     public bool inTraffic;
@@ -281,6 +283,7 @@ public class cars : MonoBehaviour
     public virtual void makeDisabled(float xF, float yF)
     {
         isDisabled = true;
+        AudioSource.PlayClipAtPoint(disableSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         speed = 0;
         xForce = xF;
         yForce = yF;
@@ -303,6 +306,8 @@ public class cars : MonoBehaviour
             {
                 c.GetComponent<cars>().makeScared(lane);
             }
+
+            AudioSource.PlayClipAtPoint(carExplode, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         }
     }
 

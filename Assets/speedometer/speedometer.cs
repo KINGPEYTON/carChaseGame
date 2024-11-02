@@ -41,6 +41,9 @@ public class speedometer : MonoBehaviour
 
     public bool startAni;
 
+    public float coinPulseTimer;
+    public float coinPulseTime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -52,6 +55,8 @@ public class speedometer : MonoBehaviour
         fadeOBJ(0);
 
         endTextTimer = 1;
+        coinPulseTime = 0.45f;
+        coinPulseTimer = 5;
     }
 
     // Update is called once per frame
@@ -87,7 +92,16 @@ public class speedometer : MonoBehaviour
             }
             endSmoke();
         }
-        //setSpeedText();
+
+        if(coinPulseTimer < coinPulseTime)
+        {
+            coinPulseTimer += Time.deltaTime;
+            float iconSize = 1.15f - getValueScale(Mathf.Abs((coinPulseTimer % coinPulseTime) - (coinPulseTime / 2)), 0, coinPulseTime, 0.15f);
+            coinImg.transform.localScale = new Vector3(iconSize, iconSize, 1);
+        } else if (coinImg.transform.localScale.x != 1.0f)
+        {
+            coinImg.transform.localScale = new Vector3(1, 1, 1);
+        }
 
         if (powerupActive)
         {
@@ -246,6 +260,21 @@ public class speedometer : MonoBehaviour
             }
         }
         
+    }
+
+    public void pulseCoin()
+    {
+        if (coinPulseTimer <= coinPulseTime)
+        {
+            if (coinPulseTimer > coinPulseTime / 2)
+            {
+                coinPulseTimer = coinPulseTime / 2;
+            }
+        }
+        else
+        {
+            coinPulseTimer = 0;
+        }
     }
 
     string randomChar()

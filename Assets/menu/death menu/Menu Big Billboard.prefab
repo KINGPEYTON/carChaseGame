@@ -104,6 +104,7 @@ MonoBehaviour:
   inCameraPos: 0
   endTimer: 0
   blockSigns: []
+  blockBridge: {fileID: 0}
   backround: {fileID: 6960508332284720538}
   colorDir: 0
   colorVar: 0
@@ -132,6 +133,7 @@ MonoBehaviour:
   totalOBJ: {fileID: 7126437107611215374}
   menuButton: {fileID: 6051626987681525794}
   factOBJ: {fileID: 5917362168825494895}
+  deathTyping: {fileID: 8300000, guid: ecc7f3cc9966e4dcbb0237f0f420f95a, type: 3}
 --- !u!1001 &3138598000267584906
 PrefabInstance:
   m_ObjectHideFlags: 0

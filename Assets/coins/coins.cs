@@ -32,8 +32,10 @@ public class coins : MonoBehaviour
     public float startSize;
     public float targetBigSize;
 
-    public AudioClip[] pickupsSFX;
-    public AudioClip[] collectsSFX;
+    public AudioClip pickupsSFX;
+    public AudioClip collectsSFX;
+    public AudioClip pickupsHoloSFX;
+    public AudioClip collectsHoloSFX;
 
     public float hitboxSizeX;
     public float hitboxSizeY;
@@ -132,7 +134,9 @@ public class coins : MonoBehaviour
     void collect()
     {
         controller.collectCoin(value);
-        AudioSource.PlayClipAtPoint(collectsSFX[Random.Range(0, collectsSFX.Length - 1)], new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        speedometer.parent.GetComponent<speedometer>().pulseCoin();
+        if (isHolo) { AudioSource.PlayClipAtPoint(collectsHoloSFX, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol); }
+        else { AudioSource.PlayClipAtPoint(collectsSFX, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol); }
         destroyCoin();
     }
 
@@ -169,7 +173,8 @@ public class coins : MonoBehaviour
         collectedpos = transform.position;
         collectedStartSize = transform.localScale;
         collectedTimer = 0;
-        AudioSource.PlayClipAtPoint(pickupsSFX[Random.Range(0, pickupsSFX.Length - 1)], new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        if (isHolo) { AudioSource.PlayClipAtPoint(pickupsHoloSFX, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol); }
+        else { AudioSource.PlayClipAtPoint(pickupsSFX, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol); }
         GetComponent<SpriteRenderer>().sortingOrder = 55;
     }
 

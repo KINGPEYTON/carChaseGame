@@ -103,6 +103,7 @@ MonoBehaviour:
   controller: {fileID: 0}
   speedometer: {fileID: 0}
   ani: {fileID: 0}
+  sr: {fileID: 0}
   value: 1
   isHolo: 0
   collected: 0
@@ -120,12 +121,10 @@ MonoBehaviour:
   transitionTimer: 0
   startSize: 0
   targetBigSize: 0
-  pickupsSFX:
-  - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
-  collectsSFX:
-  - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
-  - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
-  - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  pickupsSFX: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+  collectsSFX: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
+  pickupsHoloSFX: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+  collectsHoloSFX: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
   hitboxSizeX: 0
   hitboxSizeY: 0
   hitbox: {fileID: 0}
@@ -325,6 +324,7 @@ MonoBehaviour:
   controller: {fileID: 0}
   speedometer: {fileID: 0}
   ani: {fileID: 0}
+  sr: {fileID: 0}
   value: 1
   isHolo: 0
   collected: 0
@@ -342,12 +342,10 @@ MonoBehaviour:
   transitionTimer: 0
   startSize: 0
   targetBigSize: 0
-  pickupsSFX:
-  - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
-  collectsSFX:
-  - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
-  - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
-  - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  pickupsSFX: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+  collectsSFX: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
+  pickupsHoloSFX: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+  collectsHoloSFX: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
   hitboxSizeX: 0
   hitboxSizeY: 0
   hitbox: {fileID: 0}
@@ -584,6 +582,7 @@ MonoBehaviour:
   controller: {fileID: 0}
   speedometer: {fileID: 0}
   ani: {fileID: 0}
+  sr: {fileID: 0}
   value: 1
   isHolo: 0
   collected: 0
@@ -601,12 +600,10 @@ MonoBehaviour:
   transitionTimer: 0
   startSize: 0
   targetBigSize: 0
-  pickupsSFX:
-  - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
-  collectsSFX:
-  - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
-  - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
-  - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  pickupsSFX: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+  collectsSFX: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
+  pickupsHoloSFX: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+  collectsHoloSFX: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
   hitboxSizeX: 0
   hitboxSizeY: 0
   hitbox: {fileID: 0}
@@ -806,6 +803,7 @@ MonoBehaviour:
   controller: {fileID: 0}
   speedometer: {fileID: 0}
   ani: {fileID: 0}
+  sr: {fileID: 0}
   value: 1
   isHolo: 0
   collected: 0
@@ -823,12 +821,10 @@ MonoBehaviour:
   transitionTimer: 0
   startSize: 0
   targetBigSize: 0
-  pickupsSFX:
-  - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
-  collectsSFX:
-  - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
-  - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
-  - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  pickupsSFX: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+  collectsSFX: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
+  pickupsHoloSFX: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+  collectsHoloSFX: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
   hitboxSizeX: 0
   hitboxSizeY: 0
   hitbox: {fileID: 0}
@@ -1028,6 +1024,7 @@ MonoBehaviour:
   controller: {fileID: 0}
   speedometer: {fileID: 0}
   ani: {fileID: 0}
+  sr: {fileID: 0}
   value: 1
   isHolo: 0
   collected: 0
@@ -1045,12 +1042,10 @@ MonoBehaviour:
   transitionTimer: 0
   startSize: 0
   targetBigSize: 0
-  pickupsSFX:
-  - {fileID: 8300000, guid: 988948e2834a04834b59d170b0b1cbcc, type: 3}
-  collectsSFX:
-  - {fileID: 8300000, guid: 6973339811dcd4ada8d417cc32f12279, type: 3}
-  - {fileID: 8300000, guid: b4f3075e91f384f64a940091d14e4af9, type: 3}
-  - {fileID: 8300000, guid: 63a48b7761bb7435d84aafa0abf86b6f, type: 3}
+  pickupsSFX: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+  collectsSFX: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
+  pickupsHoloSFX: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+  collectsHoloSFX: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
   hitboxSizeX: 0
   hitboxSizeY: 0
   hitbox: {fileID: 0}

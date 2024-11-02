@@ -239,6 +239,7 @@ public class main : MonoBehaviour
 
     public GameObject bridgeBar;
     public GameObject bridgeBar2;
+    public GameObject bridgebar3;
     public GameObject bridgeStart;
     public GameObject bridgeEnd;
     public GameObject bridgeStartConnector;
@@ -574,6 +575,7 @@ public class main : MonoBehaviour
                 {
                     //spawns a new rail guard for the edge of the road
                     Instantiate(bridgeBar, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgebar3, new Vector3(guardLast.position.x + (guardDist * 2), 8, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
                     guardLast = newBar;
                 }
@@ -581,6 +583,7 @@ public class main : MonoBehaviour
             catch
             {
                 Instantiate(bridgeBar, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                Instantiate(bridgebar3, new Vector3(guardLast.position.x + (guardDist * 2), 8, 0), Quaternion.identity, GameObject.Find("guards").transform);
                 Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
                 guardLast = newBar;
             }
@@ -896,17 +899,21 @@ public class main : MonoBehaviour
         if ((!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3)) && topLane) { areaTimer -= Time.deltaTime * mph; }
         if (areaTimer <= 0  && (topLane && topLaneTime <= 0))
         {
-            if (areaEvent == 0 && buildingFrontList == 1) { areaEvent = 1; } else if (areaEvent == 1 && buildingFrontList == 0) { areaEvent = 0;  }
+            if (areaEvent == 0 && buildingFrontList == 1) { areaEvent = 1; }
         }
         if (areaEvent == 1)
         {
             if (!startBridge)
             {
                 Transform bridgeStarting = Instantiate(bridgeStart, new Vector3(guardLast.position.x + 2, 0.95f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform;
-                Instantiate(bridgeSupport, new Vector3(bridgeStarting.position.x + 9f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
+                Transform newSupport = Instantiate(bridgeSupport, new Vector3(bridgeStarting.position.x + 4.75f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform;
+                buildingLast = newSupport;
                 buildingDist = 1.5f;
-                Instantiate(bridgeBar, new Vector3(guardLast.position.x + 1.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
-                frontBuildingDist = 9;
+                Instantiate(bridgeBar, new Vector3(guardLast.position.x + 2.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                Instantiate(bridgebar3, new Vector3(guardLast.position.x + 8.25f, 8, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                GameObject newBuilding = Instantiate(bridgePillar, new Vector3(bridgeStarting.position.x + 4.5f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                frontBuildingLast = newBuilding.transform;
+                frontBuildingDist = 7.5f;
                 Instantiate(bridgeStartConnector, new Vector3(guardLast.position.x -1, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                 createSign(3);
                 Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + 1.5f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
@@ -925,19 +932,19 @@ public class main : MonoBehaviour
             {
                 if (startBridge)
                 {
-                    Transform bridgeEnding = Instantiate(bridgeEnd, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.95f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform;
+                    Transform bridgeEnding = Instantiate(bridgeEnd, new Vector3(frontBuildingLast.position.x + 6.5f, 0.95f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform;
                     Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x - 2.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x + 2, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x + 6.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
-                    Instantiate(bridgeBar, new Vector3(frontBuildingLast.position.x + 10.25f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
-                    Instantiate(bridgeSupport, new Vector3(frontBuildingLast.position.x + 4, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
                     Instantiate(bridgeSupport, new Vector3(frontBuildingLast.position.x + -0.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
                     Instantiate(bridgeSupport, new Vector3(frontBuildingLast.position.x + 0.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
+                    Instantiate(bridgeSupport, new Vector3(frontBuildingLast.position.x + 1.5f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform);
                     frontBuildingLast = bridgeEnding.transform;
                     frontBuildingDist = 1.75f;
                     Transform bridgeEndConn = Instantiate(bridgeEndConnector, new Vector3(frontBuildingLast.position.x + 4.25f, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
                     guardLast = bridgeEndConn;
                     guardDist = 3.25f;
+
                     Instantiate(bridgeBar2, new Vector3(frontBuildingLast.position.x - 7.75f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(bridgeBar2, new Vector3(frontBuildingLast.position.x - 4.5f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Instantiate(bridgeBar2, new Vector3(frontBuildingLast.position.x - 1.25f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform);
@@ -945,6 +952,17 @@ public class main : MonoBehaviour
                     buildingFrontList = 3;
                     startBridge = false;
                     areaTimer = Random.Range(2000, 4000);
+
+                    GameObject bar3 = null;
+                    Transform barTra = GameObject.Find("guards").transform;
+                    for (int i = 0; i < barTra.childCount; i++)
+                    {
+                        if (barTra.GetChild(i).name == "bridge bar3(Clone)")
+                        {
+                            bar3 = barTra.GetChild(i).gameObject;
+                        }
+                    }
+                    Destroy(bar3);
                 }
             }
         }
@@ -977,15 +995,16 @@ public class main : MonoBehaviour
                     }
                     else
                     {
-                        GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 2.5f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<billboard>().setSkin(bridgeBigBillboardSkin);
                         frontBuildingLast = bboard.transform;
-                        frontBuildingDist = 9.5f;
+                        frontBuildingDist = 11f;
                         bboard.GetComponent<billboard>().isBigBillboard = true;
                         billboards.Add(bboard);
                         buildingFrontList = 0;
                         frontBillboardList = 0;
                     }
+                    if (areaEvent == 1 && areaTimer <= 0) { areaEvent = 0; }
                 }
             }
         }
@@ -1272,7 +1291,7 @@ public class main : MonoBehaviour
 
     void updateBillbord()
     {
-        if (billboards.ToArray()[0].transform.position.x < -9.25f)
+        if (billboards.ToArray()[0].transform.position.x < -8.75f)
         {
             billboards.Remove(billboards.ToArray()[0]);
         }
@@ -1422,7 +1441,7 @@ public class main : MonoBehaviour
 
         carTimer = 0;
 
-        AudioSource.PlayClipAtPoint(startEngine, new Vector3(-0.5f, 0, -10), masterVol * sfxVol);
+        AudioSource.PlayClipAtPoint(playerCar.engineStart, new Vector3(0, 0, -10), masterVol * sfxVol);
         menuSound.clip = gameAmbience;
         menuSound.Play();
 

@@ -116,7 +116,7 @@ public class pauseMenu : MonoBehaviour
     {
         inPos = true;
         speedTimer = 0;
-        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
+        playSound(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
         resumeSign.GetComponent<Button>().interactable = false;
     }
 
@@ -126,11 +126,12 @@ public class pauseMenu : MonoBehaviour
         areYouSure.methodToCall = manuMethod;
         areYouSure.prevButton = menuSign.GetComponent<Button>();
         areYouSure.message = "Are you sure you want to exit to the main menu?";
-        AudioSource.PlayClipAtPoint(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
+        playSound(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
     }
 
     public void settings()
     {
+        playSound(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
         contoller.settingsButton(settingsSign.GetComponent<Button>());
     }
 
@@ -138,6 +139,14 @@ public class pauseMenu : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene("Game", LoadSceneMode.Single); //resets the game
+    }
+
+    public static void playSound(AudioClip clip, Vector3 pos, float vol)
+    {
+        float currTime = Time.timeScale;
+        Time.timeScale = 1;
+        AudioSource.PlayClipAtPoint(clip, pos, vol);
+        Time.timeScale = currTime;
     }
 
     float getValueScale(float val, float min, float max, float scale)

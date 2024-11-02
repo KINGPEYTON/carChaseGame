@@ -16,6 +16,38 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -2.5
       objectReference: {fileID: 0}
+    - target: {fileID: 2528329070775964635, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: pickupsSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+    - target: {fileID: 2528329070775964635, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: collectsSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
+    - target: {fileID: 2528329070775964635, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: pickupsHoloSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+    - target: {fileID: 2528329070775964635, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: collectsHoloSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
+    - target: {fileID: 3708530639533984719, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: pickupsSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+    - target: {fileID: 3708530639533984719, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: collectsSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
+    - target: {fileID: 3708530639533984719, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: pickupsHoloSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+    - target: {fileID: 3708530639533984719, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: collectsHoloSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
     - target: {fileID: 4072771439345091731, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -58,8 +90,40 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5655589598402198202, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
       propertyPath: m_Name
-      value: coin bunch 23 Variant
+      value: coin bunch 24
       objectReference: {fileID: 0}
+    - target: {fileID: 8145738717263928326, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: pickupsSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+    - target: {fileID: 8145738717263928326, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: collectsSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
+    - target: {fileID: 8145738717263928326, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: pickupsHoloSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+    - target: {fileID: 8145738717263928326, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: collectsHoloSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
+    - target: {fileID: 9043764510499108213, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: pickupsSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: b5aa916fb2bff4fd99f65b5e75b9360b, type: 3}
+    - target: {fileID: 9043764510499108213, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: collectsSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 9d7aa4657d00a4a0c8be7690e68bc90a, type: 3}
+    - target: {fileID: 9043764510499108213, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: pickupsHoloSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: d2172faf0ef3b421c882d96a1b862933, type: 3}
+    - target: {fileID: 9043764510499108213, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}
+      propertyPath: collectsHoloSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: c47d08fb9aeff49b69645146ddd14c78, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 7851627871449564578, guid: ab867a02ccd7948beaf442a8444bde98, type: 3}

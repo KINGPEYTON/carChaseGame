@@ -20,7 +20,7 @@ public class buildings : MonoBehaviour
     void Update()
     {
         transform.position = transform.position - new Vector3(Time.deltaTime / speed * controller.mph, 0, 0); //moves building across the screen
-        if (transform.position.x <= -14) //checks if its offscreen
+        if (transform.position.x <= -15) //checks if its offscreen
         {
             Destroy(gameObject);
         }

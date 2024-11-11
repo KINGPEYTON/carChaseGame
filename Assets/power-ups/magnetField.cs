@@ -15,6 +15,10 @@ public class magnetField : MonoBehaviour
     public float rayTime;
     public GameObject ray;
 
+    public AudioClip getAttracted;
+    public AudioClip fieldSound;
+    public AudioSource sndSource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +34,7 @@ public class magnetField : MonoBehaviour
         }
         if (lifetime < 0)
         {
+            sndSource.clip = null;
             Destroy(gameObject);
         }
 
@@ -46,6 +51,12 @@ public class magnetField : MonoBehaviour
         sizeScale = newSize;
         tr = gameObject.transform;
         tr.localScale = new Vector3(sizeScale, sizeScale, 1);
+
+        sndSource = GameObject.Find("secondAudio").GetComponent<AudioSource>();
+        main controller = GameObject.Find("contoller").GetComponent<main>();
+        sndSource.clip = fieldSound;
+        sndSource.volume = controller.sfxVol * controller.masterVol;
+        sndSource.Play();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -55,6 +66,8 @@ public class magnetField : MonoBehaviour
             if (getHolo || !hitCoin.isHolo)
             {
                 hitCoin.attract(carPoint);
+                main controller = GameObject.Find("contoller").GetComponent<main>();
+                AudioSource.PlayClipAtPoint(getAttracted, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             }
         }
     }

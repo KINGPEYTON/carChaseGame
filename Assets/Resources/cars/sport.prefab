@@ -130,7 +130,9 @@ MonoBehaviour:
   speedMin: 0
   speedMax: 0
   odds: 0.05
+  cutoffSize: 0
   horn: {fileID: 8300000, guid: cc80427c3be2544579d737c7f853e313, type: 3}
+  angryFace: {fileID: 3223249439069376158, guid: daa65ff9247054a058c3ca549c000dbc, type: 3}
   disableSound: {fileID: 8300000, guid: d48a54d04fa5c4c40814fdcf0f5443e1, type: 3}
   isDestroyed: 0
   destroyedTimer: 0

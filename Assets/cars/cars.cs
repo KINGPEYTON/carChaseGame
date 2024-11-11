@@ -34,7 +34,11 @@ public class cars : MonoBehaviour
 
     public float odds;
 
+    public float cutoffSize;
+
     public AudioClip horn;
+    public GameObject angryFace;
+
     public AudioClip disableSound;
 
     public bool isDestroyed;
@@ -220,7 +224,7 @@ public class cars : MonoBehaviour
         {
             turningTimer = 1.5f;
             int maxLane = 0;
-            if (controller.topLane) { maxLane = 0; }
+            if (controller.topLane) { maxLane = 1; }
             int minLane = 4;
             if (controller.inConstruction) { minLane = 3; }
             if (lane < explosionLane && lane > maxLane)
@@ -720,7 +724,12 @@ public class cars : MonoBehaviour
     public virtual void nearCrash()
     {
         controller.closeHits++;
-        AudioSource.PlayClipAtPoint(horn, new Vector3(0, 0, -9), controller.masterVol * controller.sfxVol);
+        AudioSource.PlayClipAtPoint(horn, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        Transform face = Instantiate(angryFace).transform;
+        face.parent = transform;
+        face.GetComponent<angryIcon>().targetScale = face.localScale.x;
+        face.localScale = new Vector3(0, 0, 1);
+        face.localPosition = new Vector3(cutoffSize, 1.65f, 0);
     }
 
     float getValueScale(float val, float min, float max, float scale)

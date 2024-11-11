@@ -4954,6 +4954,10 @@ MonoBehaviour:
   cooldownSmoke: {fileID: 7056410594802681607}
   destroyed: 0
   ImDone: 0
+  laserShoot: {fileID: 8300000, guid: dc771e4ebd3fb4c17becfae27baca739, type: 3}
+  laserAim: {fileID: 8300000, guid: 411ac28251ba2461495cbfb3119f4754, type: 3}
+  laserClick: {fileID: 8300000, guid: f178f2031a28e4dd78ae52523e61eff5, type: 3}
+  laserDone: {fileID: 8300000, guid: a7f1c75703da5492e9f74b8a1939e263, type: 3}
 --- !u!95 &8243985114761500762
 Animator:
   serializedVersion: 5

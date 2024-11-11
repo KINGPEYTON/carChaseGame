@@ -118,6 +118,8 @@ MonoBehaviour:
   fadeVal: 0
   fadeTimer: 0
   fadeTime: 0
+  powerupSound: {fileID: 8300000, guid: 6837050c9215042099ba58c244f78f52, type: 3}
+  wheelSpinSound: {fileID: 8300000, guid: ab7dac3dd5cd54f74ba9bea9c2106776, type: 3}
 --- !u!1 &1978176630530315377
 GameObject:
   m_ObjectHideFlags: 0

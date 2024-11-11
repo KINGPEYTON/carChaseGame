@@ -8,6 +8,11 @@ public class coinhuna : MonoBehaviour
 
     public float lifetime;
 
+    public AudioClip coinStart;
+    public AudioClip coinRift;
+    public AudioClip coinEnd;
+    public AudioSource sndSource;
+
     // Update is called once per frame
     void Update()
     {
@@ -15,6 +20,8 @@ public class coinhuna : MonoBehaviour
         if (lifetime <= 0)
         {
             controller.endCoinhuna();
+            sndSource.clip = null;
+            AudioSource.PlayClipAtPoint(coinEnd, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             Destroy(gameObject);
         }
     }
@@ -30,5 +37,11 @@ public class coinhuna : MonoBehaviour
         {
             controller.makeCoinsHolo();
         }
+
+        AudioSource.PlayClipAtPoint(coinStart, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        sndSource = GameObject.Find("secondAudio").GetComponent<AudioSource>();
+        sndSource.clip = coinRift;
+        sndSource.volume = controller.sfxVol * controller.masterVol;
+        sndSource.Play();
     }
 }

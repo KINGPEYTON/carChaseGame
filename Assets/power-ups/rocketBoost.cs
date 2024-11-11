@@ -44,6 +44,12 @@ public class rocketBoost : MonoBehaviour
     public Animator ani;
     public Animator ani2;
 
+    public AudioSource sndSource;
+    public AudioClip boostClick;
+    public AudioClip boostStart;
+    public AudioClip boostSky;
+    public AudioClip boostEnd;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,6 +67,7 @@ public class rocketBoost : MonoBehaviour
         rocket2 = transform.GetChild(0);
         ani = GetComponent<Animator>();
         ani2 = rocket2.gameObject.GetComponent<Animator>();
+        sndSource = GameObject.Find("secondAudio").GetComponent<AudioSource>();
 
         coinLane = 5.65f + (Random.Range(0, 5) * 1.25f);
         GameObject coinToMake = coin;
@@ -92,6 +99,8 @@ public class rocketBoost : MonoBehaviour
                 startPos = player.position;
                 targY = pCar.targetPos.y + 10;
                 setAni("rocket boost");
+                newSound(boostStart);
+                AudioSource.PlayClipAtPoint(boostClick, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             }
         }
         else if (controller.playing)
@@ -175,6 +184,7 @@ public class rocketBoost : MonoBehaviour
             pCar.targetPos = player.position;
             setAni("rocket sky");
             pCar.inPos = true;
+            newSound(boostSky);
         }
     }
 
@@ -193,6 +203,7 @@ public class rocketBoost : MonoBehaviour
             startPos = player.position;
             targY = pCar.targetPos.y - 10;
             setAni("rocket standby");
+            sndSource.clip = null;
             boostTimer = 0;
         }
     }
@@ -277,6 +288,14 @@ public class rocketBoost : MonoBehaviour
         speedo.finishPowerup();
         pCar.inPos = true;
         setAni("rocket sky");
+        newSound(boostSky);
+    }
+
+    public void newSound(AudioClip sound)
+    {
+        sndSource.clip = sound;
+        sndSource.volume = controller.sfxVol * controller.masterVol;
+        sndSource.Play();
     }
 
     Vector3 calcPos(Vector3 dis, Vector3 startScale, float targetTimer, float targetTime)

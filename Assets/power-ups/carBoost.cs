@@ -22,6 +22,13 @@ public class carBoost : MonoBehaviour
     public float prevScoreMPH;
     public float targetMPH;
 
+    public AudioSource sndSource;
+    public AudioClip boostClick;
+    public AudioClip boostStart;
+    public AudioClip boostUse;
+    public AudioClip boostEnd;
+    public AudioClip boostDone;
+
     public bool destroyed;
 
     // Start is called before the first frame update
@@ -33,6 +40,7 @@ public class carBoost : MonoBehaviour
         startPos = transform.localPosition;
         if(controller.mph < 100) { targetMPH = 150; }
         else { targetMPH = controller.mph * 1.5f; }
+        sndSource = GameObject.Find("secondAudio").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -45,9 +53,13 @@ public class carBoost : MonoBehaviour
             startTimer += Time.deltaTime;
             if (startTimer > 1)
             {
-                inPos = true;
-                transform.localPosition = new Vector3(targX, targY, 1);
-                pCar.inBoost = true;
+                if (!inPos)
+                {
+                    inPos = true;
+                    transform.localPosition = new Vector3(targX, targY, 1);
+                    pCar.inBoost = true;
+                    AudioSource.PlayClipAtPoint(boostClick, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+                }
                 GetComponent<SpriteRenderer>().sortingOrder = pCar.window.sortingOrder - 1;
             }
         }
@@ -76,6 +88,11 @@ public class carBoost : MonoBehaviour
 
         prevMPH = controller.mph;
         prevScoreMPH = controller.scoremph;
+
+        AudioSource.PlayClipAtPoint(boostStart, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        sndSource.clip = boostUse;
+        sndSource.volume = controller.sfxVol * controller.masterVol;
+        sndSource.Play();
     }
 
     public void finishBoost()
@@ -86,6 +103,8 @@ public class carBoost : MonoBehaviour
         controller.scoremph = prevScoreMPH;
         controller.updateTint(new Color32(255, 0, 0, 0));
         speedo.usePowerUp(1);
+        sndSource.clip = null;
+        AudioSource.PlayClipAtPoint(boostEnd, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         if (uses <= 0)
         {
             endBoost();
@@ -111,6 +130,7 @@ public class carBoost : MonoBehaviour
         pCar.inBoost = false;
         transform.parent = null;
         if (speedo.powerupActive) { speedo.finishPowerup(); }
+        AudioSource.PlayClipAtPoint(boostDone, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
     }
 
     Vector3 calcPos(Vector3 dis, Vector3 startScale, float targetTimer, float targetTime)

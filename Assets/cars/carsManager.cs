@@ -12,6 +12,7 @@ public class carsManager : MonoBehaviour
     public List<int> blinkTime;
     public List<float> speedMin;
     public List<float> speedMax;
+    public List<float> cutoffLength;
     public List<float> forceMass;
     public List<bool> isCar;
     public List<int> hitPoint;
@@ -61,12 +62,20 @@ public class carsManager : MonoBehaviour
         cars ca = spawnCar(2, pos, par).GetComponent<cars>();
 
         setCarStuff(ca, lastSelID + carsOBJs[0].Count + carsOBJs[1].Count);
-        return ca; 
+        return ca;
     }
 
     public cars spawnPoliceCar(Vector3 pos, Transform par)
     {
         cars ca = Instantiate(carsOBJs[2][0], pos, Quaternion.identity, par).GetComponent<cars>();
+
+        setCarStuff(ca, 0 + carsOBJs[0].Count + carsOBJs[1].Count);
+        return ca;
+    }
+
+    public cars spawnPoliceChase(Vector3 pos, Transform par)
+    {
+        cars ca = Instantiate(carsOBJs[2][2], pos, Quaternion.identity, par).GetComponent<cars>();
 
         setCarStuff(ca, 0 + carsOBJs[0].Count + carsOBJs[1].Count);
         return ca;
@@ -82,6 +91,7 @@ public class carsManager : MonoBehaviour
         obj.blinkTime = blinkTime[id];
         obj.speedMin = speedMin[id];
         obj.speedMax = speedMax[id];
+        obj.cutoffSize = cutoffLength[id];
         obj.forceMass = forceMass[id];
         obj.isCar = isCar[id];
         obj.hitPoint = hitPoint[id];
@@ -161,6 +171,7 @@ public class carsManager : MonoBehaviour
             blinkTime.Add(ca.blinkTime);
             speedMin.Add(ca.speedMin);
             speedMax.Add(ca.speedMax);
+            cutoffLength.Add(ca.cutoffSize);
             forceMass.Add(ca.forceMass);
             isCar.Add(ca.isCar);
             hitPoint.Add(ca.hitPoint);
@@ -174,6 +185,7 @@ public class carsManager : MonoBehaviour
             blinkTime.Add(ca.blinkTime);
             speedMin.Add(ca.speedMin);
             speedMax.Add(ca.speedMax);
+            cutoffLength.Add(ca.cutoffSize);
             forceMass.Add(ca.forceMass);
             isCar.Add(ca.isCar);
             hitPoint.Add(ca.hitPoint);
@@ -187,6 +199,7 @@ public class carsManager : MonoBehaviour
             blinkTime.Add(ca.blinkTime);
             speedMin.Add(ca.speedMin);
             speedMax.Add(ca.speedMax);
+            cutoffLength.Add(ca.cutoffSize);
             forceMass.Add(ca.forceMass);
             isCar.Add(ca.isCar);
             hitPoint.Add(ca.hitPoint);
@@ -247,6 +260,7 @@ public class carData
     public int blinkTime;
     public float speedMin;
     public float speedMax;
+    public float cutoffSize;
     public float odds;
     public bool isCar;
     public float forceMass;

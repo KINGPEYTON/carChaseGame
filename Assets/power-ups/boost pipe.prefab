@@ -106,4 +106,15 @@ MonoBehaviour:
   startTimer: 0
   inPos: 0
   uses: 0
+  power: 0
+  hitProt: 0
+  prevMPH: 0
+  prevScoreMPH: 0
+  targetMPH: 0
+  sndSource: {fileID: 0}
+  boostClick: {fileID: 8300000, guid: f178f2031a28e4dd78ae52523e61eff5, type: 3}
+  boostStart: {fileID: 8300000, guid: 1b96c4f5584de4aa7b2bd8d04e2b3b66, type: 3}
+  boostUse: {fileID: 8300000, guid: ceaab0ff0292a4a24afd62da88fd6b99, type: 3}
+  boostEnd: {fileID: 8300000, guid: d4d2f7d8333a8462ca6e7cb911cd6e0c, type: 3}
+  boostDone: {fileID: 8300000, guid: a7f1c75703da5492e9f74b8a1939e263, type: 3}
   destroyed: 0

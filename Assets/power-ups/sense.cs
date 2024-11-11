@@ -37,6 +37,12 @@ public class sense : MonoBehaviour
     public float fadeTimer;
     public float fadeTime;
 
+    public AudioClip senseStart;
+    public AudioClip senseEnd;
+    public AudioClip senseTheme;
+    public AudioSource sndSource;
+    public GameObject mainCamera;
+
     // Update is called once per frame
     void Update()
     {
@@ -60,6 +66,8 @@ public class sense : MonoBehaviour
         scoreBlimp = GameObject.Find("Score-Blimp").transform;
         scoreBlimpText = scoreBlimp.GetChild(0).GetComponent<TextMeshProUGUI>();
         pausePlane = GameObject.Find("Pause Plane").transform;
+        sndSource = GameObject.Find("secondAudio").GetComponent<AudioSource>();
+        mainCamera = GameObject.Find("Main Camera");
 
         controller.senseVision = true;
         controller.enhancedSense = this;
@@ -118,10 +126,14 @@ public class sense : MonoBehaviour
         fadeVal = (getValueScale(fadeTimer, 0, fadeTime, 235));
         fadeAni(fadeVal);
         fadeTimer += Time.deltaTime;
+        mainCamera.GetComponent<AudioLowPassFilter>().cutoffFrequency = 22000 - getValueScale(fadeTimer, 0, fadeTime, 20000);
+        mainCamera.GetComponent<AudioHighPassFilter>().cutoffFrequency = 10 + getValueScale(fadeTimer, 0, fadeTime, 1000);
         if (fadeTimer > fadeTime)
         {
             fadeAni(235);
             doFadeIn = false;
+            mainCamera.GetComponent<AudioLowPassFilter>().cutoffFrequency = 2000;
+            mainCamera.GetComponent<AudioHighPassFilter>().cutoffFrequency = 1000;
         }
     }
 
@@ -129,6 +141,8 @@ public class sense : MonoBehaviour
     {
         fadeVal = (235 - getValueScale(fadeTimer, 0, fadeTime, 235));
         fadeAni(fadeVal);
+        mainCamera.GetComponent<AudioLowPassFilter>().cutoffFrequency = 2000 + getValueScale(fadeTimer, 0, fadeTime, 20000);
+        mainCamera.GetComponent<AudioHighPassFilter>().cutoffFrequency = 1010 - getValueScale(fadeTimer, 0, fadeTime, 1000);
         fadeTimer += Time.deltaTime;
         if (fadeTimer > fadeTime)
         {
@@ -136,6 +150,9 @@ public class sense : MonoBehaviour
             controller.senseVision = false;
             pCar.turnMulti = pCar.turnMulti * (1 / turnMulti);
             pCar.changeHitBox(1);
+
+            mainCamera.GetComponent<AudioLowPassFilter>().cutoffFrequency = 22000;
+            mainCamera.GetComponent<AudioHighPassFilter>().cutoffFrequency = 10;
 
             controller.carTimer += 60;
             controller.carPlace = 12;
@@ -161,11 +178,19 @@ public class sense : MonoBehaviour
         if (fIn)
         {
             doFadeIn = true;
+
+            AudioSource.PlayClipAtPoint(senseStart, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            sndSource.clip = senseTheme;
+            sndSource.volume = controller.sfxVol * controller.masterVol;
+            sndSource.Play();
         }
         else
         {
             doFadeOut = true;
             foreach(GameObject ci in carIcons) { ci.GetComponent<carIcon>().startFade(false); }
+
+            AudioSource.PlayClipAtPoint(senseEnd, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+            sndSource.clip = null;
         }
     }
 

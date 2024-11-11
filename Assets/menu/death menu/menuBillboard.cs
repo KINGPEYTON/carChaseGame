@@ -56,6 +56,7 @@ public class menuBillboard : MonoBehaviour
     public RectTransform factOBJ;
 
     public AudioClip deathTyping;
+    public AudioClip fireEnd;
 
     // Start is called before the first frame update
     void Start()
@@ -105,7 +106,7 @@ public class menuBillboard : MonoBehaviour
             if (endTimer > 1)
             {
                 Destroy(adOBJ.gameObject);
-                AudioSource.PlayClipAtPoint(deathTyping, new Vector3(transform.position.x, transform.position.y, -10), controller.masterVol * controller.musicVol);
+                AudioSource.PlayClipAtPoint(deathTyping, new Vector3(transform.position.x, transform.position.y, -10), controller.masterVol * controller.sfxVol);
                 inTransition = false;
                 inZoom = true;
                 endTimer = 0;
@@ -262,6 +263,8 @@ public class menuBillboard : MonoBehaviour
                     if (fireworks.isStopped)
                     {
                         fireworks.Play();
+                        obj.Find("celebrate").GetComponent<AudioSource>().Play();
+                        obj.Find("celebrate").GetComponent<AudioSource>().GetComponent<AudioSource>().volume = controller.masterVol * controller.sfxVol;
                     }
                 }
             }
@@ -338,6 +341,13 @@ public class menuBillboard : MonoBehaviour
                 foreach (ParticleSystem pc in fire.GetComponentsInChildren<ParticleSystem>())
                 {
                     pc.enableEmission = true;
+                }
+                AudioSource sndSource = GameObject.Find("secondAudio").GetComponent<AudioSource>();
+                if(sndSource.clip == null)
+                {
+                    sndSource.clip = fireEnd;
+                    sndSource.volume = controller.sfxVol * controller.masterVol;
+                    sndSource.Play();
                 }
             }
         }

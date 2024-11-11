@@ -46,3 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   lifetime: 0
+  tinySound: {fileID: 8300000, guid: db62c2e0fb68d4593bc4ff1374910041, type: 3}
+  bigSound: {fileID: 8300000, guid: ccbcffd88703a40d79c0d02abe57a12b, type: 3}

@@ -46,3 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   lifetime: 0
+  coinStart: {fileID: 8300000, guid: f3e08619e2bf84cb28bf29173868b493, type: 3}
+  coinRift: {fileID: 8300000, guid: b2f1a131ba06b4fed9b4f942c29895f0, type: 3}
+  coinEnd: {fileID: 8300000, guid: 2883d0063c8f1464ea72b053cbda1623, type: 3}
+  sndSource: {fileID: 0}

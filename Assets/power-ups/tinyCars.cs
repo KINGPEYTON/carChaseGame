@@ -8,6 +8,9 @@ public class tinyCars : MonoBehaviour
 
     public float lifetime;
 
+    public AudioClip tinySound;
+    public AudioClip bigSound;
+
     // Update is called once per frame
     void Update()
     {
@@ -16,6 +19,7 @@ public class tinyCars : MonoBehaviour
         {
             controller.endTinyCars();
             Destroy(gameObject);
+            AudioSource.PlayClipAtPoint(bigSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         }
     }
 
@@ -26,5 +30,6 @@ public class tinyCars : MonoBehaviour
         lifetime = time;
         controller.inTinyCars = true;
         controller.startTinyCars(hitBigCars);
+        AudioSource.PlayClipAtPoint(tinySound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
     }
 }

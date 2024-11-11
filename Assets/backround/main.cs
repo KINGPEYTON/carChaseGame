@@ -73,6 +73,7 @@ public class main : MonoBehaviour
 
     public boostManager modMang;
     public bool modActive;
+    public AudioClip modActivete;
 
     public GameObject road; //road gameobject to spawn
     public GameObject roadPart; //road gameobject to spawn
@@ -278,7 +279,7 @@ public class main : MonoBehaviour
         masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
         musicVol = PlayerPrefs.GetFloat("musicVol", 1); //sets the music volume to the one it was last on
-        radioVol = PlayerPrefs.GetFloat("radioVol", 1); //sets the radio volume to the one it was last on
+        radioVol = PlayerPrefs.GetFloat("radioVol", 0.75f); //sets the radio volume to the one it was last on
 
         tutorialSteps = PlayerPrefs.GetInt("tutorialStep", 0); //sets the tutorial to the last step
         if (tutorialSteps < 5) 
@@ -340,6 +341,7 @@ public class main : MonoBehaviour
         caManager.spawnRegularCar(new Vector3(6, -4.35f, 0), GameObject.Find("cars").transform);
         caManager.spawnRegularCar(new Vector3(12, -0.6f, 0), GameObject.Find("cars").transform);
         caManager.spawnRegularCar(new Vector3(-6.5f, -3.1f, 0), GameObject.Find("cars").transform);
+        //caManager.spawnPoliceCar(new Vector3(-6.5f, -0.6f, 0), GameObject.Find("cars").transform);
 
         exitNum = Random.Range(0, 100);
         if(exitNum < 30) { exitNumUp = true; }
@@ -403,7 +405,7 @@ public class main : MonoBehaviour
 
             //make sky elements
             spawnAdPlane();
-            spawnBigPlane();
+            //spawnBigPlane();
 
             //make game element
             if (!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3))
@@ -1415,6 +1417,8 @@ public class main : MonoBehaviour
         isOver = true;
 
         GameObject.Find("Main Camera").GetComponent<AudioLowPassFilter>().cutoffFrequency = 2500;
+        GameObject.Find("Main Camera").GetComponent<AudioSource>().bypassListenerEffects = false;
+        GameObject.Find("Main Camera").GetComponent<AudioSource>().bypassEffects = false;
 
         screenDistortTarget = 0;
 
@@ -1453,6 +1457,7 @@ public class main : MonoBehaviour
         if(modMang.currSelect > 0)
         {
             modMang.useMod();
+            AudioSource.PlayClipAtPoint(modActivete, new Vector3(0, 0, -10), masterVol * sfxVol);
             modActive = true;
             startMod();
         }
@@ -1542,6 +1547,7 @@ public class main : MonoBehaviour
             Time.timeScale = 0;
             Instantiate(pauseMenu);
             menuSound.Pause();
+            playerCar.sndSource.Pause();
         }
     }
 

@@ -231,6 +231,10 @@ MonoBehaviour:
   speedo: {fileID: 0}
   player: {fileID: 0}
   camera: {fileID: 0}
+  skyline: {fileID: 0}
+  clouds: {fileID: 0}
+  blimp: {fileID: 0}
+  pPlane: {fileID: 0}
   targX: 0
   targY: 0
   targX2: 0
@@ -255,3 +259,8 @@ MonoBehaviour:
   rocket2: {fileID: 0}
   ani: {fileID: 0}
   ani2: {fileID: 0}
+  sndSource: {fileID: 0}
+  boostClick: {fileID: 8300000, guid: f178f2031a28e4dd78ae52523e61eff5, type: 3}
+  boostStart: {fileID: 8300000, guid: 8a520e372a03b4e93b874ea5ba07ae0e, type: 3}
+  boostSky: {fileID: 8300000, guid: bb8edbf524f544db6adb516531261ba7, type: 3}
+  boostEnd: {fileID: 8300000, guid: a7f1c75703da5492e9f74b8a1939e263, type: 3}

@@ -15,6 +15,8 @@ public class incognito : MonoBehaviour
     public float mphTakawayTime;
     public float currMph;
 
+    public AudioClip slowSound;
+
     // Update is called once per frame
     void Update()
     {
@@ -45,6 +47,7 @@ public class incognito : MonoBehaviour
         doneSlowdown = false;
 
         mphTakawayTime = 1.25f;
+        AudioSource.PlayClipAtPoint(slowSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
     }
 
     void doSlowdown()

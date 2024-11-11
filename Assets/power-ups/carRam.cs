@@ -13,6 +13,7 @@ public class carRam : MonoBehaviour
     public Vector3 startPos;
     public float startTimer;
     public bool inPos;
+    public AudioClip ramSound;
 
     public int uses;
     public bool justCars;
@@ -46,6 +47,7 @@ public class carRam : MonoBehaviour
             {
                 inPos = true;
                 transform.localPosition = new Vector3(targX, targY, 1);
+                AudioSource.PlayClipAtPoint(ramSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             }
         } else if (destroyed)
         {

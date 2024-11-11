@@ -2,7 +2,7 @@
     "boosts": [
         {
             "idName": "engine",
-            "gameName": "Improved Engine",
+            "gameName": "Improved Tires",
             "rarity": 1,
             "description": "MPH increases twice as fast.",
             "cost": 100

@@ -37,6 +37,11 @@ public class laser : MonoBehaviour
     public bool destroyed;
     public bool ImDone;
 
+    public AudioClip laserShoot;
+    public AudioClip laserAim;
+    public AudioClip laserClick;
+    public AudioClip laserDone;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -73,6 +78,7 @@ public class laser : MonoBehaviour
                 transform.localPosition = new Vector3(targX, targY, 1);
                 transform.eulerAngles = new Vector3(0, 0, 40);
                 rotTarget = 0;
+                AudioSource.PlayClipAtPoint(laserClick, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             }
         }
         else if (destroyed)
@@ -149,6 +155,7 @@ public class laser : MonoBehaviour
         destroyed = true;
         controller.laserOn = false;
         transform.eulerAngles = new Vector3(0, 0, -40);
+        AudioSource.PlayClipAtPoint(laserDone, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
     }
 
     public void makeTarget(cars c)
@@ -157,6 +164,7 @@ public class laser : MonoBehaviour
         inShot = true;
         shootTimer = 0;
         ani.Play("laser shoot", 0, 0);
+        AudioSource.PlayClipAtPoint(laserAim, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
     }
 
     void rotateGun()
@@ -219,7 +227,8 @@ public class laser : MonoBehaviour
         cooldownSmoke.enableEmission = true;
         uses--;
         speedo.usePowerUp(1);
-        if(uses <= 0)
+        AudioSource.PlayClipAtPoint(laserShoot, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        if (uses <= 0)
         {
             amDone();
         }

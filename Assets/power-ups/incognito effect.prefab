@@ -46,3 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   lifetime: 0
+  mphTakaway: 0
+  doneSlowdown: 0
+  resetScore: 0
+  mphTakawayTimer: 0
+  mphTakawayTime: 0
+  currMph: 0
+  slowSound: {fileID: 8300000, guid: 2fbaf8f52570745a99c9acdc103fd247, type: 3}

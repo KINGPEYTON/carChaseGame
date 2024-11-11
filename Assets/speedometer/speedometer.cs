@@ -35,6 +35,8 @@ public class speedometer : MonoBehaviour
     public bool powerupIsTimed;
     public float powerUpTimer;
     public float iconHueTimer;
+    public AudioClip tick;
+    public AudioClip quickTick;
 
     public float endTextTimer;
     public float endTimer;
@@ -151,7 +153,10 @@ public class speedometer : MonoBehaviour
     public void usePowerUp(int uses)
     {
         powerUpUses -= uses;
-        if(powerUpUses < 0) { powerUpUses = 0; }
+        if(powerUpUses < 4) { AudioSource.PlayClipAtPoint(quickTick, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol); }
+        else { AudioSource.PlayClipAtPoint(tick, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol); }
+        
+        if (powerUpUses < 0) { powerUpUses = 0; }
         powerUpUseText.text = powerUpUses.ToString();
         if (powerUpUses == 0)
         {

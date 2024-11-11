@@ -47,12 +47,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifetime: 25
+  isPerm: 0
   carPoint: {fileID: 0}
   sizeScale: 0
+  getHolo: 0
   tr: {fileID: 0}
   rayTimer: 0
   rayTime: 0
   ray: {fileID: 7682606152792967888, guid: d7fc17402e78a464fae81c36cb1fec2f, type: 3}
+  getAttracted: {fileID: 8300000, guid: eaac72838487f4eb4b072cf760f768dd, type: 3}
+  fieldSound: {fileID: 8300000, guid: b88a626e39539483d9af29b12c5e6900, type: 3}
+  sndSource: {fileID: 0}
 --- !u!50 &6438513821445264086
 Rigidbody2D:
   serializedVersion: 4

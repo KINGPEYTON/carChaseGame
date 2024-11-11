@@ -51,6 +51,7 @@ public class randomIcon : MonoBehaviour
         pwManage = wheel;
         wheel.icons.Remove(gameObject);
         startPoint = transform.position;
+        main controller = GameObject.Find("contoller").GetComponent<main>();
     }
 
     void runAwayIcon()
@@ -71,6 +72,7 @@ public class randomIcon : MonoBehaviour
             startSize = transform.localScale;
             sizeU = true;
             targetTimer = 0;
+
             pwManage.pickPowerup(id);
         }
     }

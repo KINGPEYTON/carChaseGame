@@ -29,6 +29,9 @@ public class randomWheel : MonoBehaviour
     public float fadeTimer;
     public float fadeTime;
 
+    public AudioClip powerupSound;
+    public AudioClip wheelSpinSound;
+
     // Update is called once per frame
     void Update()
     {
@@ -55,6 +58,9 @@ public class randomWheel : MonoBehaviour
         setIcons();
         startFade(true);
         iconSpining = true;
+
+        main controller = GameObject.Find("contoller").GetComponent<main>();
+        AudioSource.PlayClipAtPoint(wheelSpinSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
     }
 
     public void pickPowerup(string id)
@@ -99,7 +105,7 @@ public class randomWheel : MonoBehaviour
                 pwManager.activateBoost(6, 2.35f, true);
                 break;
             case "coin":
-                pwManager.activateCoin(45, 2, true);
+                pwManager.activateCoin(55, 2.5f, true);
                 break;
             case "sense":
                 pwManager.activateVision(30, true, 2, 0.5f);
@@ -140,7 +146,7 @@ public class randomWheel : MonoBehaviour
                 pwManager.activateBoost(6, 3.85f, true);
                 break;
             case "coin":
-                pwManager.activateCoin(45, 3, true);
+                pwManager.activateCoin(55, 3.75f, true);
                 break;
             case "sense":
                 pwManager.activateVision(30, true, 3, 0.3f);
@@ -242,6 +248,8 @@ public class randomWheel : MonoBehaviour
             icons[iconPlace].AddComponent(typeof(randomIcon));
             icons[iconPlace].GetComponent<randomIcon>().id = iconId;
             icons[iconPlace].GetComponent<randomIcon>().select(this);
+            main controller = GameObject.Find("contoller").GetComponent<main>();
+            AudioSource.PlayClipAtPoint(powerupSound, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         }
     }
 

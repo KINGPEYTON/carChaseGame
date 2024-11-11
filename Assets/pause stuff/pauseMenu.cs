@@ -109,6 +109,7 @@ public class pauseMenu : MonoBehaviour
 
         GameObject.Find("playerCar").GetComponent<playerCar>().tapped = true;
         contoller.menuSound.Play();
+        if(contoller.playerCar.sndSource != null) { contoller.playerCar.sndSource.Play(); }
 
     }
 

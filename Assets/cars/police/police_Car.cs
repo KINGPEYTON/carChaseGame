@@ -7,21 +7,29 @@ public class police_Car : cars
     public playerCar playerCarOBJ;
 
     public bool chasingPlayer;
-    public AudioClip crash;
 
     public AudioSource siren;
+    public AudioClip playerChase;
+    public AudioClip vanChase;
     public float speedLimit;
 
     public bool chasingVan;
     public maniac_van vanOBJ;
+
+    public GameObject iconOBJ;
+    public GameObject iconInGame;
+    public bool iconInPos;
+    public float iconTimer;
 
     // Start is called before the first frame update
     void Start()
     {
         if (chasingVan)
         {
+            siren.clip = vanChase;
             siren.Play();
             GameObject.Find("carsManager").GetComponent<carsManager>();
+            iconSpawn(vanOBJ.transform);
         }
 
         speed = Random.Range(speedMin, speedMax);
@@ -73,14 +81,14 @@ public class police_Car : cars
                 {
                     if (speed > 6f)
                     {
-                        transform.position = transform.position - new Vector3(((controller.mph * Time.deltaTime) / speed), 0, 0); //move fowards in game
+                        transform.position -= new Vector3(((controller.mph * Time.deltaTime) / speed), 0, 0); //move fowards in game
                     }
                     else
                     {
-                        transform.position = transform.position - new Vector3(((controller.mph) * Time.deltaTime / 6f), 0, 0); //move fowards in game
+                        transform.position -= new Vector3(((controller.mph) * Time.deltaTime / 6f), 0, 0); //move fowards in game
                     }
                 }
-                if (transform.position.x < -16 && controller.mph > speedLimit && !playerCarOBJ.boosting && !playerCarOBJ.inRocket)
+                if (transform.position.x < -16 && controller.mph > speedLimit && !playerCarOBJ.boosting && !playerCarOBJ.inRocket && !chasingPlayer)
                 {
                     startPlayerChase();
                 }
@@ -103,7 +111,7 @@ public class police_Car : cars
             }
             else if (!chasingVan || isDisabled)
             {
-                transform.position = transform.position + new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
+                transform.position += new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
             }
         }
 
@@ -123,6 +131,11 @@ public class police_Car : cars
         if (transform.position.x <= -30 || (!controller.playing && transform.position.x >= 30)) // checks if the car is on screen
         {
             destroyCar(); // destroys it otherwise
+        }
+
+        if (iconInPos)
+        {
+            iconAni();
         }
 
         checkStuff();
@@ -165,7 +178,7 @@ public class police_Car : cars
             }
             else
             {
-                transform.position += new Vector3(Time.deltaTime * 0.25f, 0, 0); //move fowards in game
+                transform.position += new Vector3(Time.deltaTime * 0.15f, 0, 0); //move fowards in game
             }
         }
     }
@@ -200,11 +213,15 @@ public class police_Car : cars
 
     void turnLanes()
     {
-        transform.position = new Vector3(transform.position.x, startTurnPos + getValueScale(overshoot, 0, disMove, targPos - startTurnPos), 0);
+
+        float newY = 0;
+        if (disMove != overshoot) { newY = startTurnPos + getValueScale(overshoot, 0, disMove, targPos - startTurnPos); }
+        transform.position = new Vector3(transform.position.x, newY, 0);
         overshoot += Time.deltaTime;
         if (overshoot > disMove) //checks if its past if target
         {
             transform.position = new Vector3(transform.position.x, targPos, 0); //places car where it should be
+            overshoot = disMove;
             switchDown = false; //turns down blinker off
             switchUp = false; //turns up blinker off
             setLane(); //update so the car knows what lane its in
@@ -225,10 +242,15 @@ public class police_Car : cars
     {
         chasingPlayer = true;
         chasingVan = false;
+        transform.parent = GameObject.Find("cars").transform;
+        siren.clip = playerChase;
         siren.Play();
         switchTimer = 0.35f + getValueScale(getValueRanged(controller.mph, speedLimit, 130), speedLimit, 130, 0.65f);
         targPos = playerCarOBJ.targetPos.y;
         transform.position = new Vector3(transform.position.x, playerCarOBJ.targetPos.y, 0);
+
+        if(iconInGame != null) { Destroy(iconInGame); }
+        iconSpawn(playerCarOBJ.transform);
     }
 
     void slowdown(float speeddown)
@@ -245,11 +267,11 @@ public class police_Car : cars
         {
             if (speed > 0)
             {
-                transform.position = transform.position + new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
+                transform.position += new Vector3(Time.deltaTime * (speed / 2.0f), 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
             }
             else
             {
-                transform.position = transform.position + new Vector3(0, 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
+                transform.position += new Vector3(0, 0, 0); // moves the across cars the screen when game isnt on (like game over screen)
             }
         }
     }
@@ -305,7 +327,6 @@ public class police_Car : cars
             if (chasingPlayer && transform.position.x > -12.5f)
             {
                 makeDisabled(-0.4f, 0); //changes the speed so the cars crash
-                AudioSource.PlayClipAtPoint(crash, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
             }
             else if (chasingVan)
             {
@@ -342,6 +363,46 @@ public class police_Car : cars
         }
     }
 
+    public override void makeDisabled(float xF, float yF)
+    {
+        base.makeDisabled(xF, yF);
+        if (chasingPlayer || chasingVan) { iconInPos = true; }
+    }
+
+    public override void destroyCar()
+    {
+        Destroy(iconInGame);
+        base.destroyCar();
+    }
+
+    private void iconAni()
+    {
+        if (!isDisabled) { iconInGame.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, (byte)getValueScale(iconTimer, 0, 1, 220)); }
+        else { iconInGame.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, (byte)(220 - getValueScale(iconTimer, 0, 1, 220))); }
+        iconTimer += Time.deltaTime;
+        if(iconTimer > 1)
+        {
+            iconTimer = 0;
+            iconInPos = false;
+            if (!isDisabled)
+            {
+                iconInGame.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 220);
+            }
+            else
+            {
+                Destroy(iconInGame);
+            }
+        }
+    }
+
+    private void iconSpawn(Transform iconCar)
+    {
+        iconInGame = Instantiate(iconOBJ, iconCar);
+        iconInGame.transform.localPosition = new Vector3(0, 1.65f, 0);
+        iconTimer = 0;
+        iconInPos = true;
+    }
+
     public override void createIcon(sense sen)
     {
         GameObject newOutline = new GameObject("Car Icon", typeof(SpriteRenderer), typeof(carIcon));
@@ -354,6 +415,12 @@ public class police_Car : cars
         sen.carIcons.Add(newOutline);
         newOutline.GetComponent<carIcon>().carAttached = this;
         newOutline.GetComponent<carIcon>().sen = sen;
+    }
+
+    public override void nearCrash()
+    {
+        base.nearCrash();
+        startPlayerChase();
     }
 
     float getValueScale(float val, float min, float max, float scale)

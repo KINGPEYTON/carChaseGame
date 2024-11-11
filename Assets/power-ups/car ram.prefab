@@ -99,11 +99,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pCar: {fileID: 0}
   controller: {fileID: 0}
+  speedo: {fileID: 0}
   targX: 0
   targY: 0
   startPos: {x: 0, y: 0, z: 0}
   startTimer: 0
   inPos: 0
+  ramSound: {fileID: 8300000, guid: 356f0ca72dd5b4b9182ecdee31fe184c, type: 3}
   uses: 0
   justCars: 0
   headOn: 0

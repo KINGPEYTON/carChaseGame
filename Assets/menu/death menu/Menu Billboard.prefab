@@ -134,6 +134,7 @@ MonoBehaviour:
   menuButton: {fileID: 4055325705105735141}
   factOBJ: {fileID: 4152998466636181672}
   deathTyping: {fileID: 8300000, guid: ecc7f3cc9966e4dcbb0237f0f420f95a, type: 3}
+  fireEnd: {fileID: 8300000, guid: df4ef14a92cdd4ab4a5a31c2038766f2, type: 3}
 --- !u!1001 &4625849721159264333
 PrefabInstance:
   m_ObjectHideFlags: 0

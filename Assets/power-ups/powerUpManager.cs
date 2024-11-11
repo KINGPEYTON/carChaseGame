@@ -67,7 +67,7 @@ public class powerUpManager : MonoBehaviour
             getPowerupOdds();
         }
 
-        createPowerup(10, new Vector3(9, -1.65f, 0));
+        //createPowerup(6, new Vector3(9, -1.65f, 0));
     }
 
     public void collectPowerUp(string id, int level)
@@ -131,16 +131,16 @@ public class powerUpManager : MonoBehaviour
                 switch (level)
                 {
                     case 0:
-                        activateCoin(15, 1, false);
+                        activateCoin(20, 1.75f, false);
                         break;
                     case 1:
-                        activateCoin(15, 1, true);
+                        activateCoin(20, 1.75f, true);
                         break;
                     case 2:
-                        activateCoin(15, 2, true);
+                        activateCoin(20, 2.5f, true);
                         break;
                     case 3:
-                        activateCoin(30, 2, true);
+                        activateCoin(40, 2.5f, true);
                         break;
                 }
                 break;

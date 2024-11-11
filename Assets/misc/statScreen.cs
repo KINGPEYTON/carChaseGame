@@ -160,9 +160,9 @@ public class statScreen : MonoBehaviour
         scoreText.text = "Total Distance:\n" + statManage.pstats.scoreTotal + "m";
         coinText.text = "Total Coins:\n" + statManage.pstats.coins;
         coinImg.localPosition = new Vector3(34.5f - (statManage.pstats.coins.ToString().Length * 7.15f), 0, 0);
-        avgScoreText.text = "Average Score:\n" + statManage.pstats.scoreAvg + "m";
-        coinAvgText.text = "Average Coins:\n" + statManage.pstats.avgCoins;
-        coinAvgImg.localPosition = new Vector3(34.5f - (statManage.pstats.avgCoins.ToString().Length * 7.15f), 0, 0);
+        avgScoreText.text = "Average Score:\n" + ((int)(statManage.pstats.scoreAvg * 100) / 100.0f) + "m";
+        coinAvgText.text = "Average Coins:\n" + ((int)(statManage.pstats.avgCoins * 100) / 100.0f);
+        coinAvgImg.localPosition = new Vector3(34.5f - (((int)(statManage.pstats.avgCoins * 100) / 100.0f).ToString().Length * 7.15f), 0, 0);
         highText.text = "Highest Score:\n" + statManage.pstats.highScore + "m";
         coinMostText.text = "Most Coins:\n" + statManage.pstats.coinsInGame;
         coinMostImg.localPosition = new Vector3(34.5f - (statManage.pstats.coinsInGame.ToString().Length * 7.15f), 0, 0);

@@ -109,6 +109,7 @@ MonoBehaviour:
   playerWheelBOutline: {fileID: 0}
   carsOutline: []
   coinsOutline: []
+  conesOutline: []
   carIcons: []
   scoreBlimp: {fileID: 0}
   scoreBlimpText: {fileID: 0}
@@ -122,3 +123,8 @@ MonoBehaviour:
   fadeVal: 0
   fadeTimer: 0
   fadeTime: 0
+  senseStart: {fileID: 8300000, guid: 42ed1d863eab04764b0387e133ddd4ac, type: 3}
+  senseEnd: {fileID: 8300000, guid: e406da69dacd84a4c9156f33d6ceee12, type: 3}
+  senseTheme: {fileID: 8300000, guid: 06f159bf7a0bf423a954bae7b505fd2b, type: 3}
+  sndSource: {fileID: 0}
+  mainCamera: {fileID: 0}

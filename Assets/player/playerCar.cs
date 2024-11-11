@@ -60,6 +60,8 @@ public class playerCar : MonoBehaviour
     public float hitboxSizeY;
     public BoxCollider2D hitbox;
 
+    public AudioClip manhole;
+
     public bool inTeleport;
     public bool beginTeleport;
     public float teleTimer;
@@ -77,6 +79,9 @@ public class playerCar : MonoBehaviour
     public GameObject teleBolt;
     public Color32 teleBoltColor;
     public AudioClip teleportSound;
+    public AudioClip teleportHumm;
+    public AudioClip teleportStart;
+    public AudioClip teleportEnd;
 
     public bool inShield;
     public bool shieldReady;
@@ -84,6 +89,9 @@ public class playerCar : MonoBehaviour
     public float shieldTimer;
     public GameObject shieldAniOBJ;
     public shieldAni shieldAni;
+    public AudioClip shieldForce;
+    public AudioClip shieldStart;
+    public AudioClip shieldEnd;
 
     public bool ramOn;
     public GameObject ramOBJ;
@@ -118,6 +126,8 @@ public class playerCar : MonoBehaviour
     public int statTurns;
 
     public GameObject crashAudio;
+
+    public AudioSource sndSource;
 
     void OnEnable()
     {
@@ -432,6 +442,8 @@ public class playerCar : MonoBehaviour
         beginTeleport = false;
         targetPos = transform.position;
         inPos = true;
+        AudioSource.PlayClipAtPoint(teleportEnd, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        sndSource.clip = null;
     }
 
     public void enterTeleport(int uses, float boltTime, Color32 boltColor, bool destr, bool affect)
@@ -445,6 +457,11 @@ public class playerCar : MonoBehaviour
         teleBoltTime = boltTime;
         teleBoltTimer = boltTime;
         teleBoltColor = boltColor;
+
+        AudioSource.PlayClipAtPoint(teleportStart, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        sndSource.clip = teleportHumm;
+        sndSource.volume = controller.sfxVol * controller.masterVol;
+        sndSource.Play();
     }
 
     void readyTeleport()
@@ -500,8 +517,13 @@ public class playerCar : MonoBehaviour
         {
             inShield = true;
             shieldAni.startAni();
+            sndSource.clip = shieldForce;
+            sndSource.volume = controller.sfxVol * controller.masterVol;
+            sndSource.Play();
         }
         shieldWhenHit = activeWhenHit;
+
+        AudioSource.PlayClipAtPoint(shieldStart, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
     }
 
     void useAutoShield()
@@ -585,6 +607,9 @@ public class playerCar : MonoBehaviour
         inShield = true;
         shieldAni.startAni();
         speedo.powerupIsTimed = true;
+        sndSource.clip = shieldForce;
+        sndSource.volume = controller.sfxVol * controller.masterVol;
+        sndSource.Play();
     }
 
     void endShield()
@@ -595,6 +620,8 @@ public class playerCar : MonoBehaviour
         {
             shieldAni.startFade(false);
         }
+        AudioSource.PlayClipAtPoint(shieldEnd, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
+        sndSource.clip = null;
     }
 
     public void startRam(int uses, bool justCars, bool headOn)
@@ -650,7 +677,6 @@ public class playerCar : MonoBehaviour
         {
             boost.finishBoost();
         }
-        
     }
 
     public void startRocket(float power, float boostTime, float coinRate, bool makeHolo)
@@ -679,6 +705,9 @@ public class playerCar : MonoBehaviour
         rocket.destroyed = true;
         rocket.transform.parent = null;
         rocket.setAni("rocket standby");
+        rocket.newSound(rocket.boostEnd);
+        sndSource.clip = null;
+        AudioSource.PlayClipAtPoint(rocket.boostEnd, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         setOrder(findTapLane(targetPos.y));
     }
 
@@ -857,6 +886,7 @@ public class playerCar : MonoBehaviour
         statTurns++;
         almostHit();
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (controller.playing && !(inRocket && rocket.boosting))
@@ -1085,7 +1115,7 @@ public class playerCar : MonoBehaviour
         {
             if (controller.screenDistortTarget < smokeLevel / 500)
             {
-
+                AudioSource.PlayClipAtPoint(manhole, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
                 controller.screenDistortTarget = smokeLevel / 500;
             }
         }
@@ -1244,7 +1274,7 @@ public class playerCar : MonoBehaviour
         if (closestCar != null)
         {
             float closestDist = transform.position.x - closestCar.position.x;
-            if ((closestDist < 2.75f && closestDist > 1) && closestCar.position.y == targetPos.y)
+            if ((closestDist < closestCar.gameObject.GetComponent<cars>().cutoffSize && closestDist > 1) && Mathf.Abs(closestCar.position.y - targetPos.y) < 0.1f)
             {
                 nearCar = closestCar;
                 closestCar.gameObject.GetComponent<cars>().nearCrash();
@@ -1288,11 +1318,18 @@ public class playerCar : MonoBehaviour
             for (int i = 1; i < carsOBJ.childCount; i++)
             {
                 Transform currCar = carsOBJ.GetChild(i).transform;
-                if (currCar.position.y == targetPos.y)
+                if (Mathf.Abs(currCar.position.y - targetPos.y) < 0.1f) // check position with floating point tolorence
                 {
                     if (currCar.position.x < targetPos.x)
                     {
-                        if (currCar.position.x < closest.position.x)
+                        if (Mathf.Abs(closest.position.y - targetPos.y) < 0.1f && closest.position.x < targetPos.x) //checks if the current car is eligable
+                        {
+                            if (currCar.position.x > closest.position.x)
+                            {
+                                closest = currCar;
+                            }
+                        }
+                        else
                         {
                             closest = currCar;
                         }

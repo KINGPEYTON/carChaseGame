@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6307427123164820125
+--- !u!1 &5855905677727291259
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,52 +8,52 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7489301393066866966}
-  - component: {fileID: 5320700813394206030}
-  - component: {fileID: 1131283948585182760}
-  - component: {fileID: -9211147360551881776}
+  - component: {fileID: 4487470177673173952}
+  - component: {fileID: 5735596525034159138}
+  - component: {fileID: 5068642722689577953}
+  - component: {fileID: 2876528178346111932}
   m_Layer: 0
-  m_Name: Bridge Sign
+  m_Name: Fun Sign 6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &7489301393066866966
+--- !u!224 &4487470177673173952
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6307427123164820125}
-  m_LocalRotation: {x: -0, y: -0, z: -0.0218148, w: 0.99976206}
+  m_GameObject: {fileID: 5855905677727291259}
+  m_LocalRotation: {x: 0, y: 0, z: -0.021814799, w: 0.999762}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2276432472902784208}
+  - {fileID: 409904749187554536}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -2.5}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -275, y: 60}
-  m_SizeDelta: {x: 95, y: 100}
+  m_AnchoredPosition: {x: 500, y: -150}
+  m_SizeDelta: {x: 150, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &5320700813394206030
+--- !u!222 &5735596525034159138
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6307427123164820125}
+  m_GameObject: {fileID: 5855905677727291259}
   m_CullTransparentMesh: 1
---- !u!114 &1131283948585182760
+--- !u!114 &5068642722689577953
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6307427123164820125}
+  m_GameObject: {fileID: 5855905677727291259}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5acb61ed0078043b9a512831225d99d2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d3388c1b4005648f181f4622f8b83f75, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -77,13 +77,13 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &-9211147360551881776
+--- !u!114 &2876528178346111932
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6307427123164820125}
+  m_GameObject: {fileID: 5855905677727291259}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64aea6bcee3cb4abe8cf3f72cbc1d641, type: 3}
@@ -91,9 +91,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   speed: 9
-  signText: {fileID: 5559985221931596344}
+  signText: {fileID: 0}
   secondText: {fileID: 0}
---- !u!1 &8039919407787087846
+--- !u!1 &7804323456001252688
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,9 +101,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2276432472902784208}
-  - component: {fileID: 1560571229919195703}
-  - component: {fileID: 5559985221931596344}
+  - component: {fileID: 409904749187554536}
+  - component: {fileID: 1112838746551929554}
+  - component: {fileID: 2522730090474633138}
   m_Layer: 0
   m_Name: text
   m_TagString: Untagged
@@ -111,40 +111,40 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2276432472902784208
+--- !u!224 &409904749187554536
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8039919407787087846}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 7804323456001252688}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7489301393066866966}
+  m_Father: {fileID: 4487470177673173952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 34}
-  m_SizeDelta: {x: 280, y: 200}
+  m_AnchoredPosition: {x: 0.00012207031, y: 41.99997}
+  m_SizeDelta: {x: 150, y: 52}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1560571229919195703
+--- !u!222 &1112838746551929554
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8039919407787087846}
+  m_GameObject: {fileID: 7804323456001252688}
   m_CullTransparentMesh: 1
---- !u!114 &5559985221931596344
+--- !u!114 &2522730090474633138
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8039919407787087846}
+  m_GameObject: {fileID: 7804323456001252688}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -158,7 +158,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Crashopolis Crashers \n2021 World Champions Bridge"
+  m_text: 'City of
+
+    Crashopolis'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6f6964cdeeafb4fc789d111a4707b4ee, type: 2}
   m_sharedMaterial: {fileID: 1725011204624884750, guid: 6f6964cdeeafb4fc789d111a4707b4ee, type: 2}
@@ -185,8 +187,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 21
+  m_fontSizeBase: 21
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -221,7 +223,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 51.941425, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

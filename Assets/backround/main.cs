@@ -313,7 +313,7 @@ public class main : MonoBehaviour
         powerupTime = Random.Range(450, 1600);
 
         milestone = 0;
-        signTime = 110;
+        signTime = 175f;
         blimpSpeed = new Vector3(0.1f, 0.05f, 0);
 
         topLaneTimer = Random.Range(550, 2250);
@@ -1846,7 +1846,7 @@ public class main : MonoBehaviour
 
     private void setSignOdds()
     {
-        float[] signOddsNew = { 0.185f, 0.185f, 0.185f, 0.185f, 0.26f };
+        float[] signOddsNew = { 0.06f, 0.06f, 0.06f, 0.12f, 0.06f, 0.06f, 0.06f, 0.06f, 0.06f, 0.06f, 0.06f, 0.1f, 0.09f, 0.09f };
         for (int i = 0; i < funSigns.Count; i++)
         {
             signOdds.Add(signOddsNew[i]);

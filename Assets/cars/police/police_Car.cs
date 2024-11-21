@@ -110,6 +110,7 @@ public class police_Car : cars
             if (chasingPlayer)
             {
                 slowdown(9.5f);
+                if (controller.activeText.activeInHierarchy) { endChaseTutorial(); }
             }
             else if (!chasingVan || isDisabled)
             {
@@ -242,17 +243,39 @@ public class police_Car : cars
 
     void startPlayerChase()
     {
-        chasingPlayer = true;
-        chasingVan = false;
-        transform.parent = GameObject.Find("cars").transform;
-        siren.clip = playerChase;
-        siren.Play();
-        switchTimer = 0.35f + getValueScale(getValueRanged(controller.mph, speedLimit, 130), speedLimit, 130, 0.65f);
-        targPos = playerCarOBJ.targetPos.y;
-        transform.position = new Vector3(transform.position.x, playerCarOBJ.targetPos.y, 0);
+        if (!controller.inTutorial)
+        {
+            chasingPlayer = true;
+            chasingVan = false;
+            transform.parent = GameObject.Find("cars").transform;
+            siren.clip = playerChase;
+            siren.Play();
+            switchTimer = 0.35f + getValueScale(getValueRanged(controller.mph, speedLimit, 130), speedLimit, 130, 0.65f);
+            targPos = playerCarOBJ.targetPos.y;
+            transform.position = new Vector3(transform.position.x, playerCarOBJ.targetPos.y, 0);
 
-        if(iconInGame != null) { Destroy(iconInGame); }
-        iconSpawn(playerCarOBJ.transform);
+            if (iconInGame != null) { Destroy(iconInGame); }
+            iconSpawn(playerCarOBJ.transform);
+
+            if (PlayerPrefs.GetInt("policeTutorial", 0) == 0)
+            {
+                startChaseTutorial();
+            }
+        }
+    }
+
+    private void startChaseTutorial()
+    {
+        controller.setTutorialText("When the police icon appears over the player, they are being chased by the police. Quickly switch lanes to shake them", new Vector3(3.2f, 1.3f, 0));
+    }
+
+    private void endChaseTutorial()
+    {
+        if (transform.position.x > -11.5f)
+        {
+            PlayerPrefs.SetInt("policeTutorial", 1);
+        }
+        controller.activeText.SetActive(false);
     }
 
     void slowdown(float speeddown)
@@ -369,6 +392,7 @@ public class police_Car : cars
     {
         base.makeDisabled(xF, yF);
         if (chasingPlayer || chasingVan) { iconInPos = true; }
+        if (chasingPlayer && controller.activeText.activeInHierarchy) { endChaseTutorial(); }
     }
 
     public override void destroyCar()

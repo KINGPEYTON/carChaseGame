@@ -197,8 +197,6 @@ public class main : MonoBehaviour
     public List<float> carsSpecialOdds;
     public List<float> carsSpecialCurrOdds;
 
-    public GameObject policeCar;
-
     public List<float> bannedLanes;
     public List<int> carsPast;
 
@@ -464,15 +462,6 @@ public class main : MonoBehaviour
 
             //set blimp text
             blimpText();
-
-            /*if (inTutorial && tutorialSteps == 3)
-            {
-                swipeTutorial();
-                if (canSwipeTutorialTimer() && Input.touchCount > 0)
-                {
-                    nextTutorialStep();
-                }
-            }*/
         }
         else //if game isnt playing
         {
@@ -1414,7 +1403,7 @@ public class main : MonoBehaviour
             if (tutorialSteps == 0)
             {
                 nextTutorialStep();
-                playerCar.startMph = 35;
+                playerCar.startMph = 30;
             }
             else if (tutorialSteps == 9)
             {
@@ -1515,7 +1504,7 @@ public class main : MonoBehaviour
                 activeHand = Instantiate(tutorialHandOBJ, new Vector3(menuButtonPos.x + 0.5f, menuButtonPos.y - 0.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
                 activeHand.setBounce(0.35f, 0.15f, 30, 0.5f, 2);
                 activeHand.transform.localScale = new Vector3(0.05f, 0.05f, 1);
-                setTutorialText(tutorialTexts[7], new Vector3(5.7f, 1.55f, 0));
+                setTutorialText(tutorialTexts[7], new Vector3(5.2f, 1.55f, 0));
                 activeText.transform.localScale = new Vector3(0.5f, 0.5f, 1);
             }
         }

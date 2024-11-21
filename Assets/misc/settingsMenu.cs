@@ -187,6 +187,7 @@ public class settingsMenu : MonoBehaviour
     private void newTutorial()
     {
         PlayerPrefs.SetInt("tutorialStep", 0);
+        PlayerPrefs.SetInt("policeTutorial", 0);
         contoller.pwManage.resetTutorial();
 
         contoller.newGame();

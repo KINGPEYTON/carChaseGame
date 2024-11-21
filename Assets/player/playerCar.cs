@@ -31,7 +31,7 @@ public class playerCar : MonoBehaviour
     public ParticleSystem crashSmoke;
 
     public bool tapped;
-    public float firstTapPoint;
+    public Vector3 firstTapPoint;
     public bool inPos;
     public bool slidingUp;
     public bool slidingDown;
@@ -52,7 +52,6 @@ public class playerCar : MonoBehaviour
     public AudioClip[] hitsAudio;
 
     public speedometer speedo;
-    public float powerTapTimer;
 
     public float crashForce;
 
@@ -235,23 +234,17 @@ public class playerCar : MonoBehaviour
     {
         if (Input.touchCount > 0 && Time.timeScale > 0) // if the user touches the phone screen
         {
-            Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
-            if (Mathf.Abs(transform.position.x - tapPoint.x) < 2)
+            if (tapped)
             {
-                if (Mathf.Abs(transform.position.y - tapPoint.y) < 1.5f)
+                Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
+                if ((tapPoint.x - firstTapPoint.x) > 0.45f)
                 {
-                    powerTapTimer += Time.deltaTime;
-                    if(powerTapTimer > 0.75f)
+                    if (Mathf.Abs(transform.position.y - tapPoint.y) < 1.5f)
                     {
                         usePowerup();
-                        powerTapTimer = 0;
                     }
                 }
             }
-        }
-        else
-        {
-            powerTapTimer = 0;
         }
     }
 
@@ -273,13 +266,13 @@ public class playerCar : MonoBehaviour
             Vector3 tapPoint = Camera.main.ScreenToWorldPoint(Input.touches[0].position); //calculates where the player taps on the screen
             if (tapped)
             {
-                if (firstTapPoint < 3.0f || inRocket)
+                if (firstTapPoint.y < 3.0f || inRocket)
                 {
-                    if ((tapPoint.y - firstTapPoint) > swipeDistToDetect) //if the tap if above the player car
+                    if ((tapPoint.y - firstTapPoint.y) > swipeDistToDetect) //if the tap if above the player car
                     {
                         laneUp(turnMulti);
                     }
-                    else if ((tapPoint.y - firstTapPoint) < -swipeDistToDetect) //if the tap is below the player car
+                    else if ((tapPoint.y - firstTapPoint.y) < -swipeDistToDetect) //if the tap is below the player car
                     {
                         laneDown(turnMulti);
                     }
@@ -289,7 +282,7 @@ public class playerCar : MonoBehaviour
             else if (newTap)
             {
                 tapped = true;
-                firstTapPoint = tapPoint.y;
+                firstTapPoint = tapPoint;
             }
         }
         else if (Input.touchCount == 0)
@@ -573,7 +566,7 @@ public class playerCar : MonoBehaviour
         if (controller.score > beginBoostTarget - 50)
         {
             tempMPH = startMph + getValueScale(beginBoostTime, 0, endTime, 200 - startMph);
-            controller.updateTint(new Color32(255, 0, 0, (byte)getValueScale(beginBoostTime, 0, endTime, 250)));
+            controller.updateTint(new Color32(255, 0, 0, (byte)getValueScale(beginBoostTime, 0, endTime, 200)));
             beginBoostTime -= Time.deltaTime;
             if (tempMPH < startMph)
             {

@@ -49,6 +49,8 @@ public class police_Car : cars
             createOuline(controller.enhancedSense);
             if (chasingVan) { createIcon(controller.enhancedSense); }
         }
+
+        isCar = true;
     }
 
     // Update is called once per frame

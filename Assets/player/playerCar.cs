@@ -773,20 +773,23 @@ public class playerCar : MonoBehaviour
             else { maxLane = 0.64f; }
         }
 
-        if (controller.inTutorial && controller.tutorialSteps < 3)
+        if (controller.playing)
         {
-            if(controller.tutorialSteps == 1 && controller.canSwipeTutorialTimer())
+            if (controller.inTutorial && controller.tutorialSteps < 7)
             {
-                startSlide(true, multiplier);
+                    if ((controller.tutorialSteps > 2 || (controller.tutorialSteps == 1 && controller.canSwipeTutorialTimer())) && targetPos.y < -0.61f)
+                    {
+                        startSlide(true, multiplier);
+                    }
             }
-        }
-        else
-        {
-            if (targetPos.y < maxLane && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+            else
             {
-                if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
+                if (targetPos.y < maxLane) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
                 {
-                    startSlide(true, multiplier);
+                    if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
+                    {
+                        startSlide(true, multiplier);
+                    }
                 }
             }
         }
@@ -794,32 +797,35 @@ public class playerCar : MonoBehaviour
 
     public void laneDown(float multiplier)
     {
-        if (controller.inTutorial && controller.tutorialSteps < 3)
+        if (controller.playing)
         {
-            if (controller.tutorialSteps == 2 && controller.canSwipeTutorialTimer())
+            if (controller.inTutorial && controller.tutorialSteps < 7)
             {
-                startSlide(false, multiplier);
-            }
-        }
-        else
-        {
-            if (inRocket)
-            {
-                if (targetPos.y > 5.66f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+                if ((controller.tutorialSteps > 2 || (controller.tutorialSteps == 2 && controller.canSwipeTutorialTimer())) && targetPos.y > -3.05f)
                 {
-                    if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
-                    {
-                        startSlide(false, multiplier);
-                    }
+                    startSlide(false, multiplier);
                 }
             }
             else
             {
-                if (targetPos.y > -4.34f && controller.playing) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+                if (inRocket)
                 {
-                    if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
+                    if (targetPos.y > 5.66f) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
                     {
-                        startSlide(false, multiplier);
+                        if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
+                        {
+                            startSlide(false, multiplier);
+                        }
+                    }
+                }
+                else
+                {
+                    if (targetPos.y > -4.34f) //checks if the player car is near its target lane to stops player from rapdily changing multiple lanes
+                    {
+                        if (Mathf.Abs(transform.position.y - targetPos.y) < 0.35f)
+                        {
+                            startSlide(false, multiplier);
+                        }
                     }
                 }
             }
@@ -855,6 +861,14 @@ public class playerCar : MonoBehaviour
 
             statTurns++;
             almostHit();
+
+            if (controller.inTutorial)
+            {
+                if((controller.tutorialSteps == 1 && isUp) || (controller.tutorialSteps == 2 && !isUp))
+                {
+                    controller.resetSwipeTutorialTimer(2);
+                }
+            }
         }
     }
 

@@ -112,6 +112,7 @@ public class menuBillboard : MonoBehaviour
                 endTimer = 0;
                 GameObject.Find("playerCar").GetComponent<playerCar>().crashSmoke.startLifetime = 0.75f;
                 GameObject.Find("playerCar").GetComponent<playerCar>().crashSmoke.startSpeed = 2f;
+                controller.checkTutorialDeath(menuButton.position);
             }
         }
         else

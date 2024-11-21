@@ -16,6 +16,8 @@ public class worldManager : MonoBehaviour
     public List<string> funFacts;
     public List<string> funFactsCurr;
 
+    public List<string> tutText;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -95,6 +97,12 @@ public class worldManager : MonoBehaviour
             funFacts.Add(br.fact);
         }
         fillStringList(funFactsCurr, funFacts);
+
+        main controller = GameObject.Find("contoller").GetComponent<main>();
+        foreach (tutorialStepTexts tx in worldDataInJson.tutorialSteps)
+        {
+            tutText.Add(tx.stepText);
+        }
         return worldDataInJson;
     }
 }
@@ -104,6 +112,7 @@ public class worldReader
 {
     public exitSignData[] exitSigns;
     public bridgeSignData[] bridgeNames;
+    public tutorialStepTexts[] tutorialSteps;
     public funFactData[] funFacts; 
 }
 
@@ -118,6 +127,12 @@ public class exitSignData
 public class bridgeSignData
 {
     public string bridgeName;
+}
+
+[System.Serializable]
+public class tutorialStepTexts
+{
+    public string stepText;
 }
 
 [System.Serializable]

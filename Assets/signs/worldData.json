@@ -420,6 +420,35 @@
             "bridgeName": "Oltragarch Financial Bridge"
         }
     ],
+    "tutorialSteps": [
+        {
+            "stepText": "Press the \"Start\" sign the begin the game."
+        },
+        {
+            "stepText": "Swipe up to switch to the lane above."
+        },
+        {
+            "stepText": "Swipe down to switch to the lane below."
+        },
+        {
+            "stepText": "Hit a coin to collect it. Red Coins are worth double."
+        },
+        {
+            "stepText": "Collect coins to spend in the shop to upgrade your car, look, and items you find in game."
+        },
+        {
+            "stepText": "Hit a powerup to collect it. Blue Bubbles are timed powerups, while Red Bubbles are event activated."
+        },
+        {
+            "stepText": "Switch from lane to lane to avoid obstacles."
+        },
+        {
+            "stepText": "Hit the \"Menu\" button to reset the game."
+        },
+        {
+            "stepText": "Thats all! Good luck!"
+        }
+    ],
     "funFacts": [
         {
             "fact": "A lightning bolt is five times hotter than the surface of the Sun."

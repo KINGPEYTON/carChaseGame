@@ -27,6 +27,8 @@ public class powerUpManager : MonoBehaviour
 
     public List<string> powerupNames;
     public List<int> unlockCosts;
+    public List<string> tutorialDescription;
+    public List<bool> tutorialDone;
     public List<float> powerupOdds;
     public List<float> powerupCurrOdds;
 
@@ -389,6 +391,10 @@ public class powerUpManager : MonoBehaviour
             powerupRawOdds.Add(pw.odds);
             powerupTypes.Add(pw.typeID);
 
+            bool isTaught = pwUnl.getTutorial(pw.idName);
+            tutorialDone.Add(isTaught);
+            tutorialDescription.Add(pw.tutorialText);
+
             List<string> newNameList = new List<string>();
             List<string> newDescriptionList = new List<string>();
             List<int> newCostList = new List<int>();
@@ -420,9 +426,12 @@ public class powerUpManager : MonoBehaviour
             bool isUnlocked = pwUnl.getUnlock(pw.idName, false);
             unlocks.Add(isUnlocked);
             unlockCosts.Add(pw.unlockCost);
+            powerupRawOdds.Add(pw.odds);
             powerupTypes.Add(pw.typeID + 2);
 
-            powerupRawOdds.Add(pw.odds);
+            bool isTaught = pwUnl.getTutorial(pw.idName);
+            tutorialDone.Add(isTaught);
+            tutorialDescription.Add(pw.tutorialText);
 
             List<string> newNameList = new List<string>();
             List<string> newDescriptionList = new List<string>();
@@ -577,6 +586,23 @@ public class powerUpManager : MonoBehaviour
         saveUnlocks();
     }
 
+    public void finishTutorial(string id)
+    {
+        tutorialDone[powerupIDs.IndexOf(id)] = true;
+        pwUnl.tutorials[id] = true;
+        saveUnlocks();
+    }
+
+    public void resetTutorial()
+    {
+        foreach (string s in powerupIDs)
+        {
+            tutorialDone[powerupIDs.IndexOf(s)] = false;
+            pwUnl.tutorials[s] = false;
+        }
+        saveUnlocks();
+    }
+
     private void loadUnlocks()
     {
         pwUnl = JsonDataService.LoadData<pwUnlocks>("/pwUnlock.json", true);
@@ -600,6 +626,7 @@ public class powerup
     public string idName;
     public string gameName;
     public string description;
+    public string tutorialText;
     public int typeID;
     public float odds;
     public int tierOneCost;
@@ -629,6 +656,7 @@ public class pwUnlocks
 {
     public Dictionary<string, bool> unlocks = new Dictionary<string, bool>();
     public Dictionary<string, int> tiers = new Dictionary<string, int>();
+    public Dictionary<string, bool> tutorials = new Dictionary<string, bool>();
 
     public bool getUnlock(string id, bool unlDefault)
     {
@@ -655,6 +683,20 @@ public class pwUnlocks
         {
             tiers.Add(id, 0);
             return 0;
+        }
+    }
+
+    public bool getTutorial(string id)
+    {
+        try
+        {
+            bool a = tutorials[id];
+            return a;
+        }
+        catch
+        {
+            tutorials.Add(id, false);
+            return false;
         }
     }
 }

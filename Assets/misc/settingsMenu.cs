@@ -176,14 +176,20 @@ public class settingsMenu : MonoBehaviour
 
     public void resetTutorial()
     {
-        if(!contoller.playing && !contoller.isOver)
-        {
-            contoller.inTutorial = true;
-            contoller.tutorialSteps = 0;
-            contoller.startTutorial();
-        }
+        youSure areYouSure = Instantiate(areYouSureToCreate, new Vector3(0, -1000, 0), Quaternion.identity, gameObject.transform).GetComponent<youSure>();
+        areYouSure.methodToCall = newTutorial;
+        areYouSure.prevButton = resetTutorialButton.GetComponent<Button>();
+        areYouSure.message = "Are you sure you want to reset the tutorial. This will exit to the main menu?";
+        areYouSure.displayMessage.fontSize = 35;
+        pauseMenu.playSound(clickSound, new Vector3(0, 0, -10), contoller.masterVol * contoller.sfxVol);
+    }
 
+    private void newTutorial()
+    {
         PlayerPrefs.SetInt("tutorialStep", 0);
+        contoller.pwManage.resetTutorial();
+
+        contoller.newGame();
     }
 
     void setStats()

@@ -86,7 +86,7 @@ public class cars : MonoBehaviour
 
         hitPoint = 1;
 
-        turnTime = 1.75f;
+        turnTime = 1.25f;
         switchLane(blinkTime);
 
         destroyedTime = 0.35f;

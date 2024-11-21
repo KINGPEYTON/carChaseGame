@@ -34,8 +34,11 @@ public class main : MonoBehaviour
     public int tutorialSteps;
     public GameObject tutorialHandOBJ;
     public tutorialHand activeHand;
-    public GameObject[] tutorialTexts;
+    public List<string> tutorialTexts;
     public GameObject activeText;
+    public float stepTimer;
+    public GameObject tutorialCoin; //coin gameobject to 
+    public GameObject tutorialPowerup; //coin gameobject to 
 
     public int coins; //amount of coins a player has collected in a game
     public int totalCoins; //amount of coins a player has in total
@@ -67,6 +70,7 @@ public class main : MonoBehaviour
 
     public powerUpManager pwManage;
     public bool powerupActive;
+    public string activePowerup;
     public float powerupTimer;
     public float powerupMultiplier;
     public float powerupTime;
@@ -281,8 +285,9 @@ public class main : MonoBehaviour
         musicVol = PlayerPrefs.GetFloat("musicVol", 1); //sets the music volume to the one it was last on
         radioVol = PlayerPrefs.GetFloat("radioVol", 0.75f); //sets the radio volume to the one it was last on
 
+        foreach (string s in worldM.tutText) { tutorialTexts.Add(s); }
         tutorialSteps = PlayerPrefs.GetInt("tutorialStep", 0); //sets the tutorial to the last step
-        if (tutorialSteps < 5) 
+        if (tutorialSteps < 10) 
         {
             inTutorial = true;
         }
@@ -332,9 +337,18 @@ public class main : MonoBehaviour
         setSkylineOdds();
         setSignOdds();
 
-        if (inTutorial && tutorialSteps == 0)
+        if (inTutorial)
         {
-            startTutorial();
+            if (tutorialSteps == 0)
+            {
+                startTutorial();
+            }
+            else if(tutorialSteps == 9)
+            {
+                swipeTutorialTimer = 5;
+                swipeTutorial();
+            }
+
         }
 
         caManager.spawnRegularCar(new Vector3(0, 0.65f, 0), GameObject.Find("cars").transform);
@@ -367,25 +381,35 @@ public class main : MonoBehaviour
             }
             else
             {
-                if (!isSlowdown)
+                if (!inTutorial)
                 {
-                    mph += playerCar.upMph * Time.deltaTime * upMPHmod; //graudully increeses the mph (+1 every 2 sec)
-                }
-                else
-                {
-                    mph += playerCar.upMph * Time.deltaTime * 2.5f * upMPHmod;
-                }
-                if (mph > scoremph) { scoremph = mph; }
-                if((int)mph > topMPH)
-                {
-                    if (!(playerCar.boosting || playerCar.beginBoost))
+                    if (!isSlowdown)
                     {
-                        topMPH = (int)mph;
+                        mph += playerCar.upMph * Time.deltaTime * upMPHmod; //graudully increeses the mph (+1 every 2 sec)
                     }
+                    else
+                    {
+                        mph += playerCar.upMph * Time.deltaTime * 2.5f * upMPHmod;
+                    }
+                    if (mph > scoremph) { scoremph = mph; }
+                    if ((int)mph > topMPH)
+                    {
+                        if (!(playerCar.boosting || playerCar.beginBoost))
+                        {
+                            topMPH = (int)mph;
+                        }
+                    }
+                }
+                else if(tutorialSteps > 6)
+                {
+                    mph += 1.25f * Time.deltaTime;
                 }
             }
 
-            score += (scoremph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
+            if (!inTutorial)
+            {
+                score += (scoremph * 0.44704f) * Time.deltaTime; //increses the score based on how far the player has gone
+            }
 
             //make backround elements
             if (areaEvent == 0)
@@ -408,7 +432,7 @@ public class main : MonoBehaviour
             //spawnBigPlane();
 
             //make game element
-            if (!inTutorial || (tutorialSteps > 0 ^ tutorialSteps < 3))
+            if (!inTutorial || tutorialSteps > 6)
             {
                 spawnCoin();
                 newConstruction();
@@ -416,11 +440,21 @@ public class main : MonoBehaviour
                 changeArea();
                 spawnGameCar();
                 spawnPowerup();
+
+                if (inTutorial)
+                {
+                    swipeTutorial();
+                    switch (tutorialSteps)
+                    {
+                        case 7:
+                            isStepTime(7.5f);
+                            break;
+                    }
+                }
             }
             else
             {
-                spawnTutorialCar();
-                swipeTutorial();
+                spawnTutorialWorld();
             }
             updateBillbord();
 
@@ -431,14 +465,14 @@ public class main : MonoBehaviour
             //set blimp text
             blimpText();
 
-            if (inTutorial && tutorialSteps == 3)
+            /*if (inTutorial && tutorialSteps == 3)
             {
                 swipeTutorial();
                 if (canSwipeTutorialTimer() && Input.touchCount > 0)
                 {
                     nextTutorialStep();
                 }
-            }
+            }*/
         }
         else //if game isnt playing
         {
@@ -1144,82 +1178,6 @@ public class main : MonoBehaviour
         }
     }
 
-    void spawnTutorialCar()
-    {
-        carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
-        if (carTimer > 100)
-        {
-            float newLane = (Random.Range(0, -2) * 5.0f) + 0.65f;
-            caManager.spawnRegularCar(new Vector3(12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-            carTimer = 0;
-        }
-    }
-
-    void spawnMenuCar()
-    {
-        float carTime = 1.0f;
-        if (!inTutorial || tutorialSteps < 3)
-        {
-            carTime = 1.75f;
-        }
-        carTimer += Time.deltaTime; //timer to spawn a new car after game is over
-        if (carTimer > carTime)
-        {
-            cars newCar = null;
-            float newLane = 0;
-            if (topLane)
-            {
-                if (topLaneTime < 240)
-                {
-                    newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
-                }
-                else
-                {
-                    newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
-                }
-            }
-            else
-            {
-                if (topLaneTime < 10)
-                {
-                    newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
-                }
-                else
-                {
-                    newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
-                }
-            }
-            float specalCar = Random.Range(0.0f, 1.0f);
-            if (specalCar > largeCarOdds + specalCarOdds)
-            {
-                newCar = caManager.spawnRegularCar(new Vector3(-12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-                largeCarOdds += 0.1f;
-                specalCarOdds += 0.00175f;
-            }
-            else if (specalCar > largeCarOdds)
-            {
-                newCar = caManager.spawnPoliceCar(new Vector3(-12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-                specalCarOdds = 0.01f;
-            }
-            else
-            {
-                newCar = caManager.spawnLargeCar(new Vector3(-14, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
-                largeCarOdds = 0.05f;
-            }
-            carTimer = 0;
-
-            newCar.setLane();
-
-            if (!inTutorial && newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
-            {
-                carsPast.Add(newCar.GetComponent<cars>().lane);
-                carsPast.Remove(carsPast[0]);
-            }
-
-            carTimer = 0;
-        }
-    }
-
     void spawnNormalCar()
     {
         float newLane = 0;
@@ -1372,6 +1330,8 @@ public class main : MonoBehaviour
         else
         {
             string scoretxt = "Score: " + (int)score + "m";
+            if (inTutorial) { scoretxt = "In Tutorial"; }
+
             if (textNum <= scoretxt.Length - 1)
             {
                 scoreText.text = scoretxt.Substring(0, textNum);
@@ -1449,11 +1409,19 @@ public class main : MonoBehaviour
         menuSound.clip = gameAmbience;
         menuSound.Play();
 
-        if(inTutorial && tutorialSteps == 0)
+        if (inTutorial)
         {
-            nextTutorialStep();
+            if (tutorialSteps == 0)
+            {
+                nextTutorialStep();
+                playerCar.startMph = 35;
+            }
+            else if (tutorialSteps == 9)
+            {
+                nextTutorialStep();
+                inTutorial = false;
+            }
         }
-
         if(modMang.currSelect > 0)
         {
             modMang.useMod();
@@ -1526,17 +1494,31 @@ public class main : MonoBehaviour
         Image overButton = Instantiate(bboard.gameOverOBJ, bboard.transform.position, Quaternion.identity, GameObject.Find("Front Billboards").transform).GetComponent<Image>();
         overButton.sprite = bboard.skinCurr;
         overButton.GetComponent<menuBillboard>().adOBJ.GetComponent<Image>().sprite = bboard.ad;
-        if (inTutorial)
-        {
-            activeHand = Instantiate(tutorialHandOBJ, new Vector3(bboard.gameObject.transform.position.x + 1.5f, 2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
-            activeHand.setBounce(0.45f, 0.25f, 30, 0.5f, 2);
-            activeText = Instantiate(tutorialTexts[4], new Vector3(3.8f, -0.8f, 0), Quaternion.identity);
-        }
-
+        
         Destroy(bboard.gameObject);
 
         menuSound.clip = menuAmbience;
         menuSound.Play();
+    }
+
+    public void checkTutorialDeath(Vector3 menuButtonPos)
+    {
+
+        if (inTutorial)
+        {
+            if (tutorialSteps == 7)
+            {
+                tutorialSteps++;
+            }
+            if (tutorialSteps == 8)
+            {
+                activeHand = Instantiate(tutorialHandOBJ, new Vector3(menuButtonPos.x + 0.5f, menuButtonPos.y - 0.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+                activeHand.setBounce(0.35f, 0.15f, 30, 0.5f, 2);
+                activeHand.transform.localScale = new Vector3(0.05f, 0.05f, 1);
+                setTutorialText(tutorialTexts[7], new Vector3(5.7f, 1.55f, 0));
+                activeText.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+            }
+        }
     }
 
     public void pauseButton()
@@ -1691,6 +1673,11 @@ public class main : MonoBehaviour
     public void collectCoin(int ammount)
     {
         coins += ammount;
+
+        if(inTutorial && tutorialSteps == 3)
+        {
+            resetSwipeTutorialTimer(2);
+        }
     }
 
     public void makeCoinsHolo()
@@ -1871,16 +1858,38 @@ public class main : MonoBehaviour
         return (val / ((max - min) / scale)) - (min / ((max - min) / scale));
     }
 
+    private void spawnTutorialWorld()
+    {
+        spawnTutorialCar();
+        swipeTutorial();
+        switch (tutorialSteps)
+        {
+            case 3:
+                spawnTutorialCoin();
+                break;
+            case 4:
+                isStepTime(7.5f);
+                break;
+            case 5:
+                spawnTutorialPowerup();
+                if (mph < 50) { mph += Time.deltaTime; }
+                break;
+            case 6:
+                if (!powerupActive)
+                {
+                    spawnTutorialPowerup();
+                }
+                spawnTutorialPowerupCoins();
+                if (mph < 50) { mph += Time.deltaTime; }
+                break;
+        }
+}
+
     public void nextTutorialStep()
     {
         tutorialSteps++;
-        Destroy(activeHand.gameObject);
-        Destroy(activeText.gameObject);
-
-        if (tutorialSteps >= 5)
-        {
-            inTutorial = false;
-        }
+        if (activeHand != null) { Destroy(activeHand.gameObject); }
+        activeText.SetActive(false);
 
         PlayerPrefs.SetInt("tutorialStep", tutorialSteps);
     }
@@ -1889,30 +1898,45 @@ public class main : MonoBehaviour
     {
         activeHand = Instantiate(tutorialHandOBJ, new Vector3(1.2f, -2.8f, 0), Quaternion.identity).GetComponent<tutorialHand>();
         activeHand.setBounce(0.45f, 0.25f, 30, 0.5f, 2);
-        activeText = Instantiate(tutorialTexts[0], new Vector3(3.8f, -0.8f, 0), Quaternion.identity);
+        setTutorialText(tutorialTexts[0], new Vector3(3.8f, -0.8f, 0));
     }
 
     private float swipeTutorialTimer = 0;
     private void swipeTutorial()
     {
-        if (canSwipeTutorialTimer() && activeHand == null)
+        if (canSwipeTutorialTimer() && (!activeText.activeInHierarchy))
         {
             if (tutorialSteps == 1)
             {
-                activeHand = Instantiate(tutorialHandOBJ, new Vector3(0.0f, -1.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
+                activeHand = Instantiate(tutorialHandOBJ, new Vector3(0.0f, -0.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
                 activeHand.setBounce(0.0f, 0.55f, 0, 0, 0.5f);
-                activeText = Instantiate(tutorialTexts[1], new Vector3(2.2f, -1.8f, 0), Quaternion.identity);
+                setTutorialText(tutorialTexts[1], new Vector3(3.2f, 1.3f, 0));
             }
             else if (tutorialSteps == 2)
             {
                 activeHand = Instantiate(tutorialHandOBJ, new Vector3(0.0f, -0.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
                 activeHand.setBounce(0.0f, 0.55f, 0, 0, 2);
-                activeText = Instantiate(tutorialTexts[2], new Vector3(2.2f, -1.8f, 0), Quaternion.identity);
+                setTutorialText(tutorialTexts[2], new Vector3(3.2f, -3.8f, 0));
             }
             else if (tutorialSteps == 3)
             {
-                activeHand = Instantiate(tutorialHandOBJ, new Vector3(100.0f, -0.5f, 0), Quaternion.identity).GetComponent<tutorialHand>();
-                activeText = Instantiate(tutorialTexts[3], new Vector3(2.2f, -1.8f, 0), Quaternion.identity);
+                setTutorialText(tutorialTexts[3], new Vector3(2.2f, -1.8f, 0));
+            }
+            else if (tutorialSteps == 4)
+            {
+                setTutorialText(tutorialTexts[4], new Vector3(2.2f, -1.8f, 0));
+            }
+            else if (tutorialSteps == 5)
+            {
+                setTutorialText(tutorialTexts[5], new Vector3(2.2f, -0.8f, 0));
+            }
+            else if (tutorialSteps == 7)
+            {
+                setTutorialText(tutorialTexts[6], new Vector3(1.2f, -1.8f, 0));
+            }
+            else if (tutorialSteps == 9)
+            {
+                setTutorialText(tutorialTexts[8], new Vector3(2.8f, -0.3f, 0));
             }
         }
         else
@@ -1920,6 +1944,14 @@ public class main : MonoBehaviour
             swipeTutorialTimer += Time.deltaTime;
         }
 
+    }
+
+    public void setTutorialText(string text, Vector3 newPos)
+    {
+        activeText.SetActive(true);
+        activeText.GetComponent<TextMeshProUGUI>().text = text;
+        activeText.transform.position = newPos;
+        activeText.GetComponent<tutorialText>().startPoint = newPos.y;
     }
 
     public bool canSwipeTutorialTimer()
@@ -1932,4 +1964,124 @@ public class main : MonoBehaviour
         swipeTutorialTimer = swipeTime;
         nextTutorialStep();
     }
+
+    private bool isStepTime(float time)
+    {
+        stepTimer += Time.deltaTime;
+
+        if(stepTimer > time)
+        {
+            stepTimer = 0;
+            resetSwipeTutorialTimer(2);
+            return true;
+        }
+        return false;
+    }
+
+    private void spawnTutorialCoin()
+    {
+        coinTimer += Time.deltaTime;
+        if (coinTimer > 6)
+        {
+            Instantiate(tutorialCoin, new Vector3(12, -1.85f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
+            coinTimer = 0;
+        }
+    }
+
+    void spawnTutorialPowerup()
+    {
+        if (tutorialPowerup == null && GameObject.Find("power up icon(Clone)") == null)
+        {
+            pwManage.createPowerup(0, new Vector3(15, -1.85f, 0));
+            tutorialPowerup = GameObject.Find("magnet powerup");
+        }
+    }
+
+    void spawnTutorialPowerupCoins()
+    {
+        coinTimer += Time.deltaTime;
+        if (coinTimer > 3.5f)
+        {
+            Instantiate(coin[Random.Range(0, 3)], new Vector3(12, -1.85f, 0), Quaternion.identity, GameObject.Find("coins").transform);  //spawn new car in a random lane before going on screen
+            coinTimer = 0;
+        }
+    }
+
+
+    void spawnTutorialCar()
+    {
+        carTimer += Time.deltaTime * mph; // time that spawns a new car that speeds up depending on the speed of the game (mph)
+        if (carTimer > 100)
+        {
+            float newLane = (Random.Range(0, -2) * 5.0f) + 0.65f;
+            caManager.spawnRegularCar(new Vector3(12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+            carTimer = 0;
+        }
+    }
+
+    void spawnMenuCar()
+    {
+        float carTime = 1.0f;
+        if (!inTutorial || tutorialSteps < 3)
+        {
+            carTime = 1.75f;
+        }
+        carTimer += Time.deltaTime; //timer to spawn a new car after game is over
+        if (carTimer > carTime)
+        {
+            cars newCar = null;
+            float newLane = 0;
+            if (topLane)
+            {
+                if (topLaneTime < 240)
+                {
+                    newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+                }
+                else
+                {
+                    newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+                }
+            }
+            else
+            {
+                if (topLaneTime < 10)
+                {
+                    newLane = (Random.Range(-1, -5) * 1.25f) + 0.65f;
+                }
+                else
+                {
+                    newLane = (Random.Range(0, -5) * 1.25f) + 0.65f;
+                }
+            }
+            float specalCar = Random.Range(0.0f, 1.0f);
+            if (specalCar > largeCarOdds + specalCarOdds)
+            {
+                newCar = caManager.spawnRegularCar(new Vector3(-12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                largeCarOdds += 0.1f;
+                specalCarOdds += 0.00175f;
+            }
+            else if (specalCar > largeCarOdds)
+            {
+                newCar = caManager.spawnPoliceCar(new Vector3(-12, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                specalCarOdds = 0.01f;
+            }
+            else
+            {
+                newCar = caManager.spawnLargeCar(new Vector3(-14, newLane, 0), GameObject.Find("cars").transform);  //spawn new car in a random lane before going on screen
+                largeCarOdds = 0.05f;
+            }
+            carTimer = 0;
+
+            newCar.setLane();
+
+            if ((!inTutorial || tutorialSteps > 6) && newCar.transform.position.y < 0.65f && newCar.transform.position.y > -4.35f && !carsPast.Contains(newCar.GetComponent<cars>().lane))
+            {
+                carsPast.Add(newCar.GetComponent<cars>().lane);
+                carsPast.Remove(carsPast[0]);
+            }
+
+            carTimer = 0;
+        }
+    }
+
 }

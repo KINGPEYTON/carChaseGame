@@ -78,6 +78,18 @@ public class powerUpIcon : MonoBehaviour
                 pwManage.collectPowerUp(id, tier);
                 controller.powerUpsCollected++;
                 controller.pwCollected[pwManage.powerupIDs.IndexOf(id)]++;
+                controller.activePowerup = id;
+
+                if(controller.inTutorial && controller.tutorialSteps == 5)
+                {
+                    controller.nextTutorialStep();
+                }
+
+                int ind = pwManage.powerupIDs.IndexOf(id);
+                if (!pwManage.tutorialDone[ind])
+                {
+                    controller.setTutorialText(pwManage.tutorialDescription[ind], new Vector3(3.2f, -0.8f, 0));
+                }
             }
         }
     }

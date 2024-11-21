@@ -309,5 +309,18 @@ public class speedometer : MonoBehaviour
         powerUpTimer = 0;
         powerUpUses = 0;
         controller.powerupActive = false;
+        if (controller.activeText.activeInHierarchy)
+        {
+            if (!controller.isOver)
+            {
+                controller.activeText.SetActive(false);
+                controller.pwManage.finishTutorial(controller.activePowerup);
+            }
+        }
+
+        if (controller.inTutorial && controller.tutorialSteps == 6)
+        {
+            controller.nextTutorialStep();
+        }
     }
 }

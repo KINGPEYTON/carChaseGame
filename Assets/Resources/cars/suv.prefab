@@ -5044,7 +5044,7 @@ MonoBehaviour:
   speedMax: 0
   odds: 0
   cutoffSize: 0
-  horn: {fileID: 8300000, guid: 41aa6e7c505cf4878856b364c1e705c3, type: 3}
+  horn: {fileID: 8300000, guid: dfcf9c4769acc437d84a512aac1e1e5f, type: 3}
   angryFace: {fileID: 3223249439069376158, guid: daa65ff9247054a058c3ca549c000dbc, type: 3}
   disableSound: {fileID: 8300000, guid: 59730711a1865444a9026aba90d80cf0, type: 3}
   isDestroyed: 0

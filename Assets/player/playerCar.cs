@@ -120,6 +120,7 @@ public class playerCar : MonoBehaviour
     public int beginBoostTarget;
     public float beginBoostTime;
     public float beginBoostScoreMPH;
+    public AudioClip beginBoostHum;
 
     public int statLane;
     public int statTurns;
@@ -547,6 +548,9 @@ public class playerCar : MonoBehaviour
         beginBoostTarget = targScore;
         beginBoostTime = 0.75f;
         beginBoostScoreMPH = scoremph;
+        sndSource.clip = beginBoostHum;
+        sndSource.volume = controller.sfxVol * controller.masterVol;
+        sndSource.Play();
     }
 
     void doBeginBoost()
@@ -593,6 +597,7 @@ public class playerCar : MonoBehaviour
     void endbeginBoost()
     {
         beginBoost = false;
+        sndSource.clip = null;
     }
 
     void activateShield()
@@ -1112,19 +1117,9 @@ public class playerCar : MonoBehaviour
 
     void hitSmoke(Collider2D collision)
     {
-        float smokeLevel = collision.GetComponent<manhole>().getSmokeValue();
-        if (smokeLevel > 500)
-        {
-            smokeLevel = 500;
-        }
-
         if (!inShield)
         {
-            if (controller.screenDistortTarget < smokeLevel / 500)
-            {
-                AudioSource.PlayClipAtPoint(manhole, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
-                controller.screenDistortTarget = smokeLevel / 500;
-            }
+            AudioSource.PlayClipAtPoint(manhole, new Vector3(0, 0, -10), controller.masterVol * controller.sfxVol);
         }
     }
 

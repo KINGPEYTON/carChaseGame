@@ -10,6 +10,7 @@ public class rocketBoost : MonoBehaviour
 
     public Transform player;
     public Transform camera;
+    public cameraScaler cameraScale;
     public Transform skyline;
     public Transform clouds;
     public Transform blimp;
@@ -59,6 +60,7 @@ public class rocketBoost : MonoBehaviour
 
         player = pCar.gameObject.transform;
         camera = GameObject.Find("Main Camera").transform;
+        cameraScale = camera.GetComponent<cameraScaler>();
         skyline = GameObject.Find("skyline").transform;
         clouds = GameObject.Find("clouds").transform;
         blimp = GameObject.Find("score Blimp").transform;
@@ -165,7 +167,7 @@ public class rocketBoost : MonoBehaviour
         Vector3 disBlimp = new Vector3(0, 2, 0);
         Vector3 disPlane = new Vector3(0, 1.5f, 0);
         player.position = calcPos(disPlayer, startPos, boostTimer, boostTime);
-        camera.position = calcPos(disCamera, new Vector3(0, 0, -10), boostTimer, boostTime);
+        camera.position = calcPos(disCamera, new Vector3(0, cameraScale.cameraHight, -10), boostTimer, boostTime);
         skyline.localPosition = calcPos(disSkyLine, new Vector3(0, 0, 0), boostTimer, boostTime);
         clouds.localPosition = calcPos(disClouds, new Vector3(0, 0, 0), boostTimer, boostTime);
         blimp.position = calcPos(disBlimp, new Vector3(0, 0, 0), boostTimer, boostTime);
@@ -176,7 +178,7 @@ public class rocketBoost : MonoBehaviour
             boosting = false;
             inSky = true;
             player.position = new Vector3(player.position.x, targY, 0);
-            camera.position = new Vector3(camera.position.x, 8, -10);
+            camera.position = new Vector3(camera.position.x, cameraScale.cameraHight + 8, -10);
             skyline.position = new Vector3(skyline.position.x, 2, 0);
             clouds.position = new Vector3(clouds.position.x, 6, 0);
             blimp.position = new Vector3(blimp.position.x, 2, 0);
@@ -217,7 +219,7 @@ public class rocketBoost : MonoBehaviour
         Vector3 disBlimp = new Vector3(0, 2, 0);
         Vector3 disPlane = new Vector3(0, 1.5f, 0);
         player.position = calcPos(disPlayer, startPos, boostTimer, boostTime);
-        camera.position = disCamera - calcPos(disCamera, new Vector3(0, 0, 10), boostTimer, boostTime);
+        camera.position = new Vector3(0, cameraScale.cameraHight + 8, 0) - calcPos(disCamera, new Vector3(0, 0, 10), boostTimer, boostTime);
         skyline.localPosition = disSkyLine - calcPos(disSkyLine, new Vector3(0, 0, 0), boostTimer, boostTime);
         clouds.localPosition = disClouds - calcPos(disClouds, new Vector3(0, 0, 0), boostTimer, boostTime);
         blimp.position = disBlimp - calcPos(disBlimp, new Vector3(0, 0, 0), boostTimer, boostTime);
@@ -228,7 +230,7 @@ public class rocketBoost : MonoBehaviour
             boosting = false;
             inSky = false;
             player.position = new Vector3(player.position.x, targY, 0);
-            camera.position = new Vector3(camera.position.x, 0, -10);
+            camera.position = new Vector3(camera.position.x, cameraScale.cameraHight, -10);
             skyline.position = new Vector3(skyline.position.x, -1, 0);
             clouds.position = new Vector3(clouds.position.x, -1, 0);
             blimp.position = new Vector3(blimp.position.x, 0, 0);

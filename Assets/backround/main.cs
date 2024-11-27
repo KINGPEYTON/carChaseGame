@@ -61,6 +61,11 @@ public class main : MonoBehaviour
     public Vector3 newBlimpLocation;
     public TextMeshProUGUI scoreText;
 
+    public float blimpMinX;
+    public float blimpMaxX;
+    public float blimpMinY;
+    public float blimpMaxY;
+
     public float textTimer;
     public int textNum;
     public bool scoreShowing;
@@ -108,6 +113,8 @@ public class main : MonoBehaviour
 
     public float buildingDist = 2.95f;
     public Transform buildingLast;
+
+    public float distMulti;
 
     public GameObject buildingFront; //building gameobject to spawn
     public List<Sprite> buildingFrontSkins;
@@ -261,7 +268,7 @@ public class main : MonoBehaviour
     public int topMPH;
     public float timePlayed;
     public int closeHits;
-    public float[] laneTimes;
+    public float[] laneTimes = new float[5];
     public int carsDisabled;
     public int carsDestroyed;
     public int powerUpsCollected;
@@ -473,16 +480,12 @@ public class main : MonoBehaviour
                 bannedLanes.Add(3);
             }
         }
-
-        //updates the smoke effict on the players screen
-        updateSmokeScreen();
-
         // update blimp
-        if ((scoreBlimp.transform.localPosition.x < -7.79f || scoreBlimp.transform.localPosition.x > -4.82f) && Mathf.Abs(scoreBlimp.transform.localPosition.x - newBlimpLocation.x) > 1.0) //if blimp went out of bounce on the X
+        if ((scoreBlimp.transform.localPosition.x < -9.5f + (distMulti * 3.5f) || scoreBlimp.transform.localPosition.x > -7.2f + (distMulti * 3)) && Mathf.Abs(scoreBlimp.transform.localPosition.x - newBlimpLocation.x) > 1.0) //if blimp went out of bounce on the X
         {
             updateBlimpX(); // find new target location for blimp
         }
-        if ((scoreBlimp.transform.localPosition.y > 4.58f || scoreBlimp.transform.localPosition.y < 3.86f) && Mathf.Abs(scoreBlimp.transform.localPosition.y - newBlimpLocation.y) > 0.5) //if blimp went out of bounce on the X
+        if ((scoreBlimp.transform.localPosition.y > 3.05f * (distMulti * 1.5f) || scoreBlimp.transform.localPosition.y < 2.9f * (distMulti * 1.35f)) && Mathf.Abs(scoreBlimp.transform.localPosition.y - newBlimpLocation.y) > 0.5) //if blimp went out of bounce on the X
         {
             updateBlimpY(); // find new target location for blimp
         }
@@ -600,7 +603,7 @@ public class main : MonoBehaviour
                 {
                     //spawns a new rail guard for the edge of the road
                     Instantiate(bridgeBar, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
-                    Instantiate(bridgebar3, new Vector3(guardLast.position.x + (guardDist * 2), 8, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                    Instantiate(bridgebar3, new Vector3(guardLast.position.x + (guardDist * 2), (8 * distMulti), 0), Quaternion.identity, GameObject.Find("guards").transform);
                     Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
                     guardLast = newBar;
                 }
@@ -608,7 +611,7 @@ public class main : MonoBehaviour
             catch
             {
                 Instantiate(bridgeBar, new Vector3(guardLast.position.x + guardDist, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
-                Instantiate(bridgebar3, new Vector3(guardLast.position.x + (guardDist * 2), 8, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                Instantiate(bridgebar3, new Vector3(guardLast.position.x + (guardDist * 2 * distMulti), (8 * distMulti), 0), Quaternion.identity, GameObject.Find("guards").transform);
                 Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + guardDist, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
                 guardLast = newBar;
             }
@@ -667,7 +670,7 @@ public class main : MonoBehaviour
             {
                 if (buildingFrontList < 4)
                 {
-                    buildings newbuildingFront = Instantiate(buildingFront, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.12f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); ; //spawns new backround building
+                    buildings newbuildingFront = Instantiate(buildingFront, new Vector3(frontBuildingLast.position.x + (frontBuildingDist * distMulti), 0.05f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); ; //spawns new backround building
                     newbuildingFront.setSkin(getbuildingFromOdds(buildingsFrontOdds, buildingsFrontCurrOdds, buildingFrontSkins));
                     frontBuildingLast = newbuildingFront.gameObject.transform;
                     buildingFrontList++;
@@ -677,7 +680,7 @@ public class main : MonoBehaviour
                 {
                     if (frontBillboardList < 3)
                     {
-                        GameObject bboard = Instantiate(frontBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 0.5f, -0.72f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        GameObject bboard = Instantiate(frontBillboard, new Vector3(frontBuildingLast.position.x + ((frontBuildingDist + 0.5f) * distMulti), -0.75f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<buildings>().setSkin(getbuildingFromOdds(frontBillboardOdds, frontBillboardCurrOdds, frontBillboardSkins));
                         billboards.Add(bboard);
                         frontBuildingLast = bboard.gameObject.transform;
@@ -687,7 +690,7 @@ public class main : MonoBehaviour
                     }
                     else
                     {
-                        GameObject bboard = Instantiate(bigFrontBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 2.0f, -1.36f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        GameObject bboard = Instantiate(bigFrontBillboard, new Vector3(frontBuildingLast.position.x + ((frontBuildingDist + 2.0f) * distMulti), -1.4f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<billboard>().isBigBillboard = true;
                         bboard.GetComponent<buildings>().setSkin(getbuildingFromOdds(frontBigBillboardSkins));
                         billboards.Add(bboard);
@@ -717,7 +720,7 @@ public class main : MonoBehaviour
             {
                 if (buildingList < 6)
                 {
-                    buildings newBuilding = Instantiate(building, new Vector3(buildingLast.position.x + buildingDist, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                    buildings newBuilding = Instantiate(building, new Vector3(buildingLast.position.x + (buildingDist * distMulti), 0.05f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
                     newBuilding.setSkin(getbuildingFromOdds(buildingsOdds, buildingsCurrOdds, buildingSkins));
                     buildingLast = newBuilding.gameObject.transform;
                     buildingList++;
@@ -725,7 +728,7 @@ public class main : MonoBehaviour
                 }
                 else
                 {
-                    billboard bboard = Instantiate(backBillboard, new Vector3(buildingLast.position.x + buildingDist + 0.35f, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<billboard>(); //spawns new backround building
+                    billboard bboard = Instantiate(backBillboard, new Vector3(buildingLast.position.x + (buildingDist * distMulti) + 0.35f, 0.05f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<billboard>(); //spawns new backround building
                     bboard.isBigBillboard = true;
                     bboard.GetComponent<buildings>().setSkin(getbuildingFromOdds(backBillboardSkins));
                     buildingLast = bboard.gameObject.transform;
@@ -736,7 +739,7 @@ public class main : MonoBehaviour
         }
         catch
         {
-            buildings newBuilding = Instantiate(building, new Vector3(12, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+            buildings newBuilding = Instantiate(building, new Vector3(12, 0.05f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
             newBuilding.setSkin(getbuildingFromOdds(buildingsOdds, buildingsCurrOdds, buildingSkins));
             buildingLast = newBuilding.gameObject.transform;
             buildingList++;
@@ -750,14 +753,14 @@ public class main : MonoBehaviour
         {
             if (farBuildingLast.position.x < 10)
             {
-                buildings newBuilding = Instantiate(farBuilding, new Vector3(farBuildingLast.position.x + farBuildingDist, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+                buildings newBuilding = Instantiate(farBuilding, new Vector3(farBuildingLast.position.x + farBuildingDist, 0.05f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
                 newBuilding.setSkin(getbuildingFromOdds(farBuildingsOdds, farBuildingsCurrOdds, farBuildingSkins));
                 farBuildingLast = newBuilding.gameObject.transform;
             }
         }
         catch
         {
-            buildings newBuilding = Instantiate(farBuilding, new Vector3(13, 0.15f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
+            buildings newBuilding = Instantiate(farBuilding, new Vector3(13, 0.05f, 0), Quaternion.identity, GameObject.Find("buildings").transform).GetComponent<buildings>(); //spawns new backround building
             newBuilding.setSkin(getbuildingFromOdds(farBuildingsOdds, farBuildingsCurrOdds, farBuildingSkins));
             farBuildingLast = newBuilding.gameObject.transform;
         }
@@ -767,7 +770,7 @@ public class main : MonoBehaviour
     {
         if (skylineLast.position.x < 10)
         {
-            buildings newSkyline = Instantiate(skyline, new Vector3(skylineLast.position.x + skylineDist, skylineLast.position.y, 0), Quaternion.identity, GameObject.Find("skyline").transform).GetComponent<buildings>(); //spawns new backround building
+            buildings newSkyline = Instantiate(skyline, new Vector3(skylineLast.position.x + (skylineDist * distMulti), skylineLast.position.y, 0), Quaternion.identity, GameObject.Find("skyline").transform).GetComponent<buildings>(); //spawns new backround building
             newSkyline.setSkin(getbuildingFromOdds(skylineOdds, skylineCurrOdds, skylineSkins));
             skylineLast = newSkyline.gameObject.transform;
         }
@@ -934,12 +937,12 @@ public class main : MonoBehaviour
                 Transform newSupport = Instantiate(bridgeSupport, new Vector3(bridgeStarting.position.x + 4.75f, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform;
                 buildingLast = newSupport;
                 buildingDist = 1.5f;
-                Instantiate(bridgeBar, new Vector3(guardLast.position.x + 2.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
-                Instantiate(bridgebar3, new Vector3(guardLast.position.x + 8.25f, 8, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                Instantiate(bridgeBar, new Vector3(guardLast.position.x + 1.5f, 1.3f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                Instantiate(bridgebar3, new Vector3(guardLast.position.x + 8.25f, 8 * distMulti, 0), Quaternion.identity, GameObject.Find("guards").transform);
                 GameObject newBuilding = Instantiate(bridgePillar, new Vector3(bridgeStarting.position.x + 4.5f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                 frontBuildingLast = newBuilding.transform;
                 frontBuildingDist = 7.5f;
-                Instantiate(bridgeStartConnector, new Vector3(guardLast.position.x -1, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform);
+                Instantiate(bridgeStartConnector, new Vector3(guardLast.position.x - 1, -4.8f, 0), Quaternion.identity, GameObject.Find("guards").transform);
                 createSign(3);
                 Transform newBar = Instantiate(bridgeBar2, new Vector3(guardLast.position.x + 1.5f, -4.75f, 0), Quaternion.identity, GameObject.Find("guards").transform).transform;
                 guardLast = newBar;
@@ -997,11 +1000,11 @@ public class main : MonoBehaviour
     {
         try
         {
-            if (frontBuildingLast.position.x < 5)
+            if (frontBuildingLast.position.x < 8)
             {
                 if (buildingFrontList < 1)
                 {
-                    GameObject newBuilding = Instantiate(bridgePillar, new Vector3(frontBuildingLast.position.x + frontBuildingDist, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                    GameObject newBuilding = Instantiate(bridgePillar, new Vector3(frontBuildingLast.position.x + (frontBuildingDist * distMulti), 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                     frontBuildingLast = newBuilding.transform;
                     frontBuildingDist = 7.5f;
                     buildingFrontList++;
@@ -1010,7 +1013,7 @@ public class main : MonoBehaviour
                 {
                     if (frontBillboardList < 2)
                     {
-                        GameObject bboard = Instantiate(bridgeBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 1.0f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        GameObject bboard = Instantiate(bridgeBillboard, new Vector3(frontBuildingLast.position.x + ((frontBuildingDist + 1.0f) * distMulti), 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<billboard>().setSkin(bridgeBillboardSkin);
                         frontBuildingLast = bboard.transform;
                         frontBuildingDist = 9.5f;
@@ -1020,7 +1023,7 @@ public class main : MonoBehaviour
                     }
                     else
                     {
-                        GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(frontBuildingLast.position.x + frontBuildingDist + 2.5f, 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
+                        GameObject bboard = Instantiate(bridgeBigBillboard, new Vector3(frontBuildingLast.position.x + ((frontBuildingDist + 2.5f) * distMulti), 0.65f, 0), Quaternion.identity, GameObject.Find("buildings").transform); //spawns new backround building
                         bboard.GetComponent<billboard>().setSkin(bridgeBigBillboardSkin);
                         frontBuildingLast = bboard.transform;
                         frontBuildingDist = 11f;
@@ -1075,7 +1078,7 @@ public class main : MonoBehaviour
         {
             if (buildingLast.position.x < 11)
             {
-                Transform newSupport = Instantiate(bridgeSupport, new Vector3(buildingLast.position.x + buildingDist, 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform; //spawns new backround building
+                Transform newSupport = Instantiate(bridgeSupport, new Vector3(buildingLast.position.x + (buildingDist * distMulti), 1.0f, 0), Quaternion.identity, GameObject.Find("buildings").transform).transform; //spawns new backround building
                 buildingLast = newSupport;
                 buildingDist = 1.5f;
                 buildingList++;
@@ -1105,33 +1108,6 @@ public class main : MonoBehaviour
                 pwManage.createPowerup(getPowerupFromOdds(pwManage.powerupOdds, pwManage.powerupCurrOdds), new Vector3(15, newLane, 0));
                 powerupTimer = 0;
                 powerupTime = Random.Range(1200, 2250);
-            }
-        }
-    }
-
-    void updateSmokeScreen()
-    {
-        if (screenDistort == screenDistortTarget)
-        {
-            screenDistortTarget = 0;
-        }
-        else
-        {
-            if (screenDistort < screenDistortTarget)
-            {
-                screenDistort += Time.deltaTime * 0.95f;
-                if (screenDistort > screenDistortTarget)
-                {
-                    screenDistort = screenDistortTarget;
-                }
-            }
-            else if (screenDistort > screenDistortTarget)
-            {
-                screenDistort -= Time.deltaTime * 0.95f;
-                if(screenDistort < screenDistortTarget)
-                {
-                    screenDistort = screenDistortTarget;
-                }
             }
         }
     }

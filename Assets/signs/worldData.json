@@ -422,7 +422,7 @@
     ],
     "tutorialSteps": [
         {
-            "stepText": "Press the \"Start\" sign the begin the game."
+            "stepText": "Press the \"Start\" sign to begin the game."
         },
         {
             "stepText": "Swipe up to switch to the lane above."
@@ -434,7 +434,7 @@
             "stepText": "Hit a coin to collect it. Red Coins are worth double."
         },
         {
-            "stepText": "Collect coins to spend in the shop to upgrade your car, look, and items you find in game."
+            "stepText": "Collect coins to spend in the shop to upgrade your car, and items you find in game."
         },
         {
             "stepText": "Hit a powerup to collect it. Blue Bubbles are timed powerups, while Red Bubbles are event activated."

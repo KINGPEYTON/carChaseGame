@@ -184,6 +184,7 @@ public class statsManager : MonoBehaviour
             if (pwList[i] > pstats.pwCollectedInGame[i])
             {
                 pstats.pwCollectedInGame[i] = pwList[i];
+                if(pstats.pwMostCollected == "None") { pstats.pwMostCollected = pstats.pwIDs[i]; }
                 if (pwList[i] > pstats.pwCollected[pstats.pwIDs.IndexOf(pstats.pwMostCollected)])
                 {
                     pstats.pwMostCollected = pstats.pwIDs[i];
@@ -191,7 +192,7 @@ public class statsManager : MonoBehaviour
             }
         }
 
-        if(mod > 0)
+        if (mod > 0)
         {
             pstats.modsUsed++;
             pstats.mods[mod]++;

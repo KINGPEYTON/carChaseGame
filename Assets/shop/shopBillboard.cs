@@ -9,7 +9,7 @@ public class shopBillboard : MonoBehaviour
 {
     public main controller;
     public Camera mainCamera;
-    public Camera sideCamera;
+    public cameraScaler cameraScale;
     public bool inStore;
     public GameObject buttonCoverImage;
 
@@ -172,14 +172,25 @@ public class shopBillboard : MonoBehaviour
 
         updateCoinText();
 
+        cameraScale = mainCamera.GetComponent<cameraScaler>();
+        float scaleFactor = ((cameraScale.cameraSize - 5) / 7.5f) + 1;
+        controller.distMulti = scaleFactor;
+        GameObject.Find("buildings").transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+        GameObject.Find("Front Billboards").transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+        GameObject.Find("score Blimp").transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+        GameObject.Find("pause Plane").transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+        GameObject.Find("Pause Plane").transform.localPosition = new Vector3(1.22f, 6.68f + (cameraScale.cameraHight / 2), 0);
+
         if (pManager.intro && false) // delete this to make the start animation again
         {
-            startup();
+            startup(scaleFactor);
             pManager.intro = false; // makes it so it wont go in the start animation again without closing the app
         }
         else {
             canStart = true;
-            controller.scoreBlimp.transform.position = new Vector3(-6.52f, 4.48f, 0);
+            controller.scoreBlimp.transform.position = new Vector3(-7.75f + (1 * scaleFactor) , 1.75f * (scaleFactor * 2.75f), 0);
+            mainCamera.orthographicSize = cameraScale.cameraSize;
+            mainCamera.transform.position = new Vector3(0, cameraScale.cameraHight, -10);
         }
 
         //shopButtonFunc(0.1f);
@@ -445,19 +456,17 @@ public class shopBillboard : MonoBehaviour
 
     void storeAnimation()
     {
-        sideCamera.transform.position += new Vector3(targetSpeed.x * Time.deltaTime, targetSpeed.y * Time.deltaTime, 0);
-        sideCamera.orthographicSize += zoomSpeed * Time.deltaTime;
+        mainCamera.transform.position += new Vector3(targetSpeed.x * Time.deltaTime, targetSpeed.y * Time.deltaTime, 0);
+        mainCamera.orthographicSize += zoomSpeed * Time.deltaTime;
         if (targetSpeed.x < 0)
         {
-            if (sideCamera.transform.position.x < targetPos.x)
+            if (mainCamera.transform.position.x < targetPos.x)
             {
-                sideCamera.transform.position = targetPos;
+                mainCamera.transform.position = targetPos;
                 inPos = true;
-                sideCamera.orthographicSize = targetZoom;
+                mainCamera.orthographicSize = targetZoom;
                 if (!inStore)
                 {
-                    mainCamera.enabled = true;
-                    sideCamera.enabled = false;
                     canStart = true;
                     setMenuUI(true);
                 }
@@ -469,15 +478,13 @@ public class shopBillboard : MonoBehaviour
         }
         else if (targetSpeed.x > 0)
         {
-            if (sideCamera.transform.position.x > targetPos.x)
+            if (mainCamera.transform.position.x > targetPos.x)
             {
-                sideCamera.transform.position = targetPos;
+                mainCamera.transform.position = targetPos;
                 inPos = true;
-                sideCamera.orthographicSize = targetZoom;
+                mainCamera.orthographicSize = targetZoom;
                 if (!inStore)
                 {
-                    mainCamera.enabled = true;
-                    sideCamera.enabled = false;
                     canStart = true;
                     setMenuUI(true);
                 }
@@ -491,15 +498,13 @@ public class shopBillboard : MonoBehaviour
         {
             if (targetSpeed.y < 0)
             {
-                if (sideCamera.transform.position.y < targetPos.y)
+                if (mainCamera.transform.position.y < targetPos.y)
                 {
-                    sideCamera.transform.position = targetPos;
+                    mainCamera.transform.position = targetPos;
                     inPos = true;
-                    sideCamera.orthographicSize = targetZoom;
+                    mainCamera.orthographicSize = targetZoom;
                     if (!inStore)
                     {
-                        mainCamera.enabled = true;
-                        sideCamera.enabled = false;
                         canStart = true;
                         setMenuUI(true);
                     }
@@ -511,15 +516,13 @@ public class shopBillboard : MonoBehaviour
             }
             else if (targetSpeed.y > 0)
             {
-                if (sideCamera.transform.position.y > targetPos.y)
+                if (mainCamera.transform.position.y > targetPos.y)
                 {
-                    sideCamera.transform.position = targetPos;
+                    mainCamera.transform.position = targetPos;
                     inPos = true;
-                    sideCamera.orthographicSize = targetZoom;
+                    mainCamera.orthographicSize = targetZoom;
                     if (!inStore)
                     {
-                        mainCamera.enabled = true;
-                        sideCamera.enabled = false;
                         canStart = true;
                         setMenuUI(true);
                     }
@@ -558,13 +561,11 @@ public class shopBillboard : MonoBehaviour
             AudioSource.PlayClipAtPoint(controller.clickSound, transform.position, controller.masterVol * controller.sfxVol);
             inStore = true;
             canStart = false;
-            mainCamera.enabled = false;
-            sideCamera.enabled = true;
-            targetPos = new Vector3(4, 3, -10);
-            targetSpeed = setTargetSpeed(targetPos, speed, sideCamera.transform.position);
+            targetPos = new Vector3(4 * controller.distMulti, 3 * controller.distMulti, -10);
+            targetSpeed = setTargetSpeed(targetPos, speed, mainCamera.transform.position);
             inPos = false;
-            targetZoom = 1.55f;
-            zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
+            targetZoom = cameraScaler.getScale(6.75f * controller.distMulti);
+            zoomSpeed = -(mainCamera.orthographicSize - targetZoom) / speed;
             buttonCoverImage.SetActive(true);
             playerCoverPage.SetActive(false);
             powerupCoverPage.SetActive(false);
@@ -660,11 +661,11 @@ public class shopBillboard : MonoBehaviour
     {
         AudioSource.PlayClipAtPoint(controller.clickSound, transform.position, controller.masterVol * controller.sfxVol);
         inStore = false;
-        targetPos = new Vector3(0, 0, -10);
-        targetSpeed = setTargetSpeed(targetPos, speed, sideCamera.transform.position);
+        targetPos = new Vector3(0, cameraScale.cameraHight, -10);
+        targetSpeed = setTargetSpeed(targetPos, speed, mainCamera.transform.position);
         inPos = false;
-        targetZoom = 5;
-        zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
+        targetZoom = cameraScale.cameraSize;
+        zoomSpeed = -(mainCamera.orthographicSize - targetZoom) / speed;
         buttonCoverImage.SetActive(false);
         menuSigns.SetActive(true);
 
@@ -678,21 +679,20 @@ public class shopBillboard : MonoBehaviour
     {
         intro = false;
         inStore = false;
-        targetPos = new Vector3(0, 0, -10);
-        targetSpeed = setTargetSpeed(targetPos, speed, sideCamera.transform.position);
+        targetPos = new Vector3(0, cameraScale.cameraHight, -10);
+        targetSpeed = setTargetSpeed(targetPos, speed, mainCamera.transform.position);
         inPos = false;
-        targetZoom = 5;
-        zoomSpeed = -(sideCamera.orthographicSize - targetZoom) / speed;
+        targetZoom = cameraScale.cameraSize;
+        zoomSpeed = -(mainCamera.orthographicSize - targetZoom) / speed;
     }
 
-    void startup()
+    void startup(float scale)
     {
         intro = true;
         introTimer = 0;
-        mainCamera.enabled = false;
-        sideCamera.enabled = true;
-        sideCamera.transform.position = new Vector3(-6.25f, 4.85f, -10);
-        sideCamera.orthographicSize = 1.75f;
+        controller.scoreBlimp.transform.position = new Vector3(-7.75f + (1 * scale), 1.75f * (scale * 2.85f), 0);
+        mainCamera.transform.position = new Vector3(-7.75f + (1.75f * scale), 1.85f * (scale * 2.85f), -10);
+        mainCamera.orthographicSize = cameraScaler.getScale(6.5f * scale);
         setMenuUI(false);
     }
 

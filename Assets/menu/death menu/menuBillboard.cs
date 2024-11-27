@@ -14,6 +14,7 @@ public class menuBillboard : MonoBehaviour
 
     public bool inZoom;
     public float targetZoom;
+    public float scaleZoom;
     public float startZoom;
     public float zoomTime;
     public Vector3 startPos;
@@ -73,10 +74,12 @@ public class menuBillboard : MonoBehaviour
         startPos = mainCamera.transform.position;
         startZoom = mainCamera.orthographicSize;
 
+        scaleZoom = cameraScaler.getScale(4.15f * targetZoom * controller.distMulti);
+
         if(GameObject.Find("bridge start(Clone)") != null)
         {
             SpriteRenderer bridgePiece = GameObject.Find("bridge start(Clone)").GetComponent<SpriteRenderer>();
-            if (Mathf.Abs(bridgePiece.transform.position.x - transform.position.x) < targetZoom * 1.85f)
+            if (Mathf.Abs(bridgePiece.transform.position.x - transform.position.x) < targetZoom * 1.85f * controller.distMulti)
             {
                 blockBridge = bridgePiece;
             }
@@ -86,7 +89,7 @@ public class menuBillboard : MonoBehaviour
         for(int i = 0; i < topSigns.childCount; i++)
         {
             Transform newSign = topSigns.GetChild(i);
-            if(Mathf.Abs(newSign.transform.position.x - transform.position.x) < targetZoom * 1.85f)
+            if(Mathf.Abs(newSign.transform.position.x - transform.position.x) < targetZoom * 1.85f * controller.distMulti)
             {
                 blockSigns.Add(newSign);
             }
@@ -129,7 +132,7 @@ public class menuBillboard : MonoBehaviour
     {
         Vector3 dis = new Vector3(targPos.x - startPos.x, targPos.y - startPos.y, 0);
         mainCamera.transform.position = calcPos(dis, startPos, endTimer, zoomTime);
-        mainCamera.orthographicSize = startZoom - getValueScale(getValueRanged(endTimer, 0, zoomTime), 0, zoomTime, startZoom - targetZoom);
+        mainCamera.orthographicSize = startZoom - getValueScale(getValueRanged(endTimer, 0, zoomTime), 0, zoomTime, startZoom - scaleZoom);
         fadeSigns(255 - getValueScale(getValueRanged(endTimer, 0, zoomTime), 0, zoomTime, 200));
         if (endTimer > zoomTime)
         {

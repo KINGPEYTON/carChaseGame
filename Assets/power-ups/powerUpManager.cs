@@ -69,7 +69,7 @@ public class powerUpManager : MonoBehaviour
             getPowerupOdds();
         }
 
-        createPowerup(2, new Vector3(9, -1.65f, 0));
+        //createPowerup(7, new Vector3(9, -1.65f, 0));
     }
 
     public void collectPowerUp(string id, int level)

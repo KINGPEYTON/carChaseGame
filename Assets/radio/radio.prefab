@@ -793,19 +793,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radioNames:
   - Off
-  - 89.3 2am Turn-up
-  - 91.5 Fun Unaltered Music
-  - 92.7 The Moldie Oldies
-  - 94.5 Rock Hard
-  - 97.7 Alternative Ault
-  - 99.1 Headquarters Of Dance
-  - 100.3 My Pop
-  - 102.3 Hop Bop Radio
-  - 103.1 Feelings FM
-  - 103.9 City Vibes
-  - 105.7 Countryside Radio
-  - 106.9 Foreign Music
-  - 107.5 Theme HQ
+  - 93.5 Electric FM
+  - 98.1 Funky Beats
+  - 102.9 My Drive FM
+  - 106.7 Crashopolis Vibes
   manager: {fileID: 0}
   stationText: {fileID: 6386631603181063133}
   songText: {fileID: 3786747309960961192}

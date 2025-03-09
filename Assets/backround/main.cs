@@ -288,7 +288,7 @@ public class main : MonoBehaviour
         masterVol = PlayerPrefs.GetFloat("masterVol", 1); //sets high score to the one saved
         sfxVol = PlayerPrefs.GetFloat("sfxVol", 1); //sets high score to the one saved
         musicVol = PlayerPrefs.GetFloat("musicVol", 1); //sets the music volume to the one it was last on
-        radioVol = PlayerPrefs.GetFloat("radioVol", 0.75f); //sets the radio volume to the one it was last on
+        radioVol = PlayerPrefs.GetFloat("radioVol", 0.65f); //sets the radio volume to the one it was last on
 
         foreach (string s in worldM.tutText) { tutorialTexts.Add(s); }
         tutorialSteps = PlayerPrefs.GetInt("tutorialStep", 0); //sets the tutorial to the last step

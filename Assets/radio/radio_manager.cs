@@ -15,24 +15,6 @@ public class radio_manager : MonoBehaviour
     public List<string> moldieOldiesNames;
     public List<AudioClip> rockHard;
     public List<string> rockHardNames;
-    public List<AudioClip> alternativeAlt;
-    public List<string> alternativeAltNames;
-    public List<AudioClip> HOD;
-    public List<string> HODNames;
-    public List<AudioClip> myPOP;
-    public List<string> myPOPNames;
-    public List<AudioClip> hopBop;
-    public List<string> hopBopNames;
-    public List<AudioClip> feelingsFM;
-    public List<string> feelingsFMNames;
-    public List<AudioClip> cityVibes;
-    public List<string> cityVibesNames;
-    public List<AudioClip> countrysideRadio;
-    public List<string> countrysideRadioNames;
-    public List<AudioClip> foreignMusic;
-    public List<string> foreignMusicNames;
-    public List<AudioClip> themeHQ;
-    public List<string> themeHQNames;
 
     public List<float> radioTotalTimes;
     public List<float> radioTimes;
@@ -71,22 +53,13 @@ public class radio_manager : MonoBehaviour
         musicStatic = music.GetComponent<AudioLowPassFilter>();
         musicStatic2 = music.GetComponent<AudioDistortionFilter>();
 
-        radioID = PlayerPrefs.GetInt("radio", radioID); //sets the radio station to the one it was last on
+        radioID = PlayerPrefs.GetInt("radio", 1); //sets the radio station to the one it was last on
 
         makeRadio(new List<AudioClip>(), new List<string>(), "???");
-        makeRadio(twoAMTurnUp, twoAMTurnUpNames, "radio/89.3 2am Turn-up");
-        makeRadio(FUM, FUMNames, "radio/91.5 FUM Fun Unaltered Music");
-        makeRadio(moldieOldies, moldieOldiesNames, "radio/92.7 The Moldie Oldies");
-        makeRadio(rockHard, rockHardNames, "radio/94.5 Rock Hard");
-        makeRadio(alternativeAlt, alternativeAltNames, "radio/97.7 Alternative Ault");
-        makeRadio(HOD, HODNames, "radio/99.1 HOD Headquarters Of Dance");
-        makeRadio(myPOP, myPOPNames, "radio/100.3 My Pop");
-        makeRadio(hopBop, hopBopNames, "radio/102.3 Hop Bop Radio");
-        makeRadio(feelingsFM, feelingsFMNames, "radio/103.1 Feelings FM");
-        makeRadio(cityVibes, cityVibesNames, "radio/103.9 City Vibes");
-        makeRadio(countrysideRadio, countrysideRadioNames, "radio/105.7 Countryside Radio");
-        makeRadio(foreignMusic, foreignMusicNames, "radio/106.9 Foreign Music");
-        makeRadio(themeHQ, themeHQNames, "radio/107.5 Theme HQ");
+        makeRadio(twoAMTurnUp, twoAMTurnUpNames, "radio/93.5 Electric FM");
+        makeRadio(FUM, FUMNames, "radio/98.1 Funky Beats");
+        makeRadio(moldieOldies, moldieOldiesNames, "radio/102.9 My Drive FM");
+        makeRadio(rockHard, rockHardNames, "radio/106.7 Crashopolis Vibes");
     }
 
     // Update is called once per frame

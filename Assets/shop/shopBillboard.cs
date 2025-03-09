@@ -181,7 +181,7 @@ public class shopBillboard : MonoBehaviour
         GameObject.Find("pause Plane").transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
         GameObject.Find("Pause Plane").transform.localPosition = new Vector3(1.22f, 6.68f + (cameraScale.cameraHight / 2), 0);
 
-        if (pManager.intro && false) // delete this to make the start animation again
+        if (pManager.intro) // delete this to make the start animation again
         {
             startup(scaleFactor);
             pManager.intro = false; // makes it so it wont go in the start animation again without closing the app
